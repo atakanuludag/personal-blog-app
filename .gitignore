@@ -1,0 +1,8 @@
+api/node_modules
+app/node_modules
+
+app/.next
+api/dist
+
+app/package-lock.json
+api/package-lock.json

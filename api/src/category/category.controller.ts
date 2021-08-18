@@ -35,9 +35,9 @@ export class CategoryController {
   //@UseGuards(JwtAuthGuard)
   @Post('category')
   async create(@Body() body: CreateCategoryDto) {
-    //category guid kontrolü yapılacak.
+    const exists = await this.service.guidExists(body.guid);
+    if(exists) throw new ExceptionHelper(this.categoryMessage.EXISTING_GUID, HttpStatus.BAD_REQUEST);
     await this.service.create(body);
-    //else throw new ExceptionHelper(this.coreMessage.UNAUTHORIZED, HttpStatus.UNAUTHORIZED);
   }
   
  

@@ -1,13 +1,11 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import * as mongoose from 'mongoose';
 import { ICategory } from './interfaces/category.interface';
 import { Category, CategoryDocument } from './schemas/category.schema';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
 import { CoreMessage } from '../common/messages';
-//import { CallbackError } from 'mongoose';
 
 @Injectable()
 export class CategoryService {
@@ -45,6 +43,14 @@ export class CategoryService {
   async getItemByGuid(guid: string): Promise<ICategory> {
     try {
       return await this.categoryModel.findOne({ guid }).populate("parentCategory").exec();
+    } catch (err) {
+      throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async guidExists(guid: string): Promise<any> {
+    try {
+      return await this.categoryModel.exists({ guid });
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }

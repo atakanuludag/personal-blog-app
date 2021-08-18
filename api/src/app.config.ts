@@ -1,7 +1,9 @@
-const nodeEnv = process.env.NODE_ENV.trim();
+let nodeEnv = 'dev';
+
+if(typeof process.env.NODE_ENV !== "undefined") nodeEnv = process.env.NODE_ENV.trim();
 
 const mongoDbConnectionString = {
-    dev: "mongodb://localhost:27017/dh_sicak_firsatlar?authSource=admin&ssl=false",
+    dev: "mongodb://localhost:27017/personal-blog?authSource=admin&ssl=false",
     live: ""
 }
 

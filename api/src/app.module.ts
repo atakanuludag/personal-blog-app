@@ -6,6 +6,7 @@ import { Config } from './app.config';
 
 //Modules
 import { CategoryModule } from './category/category.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { CategoryModule } from './category/category.module';
       useUnifiedTopology: true,
       useCreateIndex:true
     }),
-    CategoryModule
+    CategoryModule,
+    UserModule
   ],
   controllers: [AppController],
   providers: [AppService],

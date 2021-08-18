@@ -4,6 +4,7 @@ import { GuidParamsDto, IdParamsDto } from 'src/common/dto/params.dto';
 import { CategoryService } from './category.service';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
 import { CoreMessage, CategoryMessage } from '../common/messages';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
 @Controller()
 export class CategoryController {
@@ -32,7 +33,7 @@ export class CategoryController {
     return data;
   }
 
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post('category')
   async create(@Body() body: CreateCategoryDto) {
     const exists = await this.service.guidExists(body.guid);

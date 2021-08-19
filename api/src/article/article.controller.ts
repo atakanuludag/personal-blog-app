@@ -1,18 +1,18 @@
 import { Body, Controller, Get, Param, HttpStatus, Post, UseGuards, Patch } from '@nestjs/common';
-import { CreateTagDto } from './dto/create-tag.dto';
-import { UpdateTagDto } from './dto/update-tag.dto';
+import { CreateArticleDto } from './dto/create-article.dto';
+import { UpdateArticleDto } from './dto/update-article.dto';
 import { GuidParamsDto, IdParamsDto } from 'src/common/dto/params.dto';
-import { TagService } from './tag.service';
+import { ArticleService } from './article.service';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
-import { CoreMessage, TagMessage } from '../common/messages';
+import { CoreMessage, ArticleMessage } from '../common/messages';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
-@Controller('tag')
-export class TagController {
+@Controller('article')
+export class ArticleController {
     constructor(
-        private readonly service: TagService,
+        private readonly service: ArticleService,
         private readonly coreMessage: CoreMessage,
-        private readonly tagMessage: TagMessage,
+        private readonly articleMessage: ArticleMessage,
     ) { }
 
     @Get()
@@ -36,15 +36,15 @@ export class TagController {
 
     @UseGuards(JwtAuthGuard)
     @Post()
-    async create(@Body() body: CreateTagDto) {
+    async create(@Body() body: CreateArticleDto) {
         const exists = await this.service.guidExists(body.guid);
-        if (exists) throw new ExceptionHelper(this.tagMessage.EXISTING_GUID, HttpStatus.BAD_REQUEST);
+        if (exists) throw new ExceptionHelper(this.articleMessage.EXISTING_GUID, HttpStatus.BAD_REQUEST);
         await this.service.create(body);
     }
 
     @UseGuards(JwtAuthGuard)
     @Patch(':id')
-    async update(@Body() body: UpdateTagDto, @Param() params: IdParamsDto) {
+    async update(@Body() body: UpdateArticleDto, @Param() params: IdParamsDto) {
         await this.service.update(body, params.id);
     }
 }

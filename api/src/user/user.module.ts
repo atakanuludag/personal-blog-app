@@ -25,7 +25,7 @@ import { ExceptionHelper } from '../common/helpers/exception.helper';
     })
   ],
   controllers: [UserController],
-  providers: [LocalStrategy, JwtStrategy, PasswordHelper, ExceptionHelper, CoreMessage, UserMessage, UserService],
+  providers: [UserService, CoreMessage, UserMessage, ExceptionHelper, LocalStrategy, JwtStrategy, PasswordHelper, ],
 })
 
 export class UserModule { }

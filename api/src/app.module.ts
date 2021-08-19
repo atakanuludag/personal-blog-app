@@ -8,6 +8,7 @@ import { Config } from './app.config';
 import { CategoryModule } from './category/category.module';
 import { UserModule } from './user/user.module';
 import { TagModule } from './tag/tag.module';
+import { ArticleModule } from './article/article.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { TagModule } from './tag/tag.module';
     }),
     CategoryModule,
     UserModule,
-    TagModule
+    TagModule,
+    ArticleModule
   ],
   controllers: [AppController],
   providers: [AppService],

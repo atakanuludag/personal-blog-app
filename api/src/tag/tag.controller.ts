@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Param, Query, HttpStatus, Post, UseGuards, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Param, HttpStatus, Post, UseGuards, Patch } from '@nestjs/common';
 import { CreateTagDto } from './dto/create-tag.dto';
+import { UpdateTagDto } from './dto/update-tag.dto';
 import { GuidParamsDto, IdParamsDto } from 'src/common/dto/params.dto';
 import { TagService } from './tag.service';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
@@ -39,5 +40,11 @@ export class TagController {
         const exists = await this.service.guidExists(body.guid);
         if (exists) throw new ExceptionHelper(this.categoryMessage.EXISTING_GUID, HttpStatus.BAD_REQUEST);
         await this.service.create(body);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch(':id')
+    async update(@Body() body: UpdateTagDto, @Param() params: IdParamsDto) {
+        await this.service.update(body, params.id);
     }
 }

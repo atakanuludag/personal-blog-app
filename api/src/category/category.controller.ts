@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Param, Query, HttpStatus, Post, UseGuards, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Param, HttpStatus, Post, UseGuards, Patch } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 import { GuidParamsDto, IdParamsDto } from 'src/common/dto/params.dto';
 import { CategoryService } from './category.service';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
@@ -12,7 +13,7 @@ export class CategoryController {
     private readonly service: CategoryService,
     private readonly coreMessage: CoreMessage,
     private readonly categoryMessage: CategoryMessage,
-  ) {}
+  ) { }
 
   @Get()
   async list() {
@@ -37,9 +38,15 @@ export class CategoryController {
   @Post()
   async create(@Body() body: CreateCategoryDto) {
     const exists = await this.service.guidExists(body.guid);
-    if(exists) throw new ExceptionHelper(this.categoryMessage.EXISTING_GUID, HttpStatus.BAD_REQUEST);
+    if (exists) throw new ExceptionHelper(this.categoryMessage.EXISTING_GUID, HttpStatus.BAD_REQUEST);
     await this.service.create(body);
   }
-  
- 
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async update(@Body() body: UpdateCategoryDto, @Param() params: IdParamsDto) {
+    await this.service.update(body, params.id);
+  }
+
+
 }

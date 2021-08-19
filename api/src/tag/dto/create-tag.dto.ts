@@ -1,5 +1,4 @@
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
-import { ObjectId } from 'mongoose';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateTagDto {
     @IsNotEmpty()

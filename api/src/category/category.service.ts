@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { ICategory } from './interfaces/category.interface';
 import { Category, CategoryDocument } from './schemas/category.schema';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
 import { CoreMessage } from '../common/messages';
 
@@ -20,6 +21,16 @@ export class CategoryService {
       return create.save();
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async update(body: UpdateCategoryDto, _id: string): Promise<void> {
+    try {
+      await this.categoryModel.updateOne({ _id }, {
+        $set: body
+      });
+    } catch (err) {
+      throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
   }
 

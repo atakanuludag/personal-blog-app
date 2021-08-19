@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { ITag } from './interfaces/tag.interface';
 import { Tag, TagDocument } from './schemas/tag.schema';
 import { CreateTagDto } from './dto/create-tag.dto';
+import { UpdateTagDto } from './dto/update-tag.dto';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
 import { CoreMessage } from '../common/messages';
 
@@ -20,6 +21,16 @@ export class TagService {
             return create.save();
         } catch (err) {
             throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async update(body: UpdateTagDto, _id: string): Promise<void> {
+        try {
+            await this.tagModel.updateOne({ _id }, {
+                $set: body
+            });
+        } catch (err) {
+            throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }
     }
 

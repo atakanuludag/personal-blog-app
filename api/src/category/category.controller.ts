@@ -6,7 +6,7 @@ import { ExceptionHelper } from '../common/helpers/exception.helper';
 import { CoreMessage, CategoryMessage } from '../common/messages';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
-@Controller()
+@Controller('category')
 export class CategoryController {
   constructor(
     private readonly service: CategoryService,
@@ -14,19 +14,19 @@ export class CategoryController {
     private readonly categoryMessage: CategoryMessage,
   ) {}
 
-  @Get('category')
+  @Get()
   async list() {
     return await this.service.getItems();
   }
 
-  @Get("category/getById/:id")
+  @Get("getById/:id")
   async getItemById(@Param() params: IdParamsDto) {
     const data = await this.service.getItemById(params.id);
     if (!data) throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     return data;
   }
 
-  @Get("category/getByGuid/:guid")
+  @Get("getByGuid/:guid")
   async getItemByGuid(@Param() params: GuidParamsDto) {
     const data = await this.service.getItemByGuid(params.guid);
     if (!data) throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
@@ -34,7 +34,7 @@ export class CategoryController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('category')
+  @Post()
   async create(@Body() body: CreateCategoryDto) {
     const exists = await this.service.guidExists(body.guid);
     if(exists) throw new ExceptionHelper(this.categoryMessage.EXISTING_GUID, HttpStatus.BAD_REQUEST);

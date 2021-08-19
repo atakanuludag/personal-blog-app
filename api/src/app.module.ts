@@ -7,6 +7,7 @@ import { Config } from './app.config';
 //Modules
 import { CategoryModule } from './category/category.module';
 import { UserModule } from './user/user.module';
+import { TagModule } from './tag/tag.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { UserModule } from './user/user.module';
       useCreateIndex:true
     }),
     CategoryModule,
-    UserModule
+    UserModule,
+    TagModule
   ],
   controllers: [AppController],
   providers: [AppService],

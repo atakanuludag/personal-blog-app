@@ -7,7 +7,7 @@ import { ExceptionHelper } from '../common/helpers/exception.helper';
 import { CoreMessage } from 'src/common/messages/core.message';
 import { UserMessage } from 'src/common/messages';
 
-@Controller()
+@Controller('user')
 export class UserController {
   constructor(
     private readonly service: UserService,
@@ -17,13 +17,13 @@ export class UserController {
   ) { }
 
   @UseGuards(LocalAuthGuard)
-  @Post('user/login')
+  @Post('login')
   async login(@Request() req) {
     return this.service.login(req.user);
   }
 
   
-  @Post('user/register')
+  @Post('register')
   async create(@Body() body: RegisterUserDto) {
     const userCheck = await this.service.findUser(body.userName, body.email);
     if (userCheck) throw new ExceptionHelper(this.userMessage.EXISTING_USER, HttpStatus.BAD_REQUEST);

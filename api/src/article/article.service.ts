@@ -36,7 +36,7 @@ export class ArticleService {
 
     async getItems(): Promise<IArticle[]> {
         try {
-            const items = await this.articleModel.find().sort('-title').exec();
+            const items = await this.articleModel.find().populate("categories").populate("tags").sort('-title').exec();
             return items;
         } catch (err) {
             throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
@@ -45,7 +45,7 @@ export class ArticleService {
 
     async getItemById(_id: string): Promise<IArticle> {
         try {
-            return await this.articleModel.findOne({ _id }).exec();
+            return await this.articleModel.findOne({ _id }).populate("categories").populate("tags").exec();
         } catch (err) {
             throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }
@@ -53,7 +53,7 @@ export class ArticleService {
 
     async getItemByGuid(guid: string): Promise<IArticle> {
         try {
-            return await this.articleModel.findOne({ guid }).exec();
+            return await this.articleModel.findOne({ guid }).populate("categories").populate("tags").exec();
         } catch (err) {
             throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }

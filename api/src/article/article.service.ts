@@ -66,4 +66,12 @@ export class ArticleService {
             throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }
     }
+
+    async delete(id: string): Promise<void> {
+        try {
+            await this.articleModel.deleteOne({ _id: id });
+        } catch (err) {
+            throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

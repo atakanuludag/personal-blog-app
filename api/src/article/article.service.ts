@@ -59,7 +59,7 @@ export class ArticleService {
         }
     }
 
-    async guidExists(guid: string): Promise<any> {
+    async guidExists(guid: string): Promise<boolean> {
         try {
             return await this.articleModel.exists({ guid });
         } catch (err) {
@@ -67,6 +67,7 @@ export class ArticleService {
         }
     }
 
+    //findOneAndRemove, findOneAndDelete
     async delete(id: string): Promise<void> {
         try {
             await this.articleModel.deleteOne({ _id: id });

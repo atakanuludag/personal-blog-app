@@ -48,6 +48,7 @@ export class ArticleController {
         await this.service.update(body, params.id);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Delete(':id')
     async delete(@Param() params: IdParamsDto) {
         await this.service.delete(params.id);

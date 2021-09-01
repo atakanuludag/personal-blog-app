@@ -59,7 +59,7 @@ export class TagService {
         }
     }
 
-    async guidExists(guid: string): Promise<any> {
+    async guidExists(guid: string): Promise<boolean> {
         try {
             return await this.tagModel.exists({ guid });
         } catch (err) {

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, HttpStatus, Post, UseGuards, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Param, HttpStatus, Post, UseGuards, Patch, Delete } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { GuidParamsDto, IdParamsDto } from 'src/common/dto/params.dto';
@@ -46,6 +46,12 @@ export class CategoryController {
   @Patch(':id')
   async update(@Body() body: UpdateCategoryDto, @Param() params: IdParamsDto) {
     await this.service.update(body, params.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async delete(@Param() params: IdParamsDto) {
+    await this.service.delete(params.id);
   }
 
 

@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { IArticle } from './interfaces/article.interface';
 import { Article, ArticleDocument } from './schemas/article.schema';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -24,7 +24,7 @@ export class ArticleService {
         }
     }
 
-    async update(body: UpdateArticleDto, _id: string): Promise<void> {
+    async update(body: UpdateArticleDto, _id: ObjectId): Promise<void> {
         try {
             await this.articleModel.updateOne({ _id }, {
                 $set: body
@@ -43,7 +43,7 @@ export class ArticleService {
         }
     }
 
-    async getItemById(_id: string): Promise<IArticle> {
+    async getItemById(_id: ObjectId): Promise<IArticle> {
         try {
             return await this.articleModel.findOne({ _id }).populate("categories").populate("tags").exec();
         } catch (err) {
@@ -67,8 +67,8 @@ export class ArticleService {
         }
     }
 
-    //findOneAndRemove, findOneAndDelete
-    async delete(id: string): Promise<void> {
+    //Todo: findOneAndRemove, findOneAndDelete
+    async delete(id: ObjectId): Promise<void> {
         try {
             await this.articleModel.deleteOne({ _id: id });
         } catch (err) {

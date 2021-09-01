@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { ITag } from './interfaces/tag.interface';
 import { Tag, TagDocument } from './schemas/tag.schema';
 import { CreateTagDto } from './dto/create-tag.dto';
@@ -24,7 +24,7 @@ export class TagService {
         }
     }
 
-    async update(body: UpdateTagDto, _id: string): Promise<void> {
+    async update(body: UpdateTagDto, _id: ObjectId): Promise<void> {
         try {
             await this.tagModel.updateOne({ _id }, {
                 $set: body
@@ -43,7 +43,7 @@ export class TagService {
         }
     }
 
-    async getItemById(_id: string): Promise<ITag> {
+    async getItemById(_id: ObjectId): Promise<ITag> {
         try {
             return await this.tagModel.findOne({ _id }).exec();
         } catch (err) {

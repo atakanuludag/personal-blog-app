@@ -16,5 +16,5 @@ export class UpdateCategoryDto {
 
     @IsOptional()
     @IsString()
-    parentCategory?: ObjectId;
+    parent?: ObjectId;
 }

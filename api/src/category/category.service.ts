@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { ICategory } from './interfaces/category.interface';
 import { Category, CategoryDocument } from './schemas/category.schema';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -24,7 +24,7 @@ export class CategoryService {
     }
   }
 
-  async update(body: UpdateCategoryDto, _id: string): Promise<void> {
+  async update(body: UpdateCategoryDto, _id: ObjectId): Promise<void> {
     try {
       await this.categoryModel.updateOne({ _id }, {
         $set: body
@@ -36,16 +36,16 @@ export class CategoryService {
 
   async getItems(): Promise<ICategory[]> {
     try {
-      const items = await this.categoryModel.find().populate("parentCategory").sort('-title').exec();
+      const items = await this.categoryModel.find().populate("parent").sort('-title').exec();
       return items;
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
   }
 
-  async getItemById(_id: string): Promise<ICategory> {
+  async getItemById(_id: ObjectId): Promise<ICategory> {
     try {
-      return await this.categoryModel.findOne({ _id }).populate("parentCategory").exec();
+      return await this.categoryModel.findOne({ _id }).populate("parent").exec();
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
@@ -53,7 +53,7 @@ export class CategoryService {
 
   async getItemByGuid(guid: string): Promise<ICategory> {
     try {
-      return await this.categoryModel.findOne({ guid }).populate("parentCategory").exec();
+      return await this.categoryModel.findOne({ guid }).populate("parent").exec();
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
@@ -67,11 +67,20 @@ export class CategoryService {
     }
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: ObjectId): Promise<void> {
     try {
       await this.categoryModel.deleteOne({ _id: id });
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  async parentExists(parent: ObjectId): Promise<boolean> {
+    try {
+      return await this.categoryModel.exists({ parent });
+    } catch (err) {
+      throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+    }
+  }
+
 }

@@ -1,8 +1,9 @@
 import { IsString } from 'class-validator';
+import { ObjectId } from 'mongoose';
 
 export class IdParamsDto {
     @IsString()
-    id: string;
+    id: ObjectId;
 }
 
 export class GuidParamsDto {

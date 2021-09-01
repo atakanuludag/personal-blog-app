@@ -19,8 +19,8 @@ export class Category {
   @Prop({ required: true, unique: true })
   guid: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Category" })
-  parentCategory: ObjectId;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Category", default: null })
+  parent: ObjectId;
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);

@@ -4,5 +4,5 @@ export interface ICategory extends Document {
     readonly title: string;
     readonly description: string;
     readonly guid: string;
-    readonly parentCategory: ObjectId;
+    readonly parent: ObjectId | null;
 }

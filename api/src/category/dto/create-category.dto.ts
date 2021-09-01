@@ -16,9 +16,5 @@ export class CreateCategoryDto {
 
     @IsOptional()
     @IsString()
-    parentCategory?: ObjectId;
-
-    /*@IsDate()
-    @Type(() => Date)
-    date?: Date;*/
+    parent?: ObjectId;
 }

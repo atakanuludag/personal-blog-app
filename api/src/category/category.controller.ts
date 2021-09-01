@@ -51,6 +51,8 @@ export class CategoryController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async delete(@Param() params: IdParamsDto) {
+    const exists = await this.service.parentExists(params.id);
+    if(exists) throw new ExceptionHelper(this.categoryMessage.USE, HttpStatus.BAD_REQUEST);
     await this.service.delete(params.id);
   }
 

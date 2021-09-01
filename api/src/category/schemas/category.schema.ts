@@ -4,7 +4,10 @@ import { Document, ObjectId } from 'mongoose';
 
 export type CategoryDocument = Category & Document;
 
-@Schema()
+@Schema({
+  timestamps: true,
+})
+
 export class Category {
   
   @Prop({ required: true })
@@ -18,12 +21,6 @@ export class Category {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Category" })
   parentCategory: ObjectId;
-
-  @Prop({ default: Date.now })
-  createdDate: Date;
-
-  @Prop({ default: Date.now })
-  updatedDate: Date;
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);

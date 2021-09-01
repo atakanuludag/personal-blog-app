@@ -13,6 +13,4 @@ export interface IArticle extends Document {
     readonly isShow: boolean;
     readonly viewCount: number;
     readonly likeCount: number;
-    readonly createdDate: Date;
-    readonly updatedDate: Date;
 }

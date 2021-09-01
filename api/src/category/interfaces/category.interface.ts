@@ -5,6 +5,4 @@ export interface ICategory extends Document {
     readonly description: string;
     readonly guid: string;
     readonly parentCategory: ObjectId;
-    readonly createdDate: Date;
-    readonly updatedDate: Date;
 }

@@ -10,6 +10,10 @@ import { UserModule } from './user/user.module';
 import { TagModule } from './tag/tag.module';
 import { ArticleModule } from './article/article.module';
 
+import * as moment from 'moment';
+import 'moment/locale/tr';
+moment.locale("tr");
+
 @Module({
   imports: [
     MongooseModule.forRoot(Config.mongoDbConnectionString, {

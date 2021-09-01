@@ -5,7 +5,10 @@ import { ArticleType } from '../../common/interfaces/enums';
 
 export type ArticleDocument = Article & Document;
 
-@Schema()
+@Schema({
+  timestamps: true,
+})
+
 export class Article {
 
   @Prop({ required: true })
@@ -40,12 +43,6 @@ export class Article {
 
   @Prop({ default: 0 })
   likeCount: number;
-
-  @Prop({ default: Date.now })
-  createdDate: Date;
-
-  @Prop({ default: Date.now })
-  updatedDate: Date;
 }
 
 export const ArticleSchema = SchemaFactory.createForClass(Article);

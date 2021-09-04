@@ -1,9 +1,11 @@
-import { Body, Controller, Get, Param, HttpStatus, Post, UseGuards, Patch, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Param, HttpStatus, Post, UseGuards, Patch, Delete, Query } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
-import { GuidParamsDto, IdParamsDto } from 'src/common/dto/params.dto';
+import { GuidParamsDto, IdParamsDto } from '../common/dto/params.dto';
+import { ListQueryDto } from '../common/dto/list-query.dto';
 import { ArticleService } from './article.service';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
+import { QueryHelper } from '../common/helpers/query.helper';
 import { CoreMessage, ArticleMessage } from '../common/messages';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
@@ -13,11 +15,13 @@ export class ArticleController {
         private readonly service: ArticleService,
         private readonly coreMessage: CoreMessage,
         private readonly articleMessage: ArticleMessage,
+        private readonly queryHelper: QueryHelper
     ) { }
 
     @Get()
-    async list() {
-        return await this.service.getItems();
+    async list(@Query() query: ListQueryDto) {
+        const q = this.queryHelper.instance(query);
+        return await this.service.getItems(q);
     }
 
     @Get("getById/:id")

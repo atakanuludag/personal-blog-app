@@ -1,7 +1,9 @@
 import { IsString, IsOptional } from 'class-validator';
 import { ObjectId } from 'mongoose';
 
-export class UpdateCategoryDto {
+//Todo: https://www.npmjs.com/package/@nestjs/mapped-types
+
+export class UpdateCategoryDto  {
     @IsOptional()
     @IsString()
     title: string;

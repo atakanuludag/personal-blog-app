@@ -8,6 +8,7 @@ import { Article, ArticleSchema } from './schemas/article.schema';
 
 import { CoreMessage, ArticleMessage } from '../common/messages';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
+import { QueryHelper } from '../common/helpers/query.helper';
 
 @Module({
   imports: [
@@ -16,6 +17,6 @@ import { ExceptionHelper } from '../common/helpers/exception.helper';
     ]),
   ],
   controllers: [ArticleController],
-  providers: [CoreMessage, ArticleMessage, ExceptionHelper, ArticleService]
+  providers: [CoreMessage, ArticleMessage, ExceptionHelper, QueryHelper, ArticleService]
 })
 export class ArticleModule {}

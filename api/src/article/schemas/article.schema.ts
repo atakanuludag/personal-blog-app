@@ -26,10 +26,10 @@ export class Article {
   @Prop({ default: Date.now })
   publishingDate: Date;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Category" })
+  @Prop({ required: true, type: [mongoose.Schema.Types.ObjectId], ref: "Category" })
   categories: ObjectId[];
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Tag" })
+  @Prop({ required: true, type: [mongoose.Schema.Types.ObjectId], ref: "Tag" })
   tags: ObjectId[];
 
   @Prop({ type: ArticleType, default: ArticleType.PAGE })

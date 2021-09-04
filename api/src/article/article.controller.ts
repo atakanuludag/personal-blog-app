@@ -47,7 +47,7 @@ export class ArticleController {
     async update(@Body() body: UpdateArticleDto, @Param() params: IdParamsDto) {
         await this.service.update(body, params.id);
     }
-
+    
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
     async delete(@Param() params: IdParamsDto) {

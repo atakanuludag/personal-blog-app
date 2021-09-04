@@ -3,6 +3,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { GuidParamsDto, IdParamsDto } from 'src/common/dto/params.dto';
 import { CategoryService } from './category.service';
+import { ArticleService } from '../article/article.service';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
 import { CoreMessage, CategoryMessage } from '../common/messages';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
@@ -11,6 +12,7 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 export class CategoryController {
   constructor(
     private readonly service: CategoryService,
+    private readonly articleService: ArticleService,
     private readonly coreMessage: CoreMessage,
     private readonly categoryMessage: CategoryMessage,
   ) { }
@@ -54,6 +56,7 @@ export class CategoryController {
     const exists = await this.service.parentExists(params.id);
     if(exists) throw new ExceptionHelper(this.categoryMessage.USE, HttpStatus.BAD_REQUEST);
     await this.service.delete(params.id);
+    await this.articleService.categoryRemoveByObjectId(params.id);
   }
 
 

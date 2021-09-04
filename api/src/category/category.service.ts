@@ -24,9 +24,9 @@ export class CategoryService {
     }
   }
 
-  async update(body: UpdateCategoryDto, _id: ObjectId): Promise<void> {
+  async update(body: UpdateCategoryDto, id: ObjectId): Promise<void> {
     try {
-      await this.categoryModel.updateOne({ _id }, {
+      await this.categoryModel.updateOne({ id }, {
         $set: body
       });
     } catch (err) {
@@ -43,9 +43,9 @@ export class CategoryService {
     }
   }
 
-  async getItemById(_id: ObjectId): Promise<ICategory> {
+  async getItemById(id: ObjectId): Promise<ICategory> {
     try {
-      return await this.categoryModel.findOne({ _id }).populate("parent").exec();
+      return await this.categoryModel.findOne({ id }).populate("parent").exec();
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     }
@@ -69,7 +69,7 @@ export class CategoryService {
 
   async delete(id: ObjectId): Promise<void> {
     try {
-      await this.categoryModel.deleteOne({ _id: id });
+      await this.categoryModel.deleteOne({ id });
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
     }

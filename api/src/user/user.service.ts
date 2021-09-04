@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { IUser } from './interfaces/user.interface';
 import { IUserEntity } from './interfaces/user.entity.interface';
@@ -22,7 +22,7 @@ export class UserService {
   async login(user: IUser) {
     try {
       const payload: IUserEntity = { userName: user.userName, userId: user.id };
-      return { 
+      return {
         accessToken: this.jwtService.sign(payload),
         userId: user.id
       };
@@ -30,7 +30,7 @@ export class UserService {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-  
+
   async validateUser(userName: string, password: string): Promise<IUser | null> {
     try {
       const find = await this.userModel.findOne({ userName }).select('+password').exec();
@@ -45,7 +45,7 @@ export class UserService {
     }
   }
 
-  async findUserById(id: string): Promise<IUser> {
+  async findUserById(id: ObjectId): Promise<IUser> {
     try {
       return await this.userModel.findById(id).exec();
     } catch (err) {
@@ -60,7 +60,7 @@ export class UserService {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-  
+
   async register(registerUserDto: RegisterUserDto): Promise<User> {
     try {
       const create = new this.userModel(registerUserDto);

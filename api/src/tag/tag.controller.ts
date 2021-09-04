@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, HttpStatus, Post, UseGuards, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Param, HttpStatus, Post, UseGuards, Patch, Delete } from '@nestjs/common';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { GuidParamsDto, IdParamsDto } from 'src/common/dto/params.dto';
 import { TagService } from './tag.service';
+import { ArticleService } from '../article/article.service';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
 import { CoreMessage, TagMessage } from '../common/messages';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
@@ -11,6 +12,7 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 export class TagController {
     constructor(
         private readonly service: TagService,
+        private readonly articleService: ArticleService,
         private readonly coreMessage: CoreMessage,
         private readonly tagMessage: TagMessage,
     ) { }
@@ -46,5 +48,12 @@ export class TagController {
     @Patch(':id')
     async update(@Body() body: UpdateTagDto, @Param() params: IdParamsDto) {
         await this.service.update(body, params.id);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    async delete(@Param() params: IdParamsDto) {
+      await this.service.delete(params.id);
+      await this.articleService.tagRemoveByObjectId(params.id);
     }
 }

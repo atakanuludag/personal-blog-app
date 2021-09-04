@@ -24,9 +24,9 @@ export class ArticleService {
         }
     }
 
-    async update(body: UpdateArticleDto, _id: ObjectId): Promise<void> {
+    async update(body: UpdateArticleDto, id: ObjectId): Promise<void> {
         try {
-            await this.articleModel.updateOne({ _id }, {
+            await this.articleModel.updateOne({ id }, {
                 $set: body
             });
         } catch (err) {
@@ -43,9 +43,9 @@ export class ArticleService {
         }
     }
 
-    async getItemById(_id: ObjectId): Promise<IArticle> {
+    async getItemById(id: ObjectId): Promise<IArticle> {
         try {
-            return await this.articleModel.findOne({ _id }).populate("categories").populate("tags").exec();
+            return await this.articleModel.findOne({ id }).populate("categories").populate("tags").exec();
         } catch (err) {
             throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }
@@ -66,11 +66,27 @@ export class ArticleService {
             throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }
     }
-
+    
     //Todo: findOneAndRemove, findOneAndDelete
     async delete(id: ObjectId): Promise<void> {
         try {
-            await this.articleModel.deleteOne({ _id: id });
+            await this.articleModel.deleteOne({ id });
+        } catch (err) {
+            throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async categoryRemoveByObjectId(id: ObjectId): Promise<void> {
+        try {
+            await this.articleModel.updateMany( { categories: id }, { $pullAll: { categories: [ id ] } }, { multi: true } )
+        } catch (err) {
+            throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async tagRemoveByObjectId(id: ObjectId): Promise<void> {
+        try {
+            await this.articleModel.updateMany( { tags: id }, { $pullAll: { tags: [ id ] } }, { multi: true } )
         } catch (err) {
             throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
         }

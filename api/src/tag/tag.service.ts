@@ -43,9 +43,9 @@ export class TagService {
         }
     }
 
-    async getItemById(_id: ObjectId): Promise<ITag> {
+    async getItemById(id: ObjectId): Promise<ITag> {
         try {
-            return await this.tagModel.findOne({ _id }).exec();
+            return await this.tagModel.findOne({ id }).exec();
         } catch (err) {
             throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }
@@ -64,6 +64,14 @@ export class TagService {
             return await this.tagModel.exists({ guid });
         } catch (err) {
             throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    async delete(id: ObjectId): Promise<void> {
+        try {
+          await this.tagModel.deleteOne({ id });
+        } catch (err) {
+          throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

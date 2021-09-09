@@ -1,5 +1,7 @@
 let nodeEnv = 'dev';
 
+//https://docs.nestjs.com/techniques/configuration
+
 if(typeof process.env.NODE_ENV !== "undefined") nodeEnv = process.env.NODE_ENV.trim();
 
 const mongoDbConnectionString = {

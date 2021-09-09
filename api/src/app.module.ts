@@ -9,6 +9,7 @@ import { CategoryModule } from './category/category.module';
 import { UserModule } from './user/user.module';
 import { TagModule } from './tag/tag.module';
 import { ArticleModule } from './article/article.module';
+import { FileModule } from './file/file.module';
 
 import * as moment from 'moment';
 import 'moment/locale/tr';
@@ -24,7 +25,8 @@ moment.locale("tr");
     CategoryModule,
     UserModule,
     TagModule,
-    ArticleModule
+    ArticleModule,
+    FileModule
   ],
   controllers: [AppController],
   providers: [AppService],

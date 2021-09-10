@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-
-import { Config } from '../app.config';
+import { EnvironmentVariables } from '../common/interfaces/environment-variables.interface';
 
 import { UserController } from './user.controller';
 import { User, UserSchema } from './schemas/user.schema';
@@ -19,9 +19,15 @@ import { ExceptionHelper } from '../common/helpers/exception.helper';
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     PassportModule,
-    JwtModule.register({
-      secret: Config.jwtSecretKey,
-      signOptions: { expiresIn: Config.jwtExpiresIn },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService<EnvironmentVariables>) => ({
+        secret: configService.get<string>('JWT_SECRET_KEY'),
+        signOptions: {
+          expiresIn: configService.get<string>('JWT_EXPIRES_IN'),
+        }
+      }),
+      inject: [ConfigService],
     })
   ],
   controllers: [UserController],

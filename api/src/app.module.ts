@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Config } from './app.config';
+
+import { EnvironmentVariables } from './common/interfaces/environment-variables.interface';
 
 //Modules
 import { CategoryModule } from './category/category.module';
@@ -15,12 +17,21 @@ import * as moment from 'moment';
 import 'moment/locale/tr';
 moment.locale("tr");
 
+
 @Module({
   imports: [
-    MongooseModule.forRoot(Config.mongoDbConnectionString, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex:true
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService<EnvironmentVariables>) => ({
+        uri: configService.get<string>('MONGODB_URI'),
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true
+      }),
+      inject: [ConfigService],
     }),
     CategoryModule,
     UserModule,
@@ -31,4 +42,4 @@ moment.locale("tr");
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

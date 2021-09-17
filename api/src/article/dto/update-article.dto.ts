@@ -1,4 +1,4 @@
-import { IsString, IsDate, IsArray, ArrayMinSize, IsOptional } from 'class-validator';
+import { IsString, IsDate, IsArray, ArrayMinSize, IsOptional, IsEnum } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ObjectId } from 'mongoose';
 import { ArticleType } from '../../common/interfaces/enums';
@@ -36,6 +36,6 @@ export class UpdateArticleDto {
     tags: ObjectId[];
 
     @IsOptional()
-    @IsString()
+    @IsEnum(ArticleType)
     articleType: ArticleType;
 }

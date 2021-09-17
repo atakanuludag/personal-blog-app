@@ -12,6 +12,7 @@ import { UserModule } from './user/user.module';
 import { TagModule } from './tag/tag.module';
 import { ArticleModule } from './article/article.module';
 import { FileModule } from './file/file.module';
+import { SettingsModule } from './settings/settings.module';
 
 import * as moment from 'moment';
 import 'moment/locale/tr';
@@ -37,7 +38,8 @@ moment.locale("tr");
     UserModule,
     TagModule,
     ArticleModule,
-    FileModule
+    FileModule,
+    SettingsModule
   ],
   controllers: [AppController],
   providers: [AppService],

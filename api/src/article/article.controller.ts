@@ -9,6 +9,8 @@ import { QueryHelper } from '../common/helpers/query.helper';
 import { CoreMessage, ArticleMessage } from '../common/messages';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
+//https://www.npmjs.com/package/reading-time
+
 @Controller('article')
 export class ArticleController {
     constructor(

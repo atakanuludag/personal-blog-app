@@ -38,4 +38,8 @@ export class UpdateArticleDto {
     @IsOptional()
     @IsEnum(ArticleType)
     articleType: ArticleType;
+
+    @IsOptional()
+    @IsString()
+    coverImage: ObjectId;
 }

@@ -30,7 +30,8 @@ moment.locale("tr");
         uri: configService.get<string>('MONGODB_URI'),
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        useCreateIndex: true
+        useCreateIndex: true,
+        useFindAndModify: false
       }),
       inject: [ConfigService],
     }),

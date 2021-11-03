@@ -35,6 +35,9 @@ export class Article {
   @Prop({ type: ArticleType, default: ArticleType.PAGE })
   articleType: ArticleType;
 
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "File", default: null })
+  coverImage: ObjectId;
+
   @Prop({ default: true })
   isShow: boolean;
 

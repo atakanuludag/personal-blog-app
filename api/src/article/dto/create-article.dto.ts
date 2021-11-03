@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsDate, IsArray, ArrayMinSize, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsDate, IsArray, ArrayMinSize, IsEnum } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ObjectId } from 'mongoose';
 import { ArticleType } from '../../common/interfaces/enums';
@@ -37,4 +37,8 @@ export class CreateArticleDto {
     @IsNotEmpty()
     @IsEnum(ArticleType)
     articleType: ArticleType;
+
+    @IsOptional()
+    @IsString()
+    coverImage: ObjectId;
 }

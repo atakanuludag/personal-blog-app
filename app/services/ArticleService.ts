@@ -23,7 +23,7 @@ export default class ArticleService {
 
     private itemToModel = (item: any): IArticle => {
         const { _id, title, shortDescription, content, guid, publishingDate, isShow, viewCount, likeCount } = item;
-
+        
         return {
             id: _id,
             title,
@@ -31,6 +31,7 @@ export default class ArticleService {
             content,
             guid,
             publishingDate,
+            featuredImage: item.featuredImage.path,
             isShow,
             viewCount,
             likeCount

@@ -2,6 +2,10 @@ import React from 'react';
 import type { AppProps } from 'next/app'
 import '../styles/global.scss';
 import { Header, Footer } from '@/components';
+import moment from 'moment';
+import 'moment/locale/tr';
+
+moment.locale("tr");
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

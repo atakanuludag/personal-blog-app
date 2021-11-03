@@ -24,9 +24,9 @@ export class CategoryService {
     }
   }
 
-  async update(body: UpdateCategoryDto, id: ObjectId): Promise<void> {
+  async update(body: UpdateCategoryDto, _id: ObjectId): Promise<void> {
     try {
-      await this.categoryModel.updateOne({ id }, {
+      await this.categoryModel.updateOne({ _id }, {
         $set: body
       });
     } catch (err) {

@@ -26,9 +26,9 @@ export class ArticleService {
         }
     }
 
-    async update(body: UpdateArticleDto, id: ObjectId): Promise<void> {
+    async update(body: UpdateArticleDto, _id: ObjectId): Promise<void> {
         try {
-            await this.articleModel.updateOne({ id }, {
+            await this.articleModel.updateOne({ _id }, {
                 $set: body
             });
         } catch (err) {

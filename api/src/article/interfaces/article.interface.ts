@@ -10,6 +10,7 @@ export interface IArticle extends Document {
     readonly categories: ObjectId[];
     readonly tags: ObjectId[];
     readonly articleType: ArticleType;
+    readonly coverImage: ObjectId;
     readonly isShow: boolean;
     readonly viewCount: number;
     readonly likeCount: number;

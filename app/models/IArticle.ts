@@ -10,7 +10,7 @@ export default interface IArticle {
     //readonly categories: ObjectId[];
     //readonly tags: ObjectId[];
     //readonly articleType: ArticleType;
-    readonly featuredImage: string;
+    readonly coverImage: string;
     readonly isShow: boolean;
     readonly viewCount: number;
     readonly likeCount: number;

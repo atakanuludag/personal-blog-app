@@ -31,7 +31,7 @@ export default class ArticleService {
             content,
             guid,
             publishingDate,
-            featuredImage: item.featuredImage.path,
+            coverImage: item.coverImage ? item.coverImage.path : "",
             isShow,
             viewCount,
             likeCount

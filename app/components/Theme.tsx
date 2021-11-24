@@ -50,9 +50,9 @@ const AppTheme = ({ children }: ITheme): React.ReactElement => {
     //font-family: 'Outfit', sans-serif;
     typography: {
       fontFamily: [
-        '-apple-system',
+        'Segoe UI',
         'BlinkMacSystemFont',
-        'Outfit',
+        'Segoe UI',
         'sans-serif'
       ].join(','),
     },

@@ -1,4 +1,5 @@
 import React from 'react';
+import Divider from '@mui/material/Divider';
 
 interface IFooterProps {
 
@@ -6,7 +7,8 @@ interface IFooterProps {
 
 const Footer = (props: IFooterProps) => {
     return (
-        <footer className="footer text-center py-2 theme-bg-dark">
+        <footer>
+             <Divider />
             <small className="copyright">Atakan Yasin Uludağ</small>
         </footer>
     )

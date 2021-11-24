@@ -9,10 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.4",
+    "@emotion/react": "^11.6.0",
+    "@emotion/styled": "^11.6.0",
+    "@mui/icons-material": "^5.2.0",
+    "@mui/material": "^5.2.0",
+    "@mui/styles": "^5.2.0",
     "axios": "^0.21.4",
-    "bootstrap": "^4.5.2",
-    "jquery": "^3.6.0",
     "moment": "^2.29.1",
     "next": "11.1.2",
     "next-seo": "^4.27.0",

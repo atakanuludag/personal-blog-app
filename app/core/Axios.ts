@@ -1,8 +1,7 @@
 import axios from 'axios';
-//import { VARIABLES } from '../core/Constants';
 export type { AxiosError } from 'axios';
 
-console.log("process.env.SERVICE_URL", process.env.SERVICE_URL);
+console.log("Service URL: ", process.env.SERVICE_URL);
 
 const defaultOptions = {
     baseURL: process.env.SERVICE_URL,

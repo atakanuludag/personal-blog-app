@@ -8,3 +8,4 @@ app/package-lock.json
 api/package-lock.json
 
 uploads
+.DS_Store

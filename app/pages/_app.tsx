@@ -2,7 +2,7 @@ import React from 'react';
 import type { AppProps } from 'next/app'
 import Head from 'next/head';
 import { NextSeo } from 'next-seo';
-import Theme from '@/components/Theme';
+import Theme from '@/theme';
 import CssBaseline from '@mui/material/CssBaseline';
 import moment from 'moment';
 import 'moment/locale/tr';

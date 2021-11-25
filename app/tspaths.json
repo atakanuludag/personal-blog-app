@@ -2,8 +2,12 @@
     "compilerOptions": {
       "baseUrl": ".",
       "paths": {
+        "@/layouts": ["layouts"],
+        "@/layouts/*": ["layouts/*"],
         "@/components": ["components"],
         "@/components/*": ["components/*"],
+        "@/theme": ["theme"],
+        "@/theme/*": ["theme/*"],
         "@/services": ["services"],
         "@/services/*": ["services/*"],
         "@/models": ["models"],

@@ -1,11 +1,10 @@
 import React from 'react';
-import Footer from '@/components/Footer';
 import CssBaseline from '@mui/material/CssBaseline';
 import { makeStyles } from '@mui/styles';
 import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
 import { trTR } from '@mui/material/locale';
 import Container from '@mui/material/Container';
-import Navigation from '@/components/Navigation';
+import { Navigation, Footer } from '@/layouts';
 
 //import { AppContext, IAppContextProps } from "../context/AppContext";
 //import MenuBar from '../components/MenuBar';
@@ -15,6 +14,16 @@ interface ITheme {
 }
 
 const useStyles = makeStyles({
+  '@global': {
+    "*::-webkit-scrollbar": {
+      width:"6px",
+      backgroundColor:"#2a2a2a"
+    },
+    "*::-webkit-scrollbar-thumb": {
+      backgroundColor:"rgba(255,255,255,0.05)",
+      borderRadius:".5rem"
+    }
+  },
   root: {
     display: 'flex',
   },
@@ -22,7 +31,9 @@ const useStyles = makeStyles({
     flexGrow: 1,
     height: '100vh',
     overflow: 'auto',
-  }
+    margin: "10vh 0px"
+  },
+  
 });
 
 
@@ -50,9 +61,9 @@ const AppTheme = ({ children }: ITheme): React.ReactElement => {
     //font-family: 'Outfit', sans-serif;
     typography: {
       fontFamily: [
-        'Segoe UI',
-        'BlinkMacSystemFont',
-        'Segoe UI',
+        'system-ui',
+        '-apple-system',
+        'Roboto',
         'sans-serif'
       ].join(','),
     },
@@ -64,7 +75,7 @@ const AppTheme = ({ children }: ITheme): React.ReactElement => {
     <div className={classes.root}>
       <ThemeProvider theme={theme}>
         <Navigation />
-        <Container fixed  maxWidth="lg">
+        <Container maxWidth="lg">
           <CssBaseline />
           <main className={classes.content}> {children}</main>
           <Footer />

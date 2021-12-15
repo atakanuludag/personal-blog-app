@@ -1,13 +1,12 @@
 import React from 'react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { makeStyles } from '@mui/styles'
-import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+import { Theme } from '@mui/material'
 import { trTR } from '@mui/material/locale'
-import Container from '@mui/material/Container'
-import { Navigation, Footer } from '@/layouts'
-
-//import { AppContext, IAppContextProps } from "../context/AppContext";
-//import MenuBar from '../components/MenuBar';
+import Navigation from '@/layouts/Navigation'
+import Content from '@/layouts/Content'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 interface ITheme {
   children: React.ReactNode
@@ -20,24 +19,16 @@ const useStyles = makeStyles({
       backgroundColor: '#2a2a2a',
     },
     '*::-webkit-scrollbar-thumb': {
-      backgroundColor: 'rgba(255,255,255,0.05)',
+      backgroundColor: 'rgb(100 100 100)',
       borderRadius: '.5rem',
     },
   },
   root: {
     display: 'flex',
   },
-  content: {
-    flexGrow: 1,
-    height: '100vh',
-    overflow: 'auto',
-    margin: '10vh 0px',
-  },
 })
 
 const AppTheme = ({ children }: ITheme): React.ReactElement => {
-  //const { darkMode } = React.useContext(AppContext) as IAppContextProps;
-
   const theme = createTheme(
     {
       palette: {
@@ -56,7 +47,6 @@ const AppTheme = ({ children }: ITheme): React.ReactElement => {
           contrastText: '#000',
         },
       },
-      //font-family: 'Outfit', sans-serif;
       typography: {
         fontFamily: ['system-ui', '-apple-system', 'Roboto', 'sans-serif'].join(
           ',',
@@ -67,16 +57,14 @@ const AppTheme = ({ children }: ITheme): React.ReactElement => {
   )
 
   const classes = useStyles()
+  //const isMdUp = useMediaQuery(theme.breakpoints.up('md'))
 
   return (
     <div className={classes.root}>
       <ThemeProvider theme={theme}>
+        <CssBaseline />
         <Navigation />
-        <Container maxWidth="lg">
-          <CssBaseline />
-          <main className={classes.content}> {children}</main>
-          <Footer />
-        </Container>
+        <Content children={children} />
       </ThemeProvider>
     </div>
   )

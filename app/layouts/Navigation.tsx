@@ -1,11 +1,10 @@
-import React from 'react'
+import React, { MouseEventHandler, useState } from 'react'
 import clsx from 'clsx'
 import { ThemeProvider, makeStyles } from '@mui/styles'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Drawer from '@mui/material/Drawer'
-import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import List from '@mui/material/List'
 import Tooltip from '@mui/material/Tooltip'
@@ -33,34 +32,30 @@ import HotDealIcon from '@mui/icons-material/Whatshot'
 import CategoryIcon from '@mui/icons-material/Category'
 import WbSunnyIcon from '@mui/icons-material/WbSunny'
 import NightsStayIcon from '@mui/icons-material/NightsStay'
-import { Theme } from '@mui/material'
-import { styled } from '@mui/material/styles'
-import Switch from '@mui/material/Switch'
+import { Theme, useMediaQuery } from '@mui/material'
+import { styled, useTheme } from '@mui/material/styles'
 
 import DarkModeSwitch from '@/components/DarkModeSwitch'
+import AppBar from '@/layouts/AppBar'
 
-//import { ThemeToggleMenuAction, ThemeDarkModeAction } from '../redux/theme/themeActions';
-//import { LogoutAction } from '../redux/auth/authActions';
-//import { useDispatch, useSelector } from 'react-redux';
-//import AppState from "../redux/appState";
-//import { removeLocalStorage } from '../utils/LocalStorage';
-//import { AUTH_LOCAL_STORAGE } from '../core/Constants';
+import Constants from '@/core/Constants'
 
-/*
-.header::-webkit-scrollbar{width:6px;background-color:#54B689}.header::-webkit-scrollbar-thumb{background-color:rgba(0,0,0,0.2);*/
 const useStyles = makeStyles(() => ({
   root: {
     '& p': {
       textAlign: 'center',
     },
   },
-
+  drawer: {
+    flexShrink: 0,
+    width: Constants.DRAWER_WITDH,
+  },
   drawerPaper: {
     backgroundColor: '#202020',
     whiteSpace: 'break-spaces',
-    width: 280,
+    width: Constants.DRAWER_WITDH,
     overflowX: 'hidden',
-    padding: '10px 15px',
+    adding: '10px 15px',
     '&>*': {
       paddingTop: '10px',
       paddingBottom: '10px',
@@ -94,98 +89,116 @@ const useStyles = makeStyles(() => ({
   },
 }))
 
-interface INavigation {
-  //classes: any;
-}
+interface INavigation {}
 
 const Navigation = (props: INavigation): React.ReactElement => {
   const classes = useStyles()
-
+  const theme = useTheme()
+  const isMdUp = useMediaQuery(theme.breakpoints.up('md'))
+  const [navOpen, setNavOpen] = useState(false)
   const handleNavigationButton = (link: string) => {
     //console.log("link", link);
     //history.push(`/${link}`);
   }
 
+  const toggleDrawer = (e: React.KeyboardEvent | React.MouseEvent) => {
+    const key = (e as React.KeyboardEvent).key
+    if (e.type === 'keydown' && (key === 'Tab' || key === 'Shift')) {
+      return
+    }
+    setNavOpen(!navOpen)
+  }
+
   return (
-    <nav>
+    <div className={classes.root}>
+      {!isMdUp && <AppBar open={navOpen} toggleDrawer={toggleDrawer} />}
       <Drawer
-        variant="permanent"
+        className={classes.drawer}
+        variant="temporary"
         classes={{
-          root: classes.root,
           paper: classes.drawerPaper,
         }}
+        anchor="left"
+        open={isMdUp ? true : navOpen}
+        hideBackdrop={isMdUp}
+        onClose={toggleDrawer}
       >
-        <div className={classes.profileSection}>
-          <Typography variant="h5" component="h1">
-            Atakan Yasin Uludağ
-          </Typography>
-          <img
-            className={classes.avatar}
-            src="https://www.atakanuludag.com/wp-content/uploads/2019/09/avatar.jpg"
-            alt="Atakan Yasin Uludağ"
-          />
-          <Typography variant="caption" component="p">
-            İstanbul’da doğdum ve senelerdir İstanbul’da yaşıyorum. Aslen
-            Erzincanlıyım. Zaman zaman başka şehirlere ve ülkelere turistik
-            gezilerim oldu ancak döndüm dolaştım yine aynı yere geldim. Yeni
-            yerler görmeyi ve farklı ülkelere gitmeyi çok seviyorum.
-          </Typography>
+        <Typography variant="h5" component="h1">
+          Atakan Yasin Uludağ
+        </Typography>
+        <nav>
+          <div className={classes.profileSection}>
+            <img
+              className={classes.avatar}
+              src="https://www.atakanuludag.com/wp-content/uploads/2019/09/avatar.jpg"
+              alt="Atakan Yasin Uludağ"
+            />
+            <Typography variant="caption" component="p">
+              İstanbul’da doğdum ve senelerdir İstanbul’da yaşıyorum. Aslen
+              Erzincanlıyım. Zaman zaman başka şehirlere ve ülkelere turistik
+              gezilerim oldu ancak döndüm dolaştım yine aynı yere geldim. Yeni
+              yerler görmeyi ve farklı ülkelere gitmeyi çok seviyorum.
+            </Typography>
 
-          <Box component="ul" className={classes.socialMedia}>
-            <li>
-              <Link href="#">
-                <Tooltip title="Twitter">
-                  <TwitterIcon color="action" />
-                </Tooltip>
-              </Link>
-            </li>
-            <li>
-              <Link href="#">
-                <Tooltip title="Instagram">
-                  <InstagramIcon color="action" />
-                </Tooltip>
-              </Link>
-            </li>
-            <li>
-              <Link href="#">
-                <Tooltip title="Twitter">
-                  <GitHubIcon color="action" />
-                </Tooltip>
-              </Link>
-            </li>
-            <li>
-              <Link href="#">
-                <Tooltip title="Linkedin">
-                  <LinkedInIcon color="action" />
-                </Tooltip>
-              </Link>
-            </li>
-          </Box>
-        </div>
+            <Box component="ul" className={classes.socialMedia}>
+              <li>
+                <Link href="#">
+                  <Tooltip title="Twitter">
+                    <TwitterIcon color="action" />
+                  </Tooltip>
+                </Link>
+              </li>
+              <li>
+                <Link href="#">
+                  <Tooltip title="Instagram">
+                    <InstagramIcon color="action" />
+                  </Tooltip>
+                </Link>
+              </li>
+              <li>
+                <Link href="#">
+                  <Tooltip title="Twitter">
+                    <GitHubIcon color="action" />
+                  </Tooltip>
+                </Link>
+              </li>
+              <li>
+                <Link href="#">
+                  <Tooltip title="Linkedin">
+                    <LinkedInIcon color="action" />
+                  </Tooltip>
+                </Link>
+              </li>
+            </Box>
+          </div>
 
-        <Divider />
+          <Divider />
 
-        <List className={classes.menu}>
-          <ListItem button onClick={() => handleNavigationButton('dashboard')}>
-            <ListItemIcon>
-              <PersonIcon />
-            </ListItemIcon>
-            <ListItemText primary="Hakkımda" />
-          </ListItem>
+          <List className={classes.menu}>
+            <ListItem
+              button
+              onClick={() => handleNavigationButton('dashboard')}
+            >
+              <ListItemIcon>
+                <PersonIcon />
+              </ListItemIcon>
+              <ListItemText primary="Hakkımda" />
+            </ListItem>
 
-          <ListItem button onClick={() => handleNavigationButton('users')}>
-            <ListItemIcon>
-              <EmailIcon />
-            </ListItemIcon>
-            <ListItemText primary="İletişim" />
-          </ListItem>
-        </List>
+            <ListItem button onClick={() => handleNavigationButton('users')}>
+              <ListItemIcon>
+                <EmailIcon />
+              </ListItemIcon>
+              <ListItemText primary="İletişim" />
+            </ListItem>
+          </List>
 
-        <Divider />
+          <Divider />
 
-        <DarkModeSwitch />
+          <DarkModeSwitch />
+        </nav>
       </Drawer>
-    </nav>
+    </div>
   )
 }
 

@@ -1,32 +1,14 @@
 import React from 'react'
 import CssBaseline from '@mui/material/CssBaseline'
-import { makeStyles } from '@mui/styles'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { Theme } from '@mui/material'
 import { trTR } from '@mui/material/locale'
-import Navigation from '@/layouts/Navigation'
-import Content from '@/layouts/Content'
+import Main from '@/layouts'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
 interface ITheme {
   children: React.ReactNode
 }
-
-const useStyles = makeStyles({
-  '@global': {
-    '*::-webkit-scrollbar': {
-      width: '6px',
-      backgroundColor: '#2a2a2a',
-    },
-    '*::-webkit-scrollbar-thumb': {
-      backgroundColor: 'rgb(100 100 100)',
-      borderRadius: '.5rem',
-    },
-  },
-  root: {
-    display: 'flex',
-  },
-})
 
 const AppTheme = ({ children }: ITheme): React.ReactElement => {
   const theme = createTheme(
@@ -56,17 +38,11 @@ const AppTheme = ({ children }: ITheme): React.ReactElement => {
     trTR,
   )
 
-  const classes = useStyles()
-  //const isMdUp = useMediaQuery(theme.breakpoints.up('md'))
-
   return (
-    <div className={classes.root}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Navigation />
-        <Content children={children} />
-      </ThemeProvider>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Main children={children} />
+    </ThemeProvider>
   )
 }
 

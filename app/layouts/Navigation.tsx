@@ -42,6 +42,7 @@ import Constants from '@/core/Constants'
 
 const useStyles = makeStyles(() => ({
   root: {
+    float: 'left',
     '& p': {
       textAlign: 'center',
     },
@@ -52,10 +53,11 @@ const useStyles = makeStyles(() => ({
   },
   drawerPaper: {
     backgroundColor: '#202020',
+    backgroundImage: 'none',
     whiteSpace: 'break-spaces',
     width: Constants.DRAWER_WITDH,
     overflowX: 'hidden',
-    adding: '10px 15px',
+    padding: '10px 15px',
     '&>*': {
       paddingTop: '10px',
       paddingBottom: '10px',
@@ -114,9 +116,10 @@ const Navigation = (props: INavigation): React.ReactElement => {
       {!isMdUp && <AppBar open={navOpen} toggleDrawer={toggleDrawer} />}
       <Drawer
         className={classes.drawer}
-        variant="temporary"
+        variant={isMdUp ? 'permanent' : 'temporary'}
         classes={{
           paper: classes.drawerPaper,
+          docked: classes.drawerPaper,
         }}
         anchor="left"
         open={isMdUp ? true : navOpen}

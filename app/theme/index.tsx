@@ -33,6 +33,9 @@ const AppTheme = ({ children }: ITheme): React.ReactElement => {
         fontFamily: ['system-ui', '-apple-system', 'Roboto', 'sans-serif'].join(
           ',',
         ),
+        button: {
+          textTransform: 'none',
+        },
       },
     },
     trTR,

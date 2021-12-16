@@ -6,10 +6,8 @@ import Footer from '@/layouts/Footer'
 
 const useStyles = makeStyles((theme: Theme) => ({
   content: {
-    maxWidth: 'none',
     flexGrow: 1,
     height: '100vh',
-    overflow: 'auto',
     [theme.breakpoints.down('md')]: {
       paddingTop: theme.spacing(12),
     },
@@ -25,7 +23,7 @@ interface IContent {
 const Content = ({ children }: IContent): React.ReactElement => {
   const classes = useStyles()
   return (
-    <Container component="main" maxWidth="lg" fixed className={classes.content}>
+    <Container component="main" maxWidth="md" fixed className={classes.content}>
       {children}
       <Footer />
     </Container>

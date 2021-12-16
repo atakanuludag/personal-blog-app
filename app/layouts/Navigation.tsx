@@ -91,9 +91,7 @@ const useStyles = makeStyles(() => ({
   },
 }))
 
-interface INavigation {}
-
-const Navigation = (props: INavigation): React.ReactElement => {
+export default function Navigation() {
   const classes = useStyles()
   const theme = useTheme()
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'))
@@ -204,5 +202,3 @@ const Navigation = (props: INavigation): React.ReactElement => {
     </div>
   )
 }
-
-export default Navigation

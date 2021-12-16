@@ -21,10 +21,10 @@ interface IApplicationBar {
   toggleDrawer: (e: React.KeyboardEvent | React.MouseEvent) => void
 }
 
-const ApplicationBar = ({
+export default function ApplicationBar({
   open,
   toggleDrawer,
-}: IApplicationBar): React.ReactElement => {
+}: IApplicationBar) {
   const classes = useStyles()
 
   return (
@@ -46,5 +46,3 @@ const ApplicationBar = ({
     </AppBar>
   )
 }
-
-export default ApplicationBar

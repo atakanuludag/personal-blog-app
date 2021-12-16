@@ -9,6 +9,7 @@ import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Divider from '@mui/material/Divider'
+import useText from '@/hooks/useText'
 
 interface IArticleItemProps {
   item: IArticle
@@ -44,7 +45,9 @@ const StackItem = styled('p')(({ theme }) => ({
   fontSize: '0.770rem',
 }))
 
-const ArticleItem = ({ item }: IArticleItemProps) => {
+export default function ArticleItem({ item }: IArticleItemProps) {
+  const { textLimit } = useText()
+
   const coverImage = `./example-thumb.jpeg`
   //item.coverImage
   return (
@@ -76,7 +79,7 @@ const ArticleItem = ({ item }: IArticleItemProps) => {
               <StackItem>{`${item.likeCount} beğeni`}</StackItem>
             </Stack>
 
-            <Description>{item.shortDescription}</Description>
+            <Description>{textLimit(item.shortDescription, 330)}</Description>
             <NextLink href={`/${item.guid}`} passHref>
               <Button>
                 Devamını oku <ArrowRightAltIcon />
@@ -88,5 +91,3 @@ const ArticleItem = ({ item }: IArticleItemProps) => {
     </Item>
   )
 }
-
-export default ArticleItem

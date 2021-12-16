@@ -20,7 +20,7 @@ interface IContent {
   children: React.ReactNode
 }
 
-const Content = ({ children }: IContent): React.ReactElement => {
+export default function Content({ children }: IContent) {
   const classes = useStyles()
   return (
     <Container component="main" maxWidth="md" fixed className={classes.content}>
@@ -29,5 +29,3 @@ const Content = ({ children }: IContent): React.ReactElement => {
     </Container>
   )
 }
-
-export default Content

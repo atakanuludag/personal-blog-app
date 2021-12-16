@@ -23,7 +23,7 @@ const useStyles = makeStyles({
   },
 })
 
-const Main = ({ children }: IMain): React.ReactElement => {
+export default function Main({ children }: IMain) {
   const classes = useStyles()
 
   return (
@@ -33,5 +33,3 @@ const Main = ({ children }: IMain): React.ReactElement => {
     </div>
   )
 }
-
-export default Main

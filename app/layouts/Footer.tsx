@@ -15,7 +15,7 @@ const useStyles = makeStyles(() => ({
   },
 }))
 
-const Footer = () => {
+export default function Footer() {
   const classes = useStyles()
 
   return (
@@ -24,5 +24,3 @@ const Footer = () => {
     </footer>
   )
 }
-
-export default Footer

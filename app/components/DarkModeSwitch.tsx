@@ -51,7 +51,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   },
 }))
 
-const DarkModeSwitch = () => {
+export default function DarkModeSwitch() {
   return (
     <FormControlLabel
       label={
@@ -64,5 +64,3 @@ const DarkModeSwitch = () => {
     />
   )
 }
-
-export default DarkModeSwitch

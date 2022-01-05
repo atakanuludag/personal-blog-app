@@ -40,7 +40,7 @@ import AppBar from '@/layouts/AppBar'
 
 import Constants from '@/core/Constants'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     float: 'left',
     '& p': {
@@ -52,7 +52,8 @@ const useStyles = makeStyles(() => ({
     width: Constants.DRAWER_WITDH,
   },
   drawerPaper: {
-    backgroundColor: '#202020',
+    //backgroundColor: '#202020',
+    backgroundColor: theme.palette.primary.main,
     backgroundImage: 'none',
     whiteSpace: 'break-spaces',
     width: Constants.DRAWER_WITDH,

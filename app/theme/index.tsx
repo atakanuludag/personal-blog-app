@@ -2,6 +2,8 @@ import React from 'react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { Theme } from '@mui/material'
+import { grey, common } from '@mui/material/colors'
+
 import { trTR } from '@mui/material/locale'
 import Main from '@/layouts'
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -11,35 +13,61 @@ interface ITheme {
 }
 
 const AppTheme = ({ children }: ITheme): React.ReactElement => {
-  const theme = createTheme(
-    {
-      palette: {
-        mode: 'dark',
-        //mode: darkMode ? 'dark' : 'light',
-        primary: {
-          light: '#ffcd38',
-          main: '#ffc107',
-          dark: '#b28704',
-          contrastText: '#000',
-        },
-        secondary: {
-          light: '#ffa733',
-          main: '#ff9100',
-          dark: '#b26500',
-          contrastText: '#000',
-        },
+  const darkColor = '#202020'
+  const darkMode = true
+
+  const defaultThemeSettings: any = {
+    typography: {
+      fontFamily: ['system-ui', '-apple-system', 'Roboto', 'sans-serif'].join(
+        ',',
+      ),
+      button: {
+        textTransform: 'none',
       },
-      typography: {
-        fontFamily: ['system-ui', '-apple-system', 'Roboto', 'sans-serif'].join(
-          ',',
-        ),
-        button: {
-          textTransform: 'none',
-        },
+    },
+  }
+
+  const darkTheme = createTheme({
+    ...defaultThemeSettings,
+    palette: {
+      mode: darkMode ? 'dark' : 'light',
+      primary: {
+        main: darkColor,
+        contrastText: common.white,
+      },
+      secondary: {
+        main: common.white,
+        contrastText: grey[600],
+      },
+      text: {
+        primary: common.white,
+        secondary: common.white,
       },
     },
     trTR,
-  )
+  })
+
+  const lightTheme = createTheme({
+    ...defaultThemeSettings,
+    palette: {
+      mode: darkMode ? 'dark' : 'light',
+      primary: {
+        main: grey[50],
+        contrastText: grey[900],
+      },
+      secondary: {
+        main: grey[900],
+        contrastText: grey[600],
+      },
+      text: {
+        primary: grey[900],
+        secondary: grey[900],
+      },
+    },
+    trTR,
+  })
+
+  const theme: Theme = darkMode ? darkTheme : lightTheme
 
   return (
     <ThemeProvider theme={theme}>

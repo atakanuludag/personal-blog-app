@@ -10,6 +10,7 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Divider from '@mui/material/Divider'
 import useText from '@/hooks/useText'
+import { default as MaterialLink } from '@mui/material/Link'
 
 interface IArticleItemProps {
   item: IArticle
@@ -33,6 +34,14 @@ const Title = styled('h3')(() => ({
   fontSize: '1.275rem',
 }))
 
+const Link = styled(MaterialLink)(({ theme }) => ({
+  textDecoration: 'none',
+  color: theme.palette.secondary.main,
+  '&:hover': {
+    textDecoration: 'underline',
+  },
+}))
+
 const Description = styled('p')(() => ({
   margin: '5px 0px',
   fontSize: '0.770rem',
@@ -41,7 +50,8 @@ const Description = styled('p')(() => ({
 const StackItem = styled('p')(({ theme }) => ({
   padding: 0,
   margin: 0,
-  color: 'rgba(255,255,255,0.4)',
+  //color: 'rgba(255,255,255,0.4)',
+  color: theme.palette.secondary.contrastText,
   fontSize: '0.770rem',
 }))
 
@@ -66,7 +76,11 @@ export default function ArticleItem({ item }: IArticleItemProps) {
 
         <Grid item xs={12} sm>
           <div>
-            <Title>{item.title}</Title>
+            <Title>
+              <NextLink href={`/${item.guid}`} passHref>
+                <Link>{item.title}</Link>
+              </NextLink>
+            </Title>
 
             <Stack
               direction="row"
@@ -81,7 +95,7 @@ export default function ArticleItem({ item }: IArticleItemProps) {
 
             <Description>{textLimit(item.shortDescription, 330)}</Description>
             <NextLink href={`/${item.guid}`} passHref>
-              <Button>
+              <Button color="secondary">
                 Devamını oku <ArrowRightAltIcon />
               </Button>
             </NextLink>

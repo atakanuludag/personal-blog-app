@@ -1,12 +1,10 @@
 import React from 'react'
+import { Theme } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
-import { Theme } from '@mui/material'
-import { grey, common } from '@mui/material/colors'
-
+import { common, grey } from '@mui/material/colors'
 import { trTR } from '@mui/material/locale'
 import Main from '@/layouts'
-import useMediaQuery from '@mui/material/useMediaQuery'
 
 interface ITheme {
   children: React.ReactNode
@@ -14,7 +12,7 @@ interface ITheme {
 
 const AppTheme = ({ children }: ITheme): React.ReactElement => {
   const darkColor = '#202020'
-  const darkMode = true
+  const darkMode = false
 
   const defaultThemeSettings: any = {
     typography: {

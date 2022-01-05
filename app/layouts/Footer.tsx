@@ -1,6 +1,5 @@
 import React from 'react'
-import Divider from '@mui/material/Divider'
-import { makeStyles } from '@mui/styles'
+import makeStyles from '@mui/styles/makeStyles'
 
 const useStyles = makeStyles(() => ({
   root: {

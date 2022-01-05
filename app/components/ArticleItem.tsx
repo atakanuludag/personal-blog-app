@@ -4,13 +4,13 @@ import { default as NextLink } from 'next/link'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
-import IArticle from '@/models/IArticle'
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Divider from '@mui/material/Divider'
 import useText from '@/hooks/useText'
 import { default as MaterialLink } from '@mui/material/Link'
+import IArticle from '@/models/IArticle'
 
 interface IArticleItemProps {
   item: IArticle
@@ -50,7 +50,6 @@ const Description = styled('p')(() => ({
 const StackItem = styled('p')(({ theme }) => ({
   padding: 0,
   margin: 0,
-  //color: 'rgba(255,255,255,0.4)',
   color: theme.palette.secondary.contrastText,
   fontSize: '0.770rem',
 }))
@@ -60,6 +59,7 @@ export default function ArticleItem({ item }: IArticleItemProps) {
 
   const coverImage = `./example-thumb.jpeg`
   //item.coverImage
+
   return (
     <Item>
       <Grid

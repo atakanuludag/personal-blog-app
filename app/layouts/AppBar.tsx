@@ -1,14 +1,11 @@
 import React from 'react'
-
 import { Theme } from '@mui/material'
 import makeStyles from '@mui/styles/makeStyles'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
-import Constants from '@/core/Constants'
 
 const useStyles = makeStyles((theme: Theme) => ({
   menuButton: {
@@ -40,7 +37,7 @@ export default function ApplicationBar({
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" noWrap>
-          Responsive Drawer Example
+          Atakan Yasin Uludağ
         </Typography>
       </Toolbar>
     </AppBar>

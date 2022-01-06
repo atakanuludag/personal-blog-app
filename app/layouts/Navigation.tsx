@@ -22,7 +22,7 @@ import { useTheme } from '@mui/material/styles'
 
 import DarkModeSwitch from '@/components/DarkModeSwitch'
 import AppBar from '@/layouts/AppBar'
-import Constants from '@/core/Constants'
+import { THEME_SETTINGS } from '@/core/Constants'
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {},
@@ -36,13 +36,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   drawer: {
     flexShrink: 0,
-    width: Constants.DRAWER_WITDH,
+    width: THEME_SETTINGS.DRAWER_WITDH,
   },
   drawerPaper: {
     backgroundColor: theme.palette.primary.main,
     backgroundImage: 'none',
     whiteSpace: 'break-spaces',
-    width: Constants.DRAWER_WITDH,
+    width: THEME_SETTINGS.DRAWER_WITDH,
     overflowX: 'hidden',
     padding: '10px 15px',
     '&>*': {

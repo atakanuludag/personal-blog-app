@@ -1,18 +1,19 @@
 import { QueryClient, useQuery, useQueryClient } from 'react-query'
 import ArticleService from '@/services/ArticleService'
+import { QUERY_NAMES } from '@/core/Constants'
 
 export default function useArticleQuery() {
   const service = new ArticleService()
-  const queryClient = new QueryClient()
-  //const queryClient = useQueryClient()
-  const queryName = 'articles'
+  const queryName = QUERY_NAMES.ARTICLES
 
-  const articleQuery = () => useQuery([queryName], () => service.getItems)
+  const articleQuery = () => useQuery([queryName], () => service.getItems())
 
-  const articlePreFetchQuery = () =>
-    queryClient.prefetchQuery(queryName, service.getItems)
+  const articlePreFetchQuery = (queryClient: QueryClient) => queryClient.prefetchQuery(queryName, service.getItems)
 
-  //const invalidateArticleQuery = () => queryClient.invalidateQueries(queryName)
+  const invalidateArticleQuery = () => {
+    const queryClientHook = useQueryClient()
+    queryClientHook.invalidateQueries(queryName)
+  }
 
-  return { articleQuery, articlePreFetchQuery }
+  return { articleQuery, articlePreFetchQuery, invalidateArticleQuery }
 }

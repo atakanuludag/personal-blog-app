@@ -6,7 +6,7 @@ import Content from '@/layouts/Content'
 interface IMain {
   children: React.ReactNode
 }
-
+//Todo: scroolbar light ve dark temada farklı renklerde olacak...
 const useStyles = makeStyles({
   '@global': {
     '*::-webkit-scrollbar': {

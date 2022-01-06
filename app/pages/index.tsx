@@ -7,25 +7,22 @@ import ArticleItem from '@/components/ArticleItem'
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
 import { dehydrate, QueryClient } from 'react-query'
 
-interface IHomeProps {
-  items: IArticle[]
-}
+interface IHomeProps {}
 
 const service = new ArticleService()
 
-const Home: NextPage<IHomeProps> = (props) => {
-  //const [items] = useState<IArticle[]>(props.items)
-  const [items] = useState<IArticle[]>([])
+const Home: NextPage<IHomeProps> = () => {
+  //const [items] = useState<IArticle[]>([])
 
   const { articleQuery } = useArticleQuery()
-  const article = articleQuery
+  const article = articleQuery()
 
   if (article.isSuccess)
     return (
       <>
-        <section className="blog-list px-3 py-5 p-md-5">
+        <section>
           <div className="container">
-            {article.data.map((item) => (
+            {article.data.results.map((item) => (
               <ArticleItem key={item.id} item={item} />
             ))}
           </div>
@@ -33,7 +30,7 @@ const Home: NextPage<IHomeProps> = (props) => {
       </>
     )
 
-  return <div>test</div>
+  return <></>
 }
 
 export default Home
@@ -53,7 +50,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const queryClient = new QueryClient()
 
   const { articlePreFetchQuery } = useArticleQuery()
-  await articlePreFetchQuery()
+  await articlePreFetchQuery(queryClient)
 
   return {
     props: {
@@ -61,13 +58,3 @@ export const getStaticProps: GetStaticProps = async (context) => {
     },
   }
 }
-
-// export async function getStaticProps = async ()  {
-//   const { articlePreFetchQuery } = useArticleQuery()
-
-//   return {
-//     props: {
-//       dehydratedState: dehydrate(queryClient),
-//     },
-//   };
-// }

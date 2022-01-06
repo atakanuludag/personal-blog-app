@@ -24,7 +24,7 @@ interface IContent {
 export default function Content({ children }: IContent) {
   const classes = useStyles()
   return (
-    <Container component="main" maxWidth="md" fixed className={classes.content}>
+    <Container component="main" maxWidth="lg" fixed className={classes.content}>
       {children}
       <Footer />
     </Container>

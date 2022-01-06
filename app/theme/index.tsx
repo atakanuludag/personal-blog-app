@@ -12,7 +12,7 @@ interface ITheme {
 
 const AppTheme = ({ children }: ITheme): React.ReactElement => {
   const darkColor = '#202020'
-  const darkMode = false
+  const darkMode = true
 
   const defaultThemeSettings: any = {
     typography: {

@@ -1,6 +1,6 @@
 import React from 'react'
 import Document, { Html, Head, Main, NextScript } from 'next/document'
-import { ServerStyleSheets } from '@mui/styles'
+import ServerStyleSheets from '@mui/styles/ServerStyleSheets'
 
 export default class AppDocument extends Document {
   render() {

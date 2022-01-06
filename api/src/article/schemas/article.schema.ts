@@ -32,7 +32,7 @@ export class Article {
   @Prop({ required: true, type: [mongoose.Schema.Types.ObjectId], ref: "Tag" })
   tags: ObjectId[];
 
-  @Prop({ type: ArticleType, default: ArticleType.PAGE })
+  @Prop({ type: ArticleType, default: ArticleType.Post })
   articleType: ArticleType;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "File", default: null })

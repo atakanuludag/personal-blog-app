@@ -1,30 +1,29 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Document } from 'mongoose'
 
-export type FileDocument = File & Document;
+export type FileDocument = File & Document
 
 @Schema({
   timestamps: true,
 })
 export class File {
+  @Prop({ required: false })
+  title: string
 
   @Prop({ required: false })
-  title: string;
-
-  @Prop({ required: false })
-  description: string;
+  description: string
 
   @Prop({ required: true })
-  filename: string;
-
-  @Prop({ required: true})
-  path: string;
+  filename: string
 
   @Prop({ required: true })
-  mimetype: string;
+  path: string
 
   @Prop({ required: true })
-  size: number;
+  mimetype: string
+
+  @Prop({ required: true })
+  size: number
 }
 
-export const FileSchema = SchemaFactory.createForClass(File);
+export const FileSchema = SchemaFactory.createForClass(File)

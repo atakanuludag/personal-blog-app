@@ -1,21 +1,20 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Document } from 'mongoose'
 
-export type TagDocument = Tag & Document;
+export type TagDocument = Tag & Document
 
 @Schema({
   timestamps: true,
 })
 export class Tag {
+  @Prop({ required: true })
+  title: string
 
   @Prop({ required: true })
-  title: string;
-
-  @Prop({ required: true })
-  description: string;
+  description: string
 
   @Prop({ required: true, unique: true })
-  guid: string;
+  guid: string
 }
 
-export const TagSchema = SchemaFactory.createForClass(Tag);
+export const TagSchema = SchemaFactory.createForClass(Tag)

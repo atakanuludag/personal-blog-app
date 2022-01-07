@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, UseGuards, Param } from '@nestjs/common'
 import { SettingsDto } from './dto/settings.dto'
 import { SettingsService } from './settings.service'
 import { CoreMessage } from '../common/messages'
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard'
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
 import { ESettings } from './interfaces/Enum'
 
 @Controller('settings')

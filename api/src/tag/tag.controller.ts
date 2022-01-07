@@ -11,12 +11,12 @@ import {
 } from '@nestjs/common'
 import { CreateTagDto } from './dto/create-tag.dto'
 import { UpdateTagDto } from './dto/update-tag.dto'
-import { GuidParamsDto, IdParamsDto } from 'src/common/dto/params.dto'
+import { GuidParamsDto, IdParamsDto } from '../common/dto/params.dto'
 import { TagService } from './tag.service'
 import { ArticleService } from '../article/article.service'
 import { ExceptionHelper } from '../common/helpers/exception.helper'
 import { CoreMessage, TagMessage } from '../common/messages'
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard'
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
 
 @Controller('tag')
 export class TagController {

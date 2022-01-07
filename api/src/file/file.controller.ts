@@ -14,10 +14,10 @@ import { FileService } from './file.service'
 import { CoreMessage, FileMessage } from '../common/messages'
 import { IFile } from './interfaces/file.interface'
 import { File } from './schemas/file.schema'
-import { ExceptionHelper } from 'src/common/helpers/exception.helper'
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard'
-import { ListQueryDto } from 'src/common/dto/list-query.dto'
-import { QueryHelper } from 'src/common/helpers/query.helper'
+import { ExceptionHelper } from '../common/helpers/exception.helper'
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
+import { ListQueryDto } from '../common/dto/list-query.dto'
+import { QueryHelper } from '../common/helpers/query.helper'
 
 @Controller('file')
 export class FileController {

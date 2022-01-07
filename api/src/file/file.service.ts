@@ -7,7 +7,7 @@ import { File, FileDocument } from './schemas/file.schema'
 //import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ExceptionHelper } from '../common/helpers/exception.helper'
 import { CoreMessage } from '../common/messages'
-import { IQuery } from 'src/common/interfaces/query.interface'
+import { IQuery } from '../common/interfaces/query.interface'
 import { IFileList } from './interfaces/file-list.interface'
 
 @Injectable()

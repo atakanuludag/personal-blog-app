@@ -11,12 +11,12 @@ import {
 } from '@nestjs/common'
 import { CreateCategoryDto } from './dto/create-category.dto'
 import { UpdateCategoryDto } from './dto/update-category.dto'
-import { GuidParamsDto, IdParamsDto } from 'src/common/dto/params.dto'
+import { GuidParamsDto, IdParamsDto } from '../common/dto/params.dto'
 import { CategoryService } from './category.service'
 import { ArticleService } from '../article/article.service'
 import { ExceptionHelper } from '../common/helpers/exception.helper'
 import { CoreMessage, CategoryMessage } from '../common/messages'
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard'
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
 
 @Controller('category')
 export class CategoryController {

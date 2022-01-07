@@ -13,7 +13,7 @@ import { File, FileSchema } from './schemas/file.schema'
 import { CoreMessage, FileMessage } from '../common/messages'
 import { ExceptionHelper } from '../common/helpers/exception.helper'
 import { QueryHelper } from '../common/helpers/query.helper'
-import { editFileName } from 'src/common/utils/edit-file-name.util'
+import { editFileName } from '../common/utils/edit-file-name.util'
 
 @Module({
   imports: [

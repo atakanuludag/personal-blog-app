@@ -8,7 +8,7 @@ import { User, UserDocument } from './schemas/user.schema'
 import { PasswordHelper } from '../common/helpers/password.helper'
 import { ExceptionHelper } from '../common/helpers/exception.helper'
 import { CoreMessage } from '../common/messages'
-import { RegisterUserDto } from './dto/register-user.dto'
+import { UserDto } from './dto/user.dto'
 
 @Injectable()
 export class UserService {
@@ -85,7 +85,7 @@ export class UserService {
     }
   }
 
-  async register(registerUserDto: RegisterUserDto): Promise<User> {
+  async register(registerUserDto: UserDto): Promise<User> {
     try {
       const create = new this.userModel(registerUserDto)
       return create.save()

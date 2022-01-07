@@ -8,12 +8,12 @@ export class DefaultException {
   statusCode: HttpStatus
 
   @ApiProperty({
-    description: 'Message',
-  })
-  message: any
-
-  @ApiProperty({
-    description: 'Username',
+    description: 'Error Description',
   })
   error: string
+
+  @ApiProperty({
+    description: 'Message',
+  })
+  message: string | string[]
 }

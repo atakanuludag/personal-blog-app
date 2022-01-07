@@ -11,14 +11,17 @@ import {
   Query,
 } from '@nestjs/common'
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiOkResponse,
+  ApiCreatedResponse,
   ApiOperation,
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger'
 import { ArticleDto } from './dto/article.dto'
 import { UpdateArticleDto } from './dto/update-article.dto'
+import { ArticleListQueryDto } from './dto/article-list-query.dto'
 import { GuidParamsDto, IdParamsDto } from '../common/dto/params.dto'
 import { ListQueryDto } from '../common/dto/list-query.dto'
 import { ArticleService } from './article.service'
@@ -26,6 +29,7 @@ import { ExceptionHelper } from '../common/helpers/exception.helper'
 import { QueryHelper } from '../common/helpers/query.helper'
 import { CoreMessage, ArticleMessage } from '../common/messages'
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
+import { DefaultException } from '../common/dto/default-exception.dto'
 
 //Todo: https://www.npmjs.com/package/reading-time
 
@@ -42,6 +46,14 @@ export class ArticleController {
   @ApiOperation({
     summary: 'Get article items.',
   })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: DefaultException,
+  })
+  @ApiOkResponse({
+    description: 'Success',
+    type: ArticleListQueryDto,
+  })
   @Get()
   async list(@Query() query: ListQueryDto) {
     const q = this.queryHelper.instance(query)
@@ -49,7 +61,15 @@ export class ArticleController {
   }
 
   @ApiOperation({
-    summary: 'Get article item by Id.',
+    summary: 'Get article item by id.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: DefaultException,
+  })
+  @ApiOkResponse({
+    description: 'Success',
+    type: ArticleDto,
   })
   @ApiParam({ name: 'id', type: String })
   @Get('getById/:id')
@@ -66,6 +86,14 @@ export class ArticleController {
   @ApiOperation({
     summary: 'Get article item by guid name.',
   })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: DefaultException,
+  })
+  @ApiOkResponse({
+    description: 'Success',
+    type: ArticleDto,
+  })
   @ApiParam({ name: 'guid', type: String })
   @Get('getByGuid/:guid')
   async getItemByGuid(@Param() params: GuidParamsDto) {
@@ -81,10 +109,15 @@ export class ArticleController {
   @ApiOperation({
     summary: 'Create article item.',
   })
-  // @ApiOkResponse({
-  //   description: 'Login successful.',
-  //   type: CreateArticleDto,
-  // })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: DefaultException,
+  })
+  @ApiCreatedResponse({
+    description: 'Created',
+    type: ArticleDto,
+  })
+  @ApiBearerAuth('accessToken')
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() body: ArticleDto) {
@@ -94,25 +127,41 @@ export class ArticleController {
         this.articleMessage.EXISTING_GUID,
         HttpStatus.BAD_REQUEST,
       )
-    await this.service.create(body)
+    return await this.service.create(body)
   }
 
   @ApiOperation({
     summary: 'Update article item.',
   })
-  @UseGuards(JwtAuthGuard)
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: DefaultException,
+  })
+  @ApiOkResponse({
+    description: 'Success',
+    type: ArticleDto,
+  })
   @ApiParam({ name: 'id', type: String })
   @ApiBearerAuth('accessToken')
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Body() body: UpdateArticleDto, @Param() params: IdParamsDto) {
-    await this.service.update(body, params.id)
+    return await this.service.update(body, params.id)
   }
 
   @ApiOperation({
     summary: 'Delete article item.',
   })
-  @UseGuards(JwtAuthGuard)
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: DefaultException,
+  })
+  @ApiOkResponse({
+    description: 'Success',
+  })
   @ApiParam({ name: 'id', type: String })
+  @ApiBearerAuth('accessToken')
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async delete(@Param() params: IdParamsDto) {
     await this.service.delete(params.id)

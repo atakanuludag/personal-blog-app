@@ -30,9 +30,9 @@ export class ArticleService {
     }
   }
 
-  async update(body: UpdateArticleDto, id: ObjectId): Promise<void> {
+  async update(body: UpdateArticleDto, id: ObjectId): Promise<IArticle> {
     try {
-      await this.articleModel.findByIdAndUpdate(id, {
+      return await this.articleModel.findByIdAndUpdate(id, {
         $set: body,
       })
     } catch (err) {
@@ -76,10 +76,10 @@ export class ArticleService {
     }
   }
 
-  async getItemById(id: ObjectId): Promise<IArticle> {
+  async getItemById(_id: ObjectId): Promise<IArticle> {
     try {
       return await this.articleModel
-        .findOne({ id })
+        .findOne({ _id })
         .populate('categories')
         .populate('tags')
         .populate('coverImage')
@@ -124,8 +124,8 @@ export class ArticleService {
       await this.articleModel.findByIdAndDelete(id)
     } catch (err) {
       throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
       )
     }
   }

@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger'
 import {
   IsNotEmpty,
   IsOptional,
@@ -9,7 +10,6 @@ import {
 } from 'class-validator'
 import { Type } from 'class-transformer'
 import { ObjectId } from 'mongoose'
-import { ApiProperty } from '@nestjs/swagger'
 import { ArticleType } from '../../common/interfaces/enums'
 
 export class ArticleDto {

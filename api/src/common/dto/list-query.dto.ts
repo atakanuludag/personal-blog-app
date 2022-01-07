@@ -1,47 +1,41 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsString, IsOptional, IsEnum } from 'class-validator'
 import { OrderBy } from '../interfaces/query.interface'
 
 export class ListQueryDto {
   @ApiProperty({
     description: 'Search text.',
+    required: false,
   })
-  @IsOptional()
-  @IsString()
   s: string
 
   @ApiProperty({
     description: 'Search object type.',
+    required: false,
   })
-  @IsOptional()
-  @IsString()
   sType: string
 
   @ApiProperty({
     description: 'Order object type.',
+    required: false,
   })
-  @IsOptional()
-  @IsString()
   order: string
 
   @ApiProperty({
-    description: 'Order by: ASC, DESC',
+    description: 'Order by',
+    enum: ['asc', 'desc'],
+    required: false,
   })
-  @IsOptional()
-  @IsEnum(OrderBy)
   orderBy: OrderBy
 
   @ApiProperty({
     description: 'Number of data to show on current page.',
+    required: false,
   })
-  @IsOptional()
-  @IsString()
   pageSize: number
 
   @ApiProperty({
     description: 'Current page.',
+    required: false,
   })
-  @IsOptional()
-  @IsString()
   page: number
 }

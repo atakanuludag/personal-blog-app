@@ -7,5 +7,12 @@ export class TokenDto {
   })
   @IsNotEmpty()
   @IsString()
-  access_token: string
+  accessToken: string
+
+  @ApiProperty({
+    description: 'User Login ID',
+  })
+  @IsNotEmpty()
+  @IsString()
+  userId: string
 }

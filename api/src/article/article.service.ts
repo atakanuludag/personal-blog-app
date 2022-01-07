@@ -5,7 +5,7 @@ import { IArticle } from './interfaces/article.interface'
 import { IArticleList } from './interfaces/article-list.interface'
 import { IQuery } from '../common/interfaces/query.interface'
 import { Article, ArticleDocument } from './schemas/article.schema'
-import { CreateArticleDto } from './dto/create-article.dto'
+import { ArticleDto } from './dto/article.dto'
 import { UpdateArticleDto } from './dto/update-article.dto'
 import { ExceptionHelper } from '../common/helpers/exception.helper'
 import { CoreMessage } from '../common/messages'
@@ -18,7 +18,7 @@ export class ArticleService {
     private readonly coreMessage: CoreMessage,
   ) {}
 
-  async create(data: CreateArticleDto): Promise<IArticle> {
+  async create(data: ArticleDto): Promise<IArticle> {
     try {
       const create = new this.articleModel(data)
       return create.save()

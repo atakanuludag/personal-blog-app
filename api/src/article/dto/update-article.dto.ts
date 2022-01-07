@@ -4,49 +4,25 @@ import {
   IsArray,
   ArrayMinSize,
   IsOptional,
+  IsNotEmpty,
   IsEnum,
 } from 'class-validator'
 import { Type } from 'class-transformer'
 import { ObjectId } from 'mongoose'
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+  PartialType as SwaggerPartialType,
+} from '@nestjs/swagger'
+import { PartialType } from '@nestjs/mapped-types'
 import { ArticleType } from '../../common/interfaces/enums'
+import { ArticleDto } from './article.dto'
 
-export class UpdateArticleDto {
-  @IsOptional()
-  @IsString()
-  title: string
-
-  @IsOptional()
+export class UpdateArticleDto extends PartialType(ArticleDto) {
+  @ApiProperty({
+    description: 'Short description',
+  })
+  @IsNotEmpty()
   @IsString()
   shortDescription: string
-
-  @IsOptional()
-  @IsString()
-  content: string
-
-  @IsOptional()
-  @IsString()
-  guid: string
-
-  @IsOptional()
-  @IsDate()
-  @Type(() => Date)
-  publishingDate: Date
-
-  @IsOptional()
-  @IsArray()
-  @ArrayMinSize(1)
-  categories: ObjectId[]
-
-  @IsOptional()
-  @IsArray()
-  @ArrayMinSize(1)
-  tags: ObjectId[]
-
-  @IsOptional()
-  @IsEnum(ArticleType)
-  articleType: ArticleType
-
-  @IsOptional()
-  @IsString()
-  coverImage: ObjectId
 }

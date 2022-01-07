@@ -25,7 +25,7 @@ async function bootstrap() {
         bearerFormat: 'Bearer',
         in: 'Header',
       },
-      'access-token',
+      'accessToken',
     )
     .setTitle('Personal Blog App Rest API')
     .setDescription('Personel blog app api.')

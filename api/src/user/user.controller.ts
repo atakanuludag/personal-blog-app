@@ -5,6 +5,7 @@ import {
   UseGuards,
   Request,
   HttpStatus,
+  HttpCode,
 } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -44,6 +45,7 @@ export class UserController {
     type: TokenDto,
   })
   @UseGuards(LocalAuthGuard)
+  @HttpCode(200)
   @Post('login')
   async login(@Request() req) {
     return this.service.login(req.user)

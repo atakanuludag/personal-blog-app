@@ -10,8 +10,14 @@ import {
   Delete,
   Query,
 } from '@nestjs/common'
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { CreateArticleDto } from './dto/create-article.dto'
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger'
+import { ArticleDto } from './dto/article.dto'
 import { UpdateArticleDto } from './dto/update-article.dto'
 import { GuidParamsDto, IdParamsDto } from '../common/dto/params.dto'
 import { ListQueryDto } from '../common/dto/list-query.dto'
@@ -36,16 +42,16 @@ export class ArticleController {
   @ApiOperation({
     summary: 'Get article items.',
   })
-  @ApiOkResponse({
-    description: 'Success article items.',
-    //type: ListQueryDto,
-  })
   @Get()
   async list(@Query() query: ListQueryDto) {
     const q = this.queryHelper.instance(query)
     return await this.service.getItems(q)
   }
 
+  @ApiOperation({
+    summary: 'Get article item by Id.',
+  })
+  @ApiParam({ name: 'id', type: String })
   @Get('getById/:id')
   async getItemById(@Param() params: IdParamsDto) {
     const data = await this.service.getItemById(params.id)
@@ -57,6 +63,10 @@ export class ArticleController {
     return data
   }
 
+  @ApiOperation({
+    summary: 'Get article item by guid name.',
+  })
+  @ApiParam({ name: 'guid', type: String })
   @Get('getByGuid/:guid')
   async getItemByGuid(@Param() params: GuidParamsDto) {
     const data = await this.service.getItemByGuid(params.guid)
@@ -68,9 +78,16 @@ export class ArticleController {
     return data
   }
 
+  @ApiOperation({
+    summary: 'Create article item.',
+  })
+  // @ApiOkResponse({
+  //   description: 'Login successful.',
+  //   type: CreateArticleDto,
+  // })
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() body: CreateArticleDto) {
+  async create(@Body() body: ArticleDto) {
     const exists = await this.service.guidExists(body.guid)
     if (exists)
       throw new ExceptionHelper(
@@ -80,13 +97,22 @@ export class ArticleController {
     await this.service.create(body)
   }
 
+  @ApiOperation({
+    summary: 'Update article item.',
+  })
   @UseGuards(JwtAuthGuard)
+  @ApiParam({ name: 'id', type: String })
+  @ApiBearerAuth('accessToken')
   @Patch(':id')
   async update(@Body() body: UpdateArticleDto, @Param() params: IdParamsDto) {
     await this.service.update(body, params.id)
   }
 
+  @ApiOperation({
+    summary: 'Delete article item.',
+  })
   @UseGuards(JwtAuthGuard)
+  @ApiParam({ name: 'id', type: String })
   @Delete(':id')
   async delete(@Param() params: IdParamsDto) {
     await this.service.delete(params.id)

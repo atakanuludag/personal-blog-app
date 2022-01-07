@@ -27,14 +27,11 @@ export class TagService {
     }
   }
 
-  async update(body: UpdateTagDto, _id: ObjectId): Promise<void> {
+  async update(body: UpdateTagDto, id: ObjectId): Promise<void> {
     try {
-      await this.tagModel.updateOne(
-        { _id },
-        {
-          $set: body,
-        },
-      )
+      await this.tagModel.findByIdAndUpdate(id, {
+        $set: body,
+      })
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -90,7 +87,7 @@ export class TagService {
 
   async delete(id: ObjectId): Promise<void> {
     try {
-      await this.tagModel.deleteOne({ id })
+      await this.tagModel.findByIdAndDelete(id)
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.INTERNAL_SERVER_ERROR,

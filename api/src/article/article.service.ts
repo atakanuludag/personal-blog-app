@@ -30,14 +30,11 @@ export class ArticleService {
     }
   }
 
-  async update(body: UpdateArticleDto, _id: ObjectId): Promise<void> {
+  async update(body: UpdateArticleDto, id: ObjectId): Promise<void> {
     try {
-      await this.articleModel.updateOne(
-        { _id },
-        {
-          $set: body,
-        },
-      )
+      await this.articleModel.findByIdAndUpdate(id, {
+        $set: body,
+      })
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -122,10 +119,9 @@ export class ArticleService {
     }
   }
 
-  //Todo: findOneAndRemove, findOneAndDelete
   async delete(id: ObjectId): Promise<void> {
     try {
-      await this.articleModel.deleteOne({ id })
+      await this.articleModel.findByIdAndDelete(id)
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.INTERNAL_SERVER_ERROR,

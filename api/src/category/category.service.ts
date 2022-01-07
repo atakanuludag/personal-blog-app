@@ -28,14 +28,11 @@ export class CategoryService {
     }
   }
 
-  async update(body: UpdateCategoryDto, _id: ObjectId): Promise<void> {
+  async update(body: UpdateCategoryDto, id: ObjectId): Promise<void> {
     try {
-      await this.categoryModel.updateOne(
-        { _id },
-        {
-          $set: body,
-        },
-      )
+      await this.categoryModel.findByIdAndUpdate(id, {
+        $set: body,
+      })
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -98,7 +95,7 @@ export class CategoryService {
 
   async delete(id: ObjectId): Promise<void> {
     try {
-      await this.categoryModel.deleteOne({ id })
+      await this.categoryModel.findByIdAndDelete(id)
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.INTERNAL_SERVER_ERROR,

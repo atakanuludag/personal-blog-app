@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model, ObjectId } from 'mongoose'
 import { ITag } from './interfaces/tag.interface'
 import { Tag, TagDocument } from './schemas/tag.schema'
-import { CreateTagDto } from './dto/create-tag.dto'
+import { TagDto } from './dto/tag.dto'
 import { UpdateTagDto } from './dto/update-tag.dto'
 import { ExceptionHelper } from '../common/helpers/exception.helper'
 import { CoreMessage } from '../common/messages'
@@ -15,7 +15,7 @@ export class TagService {
     private readonly coreMessage: CoreMessage,
   ) {}
 
-  async create(data: CreateTagDto): Promise<ITag> {
+  async create(data: TagDto): Promise<ITag> {
     try {
       const create = new this.tagModel(data)
       return create.save()
@@ -27,9 +27,9 @@ export class TagService {
     }
   }
 
-  async update(body: UpdateTagDto, id: ObjectId): Promise<void> {
+  async update(body: UpdateTagDto, id: ObjectId): Promise<ITag> {
     try {
-      await this.tagModel.findByIdAndUpdate(id, {
+      return await this.tagModel.findByIdAndUpdate(id, {
         $set: body,
       })
     } catch (err) {

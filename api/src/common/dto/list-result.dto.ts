@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-export class ArticleListQueryDto {
+export class ListResultDto {
   @ApiProperty({
     description: 'Total item results',
   })

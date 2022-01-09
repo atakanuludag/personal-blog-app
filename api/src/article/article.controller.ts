@@ -21,15 +21,15 @@ import {
 } from '@nestjs/swagger'
 import { ArticleDto } from './dto/article.dto'
 import { UpdateArticleDto } from './dto/update-article.dto'
-import { ArticleListQueryDto } from './dto/article-list-query.dto'
+import { ListResultDto } from '../common/dto/list-result.dto'
 import { GuidParamsDto, IdParamsDto } from '../common/dto/params.dto'
 import { ListQueryDto } from '../common/dto/list-query.dto'
+import { DefaultException } from '../common/dto/default-exception.dto'
 import { ArticleService } from './article.service'
 import { ExceptionHelper } from '../common/helpers/exception.helper'
 import { QueryHelper } from '../common/helpers/query.helper'
 import { CoreMessage, ArticleMessage } from '../common/messages'
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
-import { DefaultException } from '../common/dto/default-exception.dto'
 
 //Todo: https://www.npmjs.com/package/reading-time
 
@@ -52,7 +52,7 @@ export class ArticleController {
   })
   @ApiOkResponse({
     description: 'Success',
-    type: ArticleListQueryDto,
+    type: ListResultDto,
   })
   @Get()
   async list(@Query() query: ListQueryDto) {

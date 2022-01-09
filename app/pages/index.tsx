@@ -3,9 +3,12 @@ import type { GetServerSideProps, GetStaticProps, NextPage } from 'next'
 import ArticleService from '@/services/ArticleService'
 import IArticle from '@/models/IArticle'
 import ArticleItem from '@/components/ArticleItem'
+import Pagination from '@/components/Pagination'
 
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
 import { dehydrate, QueryClient } from 'react-query'
+
+import Box from '@mui/material/Box'
 
 interface IHomeProps {}
 
@@ -16,17 +19,19 @@ const Home: NextPage<IHomeProps> = () => {
 
   const { articleQuery } = useArticleQuery()
   const article = articleQuery()
-
+  console.log('article', article.data)
   if (article.isSuccess)
     return (
       <>
-        <section>
-          <div className="container">
-            {article.data.results.map((item) => (
-              <ArticleItem key={item.id} item={item} />
-            ))}
-          </div>
-        </section>
+        <Box component="section">
+          {article.data.results.map((item) => (
+            <ArticleItem key={item.id} item={item} />
+          ))}
+        </Box>
+
+        <Box component="section" hidden={!article.data.hasNextPage}>
+          <Pagination />
+        </Box>
       </>
     )
 

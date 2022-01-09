@@ -50,7 +50,11 @@ export default class ArticleService {
   getItems = async (): Promise<IArticleResponse> => {
     let items = new Array<IArticle>()
     try {
-      const ret = await axios.get(`/article`)
+      const ret = await axios.get(`/article`, {
+        params: {
+          pageSize: 2,
+        },
+      })
 
       const { data } = ret
       items = data.results.map(this.itemToModel)
@@ -61,6 +65,7 @@ export default class ArticleService {
         pageSize: data.pageSize,
         currentPage: data.currentPage,
         currentPageSize: data.currentPageSize,
+        hasNextPage: data.hasNextPage,
         results: items,
       }
     } catch (err) {

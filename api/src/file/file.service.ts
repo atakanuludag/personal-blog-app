@@ -19,24 +19,30 @@ export class FileService {
 
   async getItems(query: IQuery): Promise<IFileList> {
     try {
+      const { pagination, searchQuery, order } = query
+      const { page, pageSize, skip } = pagination
+
       const items = await this.fileModel
-        .find(query.searchQuery)
-        .skip(query.pagination.skip)
-        .limit(query.pagination.pageSize)
-        .sort(query.order ? query.order : '-createdAt')
+        .find(searchQuery)
+        .skip(skip)
+        .limit(pageSize)
+        .sort(order ? order : '-createdAt')
         .exec()
 
       const count = await this.fileModel
         .find(query.searchQuery)
         .countDocuments()
 
+      const totalPages = Math.ceil(count / pageSize)
+
       const data: IFileList = {
         results: items,
-        currentPage: query.pagination.page,
+        currentPage: page,
         currentPageSize: items.length,
-        pageSize: query.pagination.pageSize,
-        totalPages: Math.ceil(count / query.pagination.pageSize),
+        pageSize: pageSize,
+        totalPages,
         totalResults: count,
+        hasNextPage: page < totalPages ? true : false,
       }
       return data
     } catch (err) {

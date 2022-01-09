@@ -16,6 +16,7 @@ export interface IListQueryResponse {
   pageSize: number
   currentPage: number
   currentPageSize: number
+  hasNextPage: boolean
   results: any
 }
 

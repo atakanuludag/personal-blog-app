@@ -45,27 +45,31 @@ export class ArticleService {
 
   async getItems(query: IQuery): Promise<IArticleList> {
     try {
+      const { pagination, searchQuery, order } = query
+      const { page, pageSize, skip } = pagination
+
       const items = await this.articleModel
-        .find(query.searchQuery)
+        .find(searchQuery)
         .populate('categories')
         .populate('tags')
         .populate('coverImage')
-        .skip(query.pagination.skip)
-        .limit(query.pagination.pageSize)
-        .sort(query.order ? query.order : '-title')
+        .skip(skip)
+        .limit(pageSize)
+        .sort(order ? order : '-title')
         .exec()
 
-      const count = await this.articleModel
-        .find(query.searchQuery)
-        .countDocuments()
+      const count = await this.articleModel.find(searchQuery).countDocuments()
+
+      const totalPages = Math.ceil(count / pageSize)
 
       const data: IArticleList = {
         results: items,
-        currentPage: query.pagination.page,
+        currentPage: page,
         currentPageSize: items.length,
-        pageSize: query.pagination.pageSize,
-        totalPages: Math.ceil(count / query.pagination.pageSize),
+        pageSize: pageSize,
+        totalPages,
         totalResults: count,
+        hasNextPage: page < totalPages ? true : false,
       }
       return data
     } catch (err) {

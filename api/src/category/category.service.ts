@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model, ObjectId } from 'mongoose'
 import { ICategory } from './interfaces/category.interface'
 import { Category, CategoryDocument } from './schemas/category.schema'
-import { CreateCategoryDto } from './dto/create-category.dto'
+import { CategoryDto } from './dto/category.dto'
 import { UpdateCategoryDto } from './dto/update-category.dto'
 import { ExceptionHelper } from '../common/helpers/exception.helper'
 import { CoreMessage } from '../common/messages'
@@ -16,7 +16,7 @@ export class CategoryService {
     private readonly coreMessage: CoreMessage,
   ) {}
 
-  async create(data: CreateCategoryDto): Promise<ICategory> {
+  async create(data: CategoryDto): Promise<ICategory> {
     try {
       const create = new this.categoryModel(data)
       return create.save()
@@ -28,9 +28,9 @@ export class CategoryService {
     }
   }
 
-  async update(body: UpdateCategoryDto, id: ObjectId): Promise<void> {
+  async update(body: UpdateCategoryDto, id: ObjectId): Promise<ICategory> {
     try {
-      await this.categoryModel.findByIdAndUpdate(id, {
+      return await this.categoryModel.findByIdAndUpdate(id, {
         $set: body,
       })
     } catch (err) {

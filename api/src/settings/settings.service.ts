@@ -16,39 +16,26 @@ export class SettingsService {
     private readonly coreMessage: CoreMessage,
   ) {}
 
-  async post(
-    data: SettingsDto[] | SettingsDto,
-  ): Promise<ISettings | ISettings[]> {
+  async post(data: SettingsDto[]): Promise<ISettings[]> {
     try {
-      if (Array.isArray(data)) {
-        let response = []
-        for (let item of data) {
-          response.push(
-            await this.settingsModel.findOneAndUpdate(
-              { name: item.name },
-              { value: item.value },
-              {
-                upsert: true,
-                new: true,
-              },
-            ),
-          )
-        }
-        return response
-      } else {
-        return await this.settingsModel.findOneAndUpdate(
-          { name: data.name },
-          { value: data.value },
-          {
-            upsert: true,
-            new: true,
-          },
+      let response = []
+      for (let item of data) {
+        response.push(
+          await this.settingsModel.findOneAndUpdate(
+            { name: item.name },
+            { value: item.value },
+            {
+              upsert: true,
+              new: true,
+            },
+          ),
         )
       }
+      return response
     } catch (err) {
       throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
       )
     }
   }
@@ -58,8 +45,8 @@ export class SettingsService {
       return await this.settingsModel.findOne({ name }).exec()
     } catch (err) {
       throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
       )
     }
   }
@@ -69,8 +56,8 @@ export class SettingsService {
       return await this.settingsModel.find().exec()
     } catch (err) {
       throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
       )
     }
   }

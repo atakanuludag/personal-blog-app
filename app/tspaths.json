@@ -14,7 +14,9 @@
         "@/services": ["services"],
         "@/services/*": ["services/*"],
         "@/models": ["models"],
-        "@/models/*": ["models/*"]
+        "@/models/*": ["models/*"],
+        "@/store": ["store"],
+        "@/store/*": ["store/*"]
       }
     }
   }

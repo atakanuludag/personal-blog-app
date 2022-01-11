@@ -1,5 +1,6 @@
 import axios, { AxiosError } from '../core/Axios'
 import IArticle, { IArticleResponse } from '@/models/IArticle'
+import IListQuery from '@/models/IListQuery'
 /*import IDHItem from '../interfaces/IDHItem'
 import ILoginForm from '../interfaces/ILoginForm'
 import IAuth from '../interfaces/IAuth'
@@ -47,13 +48,11 @@ export default class ArticleService {
     }
   }
 
-  getItems = async (): Promise<IArticleResponse> => {
+  getItems = async (params?: IListQuery): Promise<IArticleResponse> => {
     let items = new Array<IArticle>()
     try {
       const ret = await axios.get(`/article`, {
-        params: {
-          pageSize: 2,
-        },
+        params,
       })
 
       const { data } = ret

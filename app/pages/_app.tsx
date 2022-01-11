@@ -1,21 +1,33 @@
 import React, { useState } from 'react'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import { Provider } from 'react-redux'
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { NextSeo } from 'next-seo'
-import Theme from '@/theme'
 import moment from 'moment'
 import 'moment/locale/tr'
+import Theme from '@/theme'
+import store from '@/store'
 import '../styles/global.scss'
 
-moment.locale('tr')
-
 export default function App({ Component, pageProps }: AppProps) {
-  const [queryClient] = useState(() => new QueryClient())
+  //Moment lang setting
+  moment.locale('tr')
+
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: Infinity,
+          },
+        },
+      }),
+  )
 
   return (
-    <>
+    <Provider store={store}>
       <Head>
         <meta
           name="viewport"
@@ -31,6 +43,6 @@ export default function App({ Component, pageProps }: AppProps) {
           </Hydrate>
         </QueryClientProvider>
       </Theme>
-    </>
+    </Provider>
   )
 }

@@ -24,9 +24,9 @@ export class FileService {
 
       const items = await this.fileModel
         .find(searchQuery)
-        .skip(skip)
         .limit(pageSize)
-        .sort(order ? order : '-createdAt')
+        .sort(order)
+        .skip(skip)
         .exec()
 
       const count = await this.fileModel

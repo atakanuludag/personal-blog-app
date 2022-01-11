@@ -50,12 +50,12 @@ export class ArticleService {
 
       const items = await this.articleModel
         .find(searchQuery)
+        .limit(pageSize)
+        .sort(order)
+        .skip(skip)
         .populate('categories')
         .populate('tags')
         .populate('coverImage')
-        .skip(skip)
-        .limit(pageSize)
-        .sort(order ? order : '-title')
         .exec()
 
       const count = await this.articleModel.find(searchQuery).countDocuments()

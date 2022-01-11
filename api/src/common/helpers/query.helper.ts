@@ -11,7 +11,7 @@ export class QueryHelper {
     if (search && searchType)
       searchQuery = { [searchType]: { $regex: search, $options: '$i' } }
 
-    const orderName = query.order ? query.order : 'updatedDate'
+    const orderName = query.order ? query.order : 'createdAt'
     const orderBy = query.orderBy ? query.orderBy : OrderBy.DESC
     const order = { [orderName]: orderBy }
 

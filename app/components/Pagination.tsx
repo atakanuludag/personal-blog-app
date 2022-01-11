@@ -10,6 +10,9 @@ import Stack from '@mui/material/Stack'
 import Divider from '@mui/material/Divider'
 import useText from '@/hooks/useText'
 
+import useStoreArticle from '@/hooks/useStoreArticle'
+import useArticleQuery from '@/hooks/queries/useArticleQuery'
+
 interface IPaginationProps {}
 
 // const Item = styled(Paper)(({ theme }) => ({
@@ -18,7 +21,16 @@ interface IPaginationProps {}
 // }))
 
 export default function Pagination({}: IPaginationProps) {
-  const handleNextPage = () => {}
+  const { articleParams, setArticleParams } = useStoreArticle()
+  // const { articleQuery } = useArticleQuery(articleParams)
+  // const article = articleQuery()
+
+  const handleNextPage = () => {
+    setArticleParams({
+      ...articleParams,
+      page: articleParams.page + 1,
+    })
+  }
 
   return (
     <div className="">

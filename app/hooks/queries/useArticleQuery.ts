@@ -6,16 +6,15 @@ import IListQuery from '@/models/IListQuery'
 
 export default function useArticleQuery(params: IListQuery) {
   const service = new ArticleService()
-
+  console.log('params', params)
   const queryName = QUERY_NAMES.ARTICLES
 
   //const { params } = useStoreArticle()
 
   //console.log('params', params)
 
-  const articleQuery = () => {
-    return useQuery([queryName], () => service.getItems(params))
-  }
+  const articleQuery = () =>
+    useQuery([queryName, params], () => service.getItems(params))
 
   const articlePreFetchQuery = (queryClient: QueryClient) =>
     queryClient.prefetchQuery(queryName, () => service.getItems(params))

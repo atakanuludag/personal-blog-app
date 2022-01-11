@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import type { GetServerSideProps, GetStaticProps, NextPage } from 'next'
 import { dehydrate, QueryClient } from 'react-query'
 import { QUERY_NAMES } from '@/core/Constants'
@@ -17,15 +17,22 @@ interface IHomeProps {}
 const service = new ArticleService()
 
 const Home: NextPage<IHomeProps> = () => {
+  const [items, setItems] = useState(new Array<IArticle>())
   const { articleParams } = useStoreArticle()
   const { articleQuery } = useArticleQuery(articleParams)
   const article = articleQuery()
+
+  useEffect(() => {
+    if (article.isLoading) return
+    const data = article.data?.results ? article.data.results : []
+    setItems([...items, ...data])
+  }, [article.isLoading])
 
   if (article.isSuccess) {
     return (
       <>
         <Box component="section">
-          {article.data.results.map((item) => (
+          {items.map((item) => (
             <ArticleItem key={item.id} item={item} />
           ))}
         </Box>

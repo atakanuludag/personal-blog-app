@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forwardRef, Ref } from 'react'
 import moment from 'moment'
 import { default as NextLink } from 'next/link'
 import { styled } from '@mui/material/styles'
@@ -54,14 +54,14 @@ const StackItem = styled('p')(({ theme }) => ({
   fontSize: '0.770rem',
 }))
 
-export default function ArticleItem({ item }: IArticleItemProps) {
+function ArticleItem({ item }: IArticleItemProps, ref: Ref<HTMLDivElement>) {
   const { textLimit } = useText()
 
   const coverImage = `./example-thumb.jpeg`
   //item.coverImage
 
   return (
-    <Item>
+    <Item ref={ref}>
       <Grid
         container
         direction="row"
@@ -105,3 +105,5 @@ export default function ArticleItem({ item }: IArticleItemProps) {
     </Item>
   )
 }
+
+export default forwardRef(ArticleItem)

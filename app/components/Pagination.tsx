@@ -1,29 +1,15 @@
 import React from 'react'
-import moment from 'moment'
-import { default as NextLink } from 'next/link'
-import { styled } from '@mui/material/styles'
-import Paper from '@mui/material/Paper'
-import Grid from '@mui/material/Grid'
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
-import Button from '@mui/material/Button'
-import Stack from '@mui/material/Stack'
-import Divider from '@mui/material/Divider'
-import useText from '@/hooks/useText'
-
+import LoadingButton from '@mui/lab/LoadingButton'
+import Box from '@mui/material/Box'
 import useStoreArticle from '@/hooks/useStoreArticle'
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
 
 interface IPaginationProps {}
 
-// const Item = styled(Paper)(({ theme }) => ({
-//   padding: theme.spacing(2),
-//   marginBottom: theme.spacing(2),
-// }))
-
 export default function Pagination({}: IPaginationProps) {
   const { articleParams, setArticleParams } = useStoreArticle()
-  // const { articleQuery } = useArticleQuery(articleParams)
-  // const article = articleQuery()
+  const { articleQuery } = useArticleQuery(articleParams)
+  const article = articleQuery()
 
   const handleNextPage = () => {
     setArticleParams({
@@ -33,10 +19,23 @@ export default function Pagination({}: IPaginationProps) {
   }
 
   return (
-    <div className="">
-      <Button variant="contained" size="large" onClick={handleNextPage}>
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <LoadingButton
+        loading={article.isLoading || article.isFetching}
+        variant="contained"
+        size="large"
+        onClick={handleNextPage}
+        sx={{
+          width: '20%',
+        }}
+      >
         Daha fazla
-      </Button>
-    </div>
+      </LoadingButton>
+    </Box>
   )
 }

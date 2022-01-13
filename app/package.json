@@ -12,8 +12,10 @@
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@mui/icons-material": "^5.2.4",
+    "@mui/lab": "^5.0.0-alpha.64",
     "@mui/material": "^5.2.4",
     "@mui/styles": "^5.2.3",
+    "@types/react-transition-group": "^4.4.4",
     "axios": "^0.24.0",
     "moment": "^2.29.1",
     "next": "12.0.7",
@@ -23,6 +25,7 @@
     "react-query": "^3.34.7",
     "react-redux": "^7.2.6",
     "react-share": "^4.4.0",
+    "react-transition-group": "^4.4.2",
     "redux": "^4.1.2",
     "redux-logger": "^3.0.6"
   },

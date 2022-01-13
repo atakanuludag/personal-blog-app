@@ -1,12 +1,10 @@
 const THEME_SETTINGS = {
-    DRAWER_WITDH: 280
+  DRAWER_WITDH: 280,
 }
 
 const QUERY_NAMES = {
-    ARTICLES: 'articles'
+  ARTICLE: 'article',
+  SETTING: 'setting',
 }
 
-export {
-    THEME_SETTINGS,
-    QUERY_NAMES
-};
+export { THEME_SETTINGS, QUERY_NAMES }

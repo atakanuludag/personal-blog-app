@@ -12,12 +12,15 @@ export default function Pagination({}: IPaginationProps) {
   const article = articleQuery()
 
   const handleNextPage = () => {
+    const nextPageNumber = articleParams.page + 1
     setArticleParams({
       ...articleParams,
-      page: articleParams.page + 1,
+      page: nextPageNumber,
+    })
+    article.fetchNextPage({
+      pageParam: nextPageNumber,
     })
   }
-
   return (
     <Box
       display="flex"
@@ -26,7 +29,9 @@ export default function Pagination({}: IPaginationProps) {
       alignItems="center"
     >
       <LoadingButton
-        loading={article.isLoading || article.isFetching}
+        loading={
+          article.isLoading || article.isFetching || article.isFetchingNextPage
+        }
         variant="contained"
         size="large"
         onClick={handleNextPage}

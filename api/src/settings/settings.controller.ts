@@ -13,6 +13,7 @@ import {
   ApiBody,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiTags,
 } from '@nestjs/swagger'
 import { SettingsDto } from './dto/settings.dto'
@@ -77,6 +78,7 @@ export class SettingsController {
     description: 'Success',
     type: SettingsDto,
   })
+  @ApiParam({ name: 'name', type: String })
   @Get('getByName/:name')
   async getByName(@Param() params: { name: ESettings }) {
     return await this.service.getByName(params.name)

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import type { GetServerSideProps, NextPage } from 'next'
+import { GetServerSideProps, NextPage } from 'next/types'
 import ArticleService from '@/services/ArticleService'
 import IArticle from '@/models/IArticle'
 import ArticleItem from '@/components/ArticleItem'

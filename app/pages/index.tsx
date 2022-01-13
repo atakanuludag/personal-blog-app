@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import type { GetStaticProps, NextPage } from 'next'
+import { GetStaticProps, NextPage } from 'next/types'
 import { dehydrate, QueryClient } from 'react-query'
 import { TransitionGroup } from 'react-transition-group'
 import Collapse from '@mui/material/Collapse'

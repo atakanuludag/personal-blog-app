@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
-import { GetStaticProps, NextPage } from 'next/types'
-import { dehydrate, QueryClient } from 'react-query'
+import { GetServerSideProps, NextPage } from 'next/types'
+import { dehydrate } from 'react-query'
 import { TransitionGroup } from 'react-transition-group'
 import Collapse from '@mui/material/Collapse'
 import Box from '@mui/material/Box'
@@ -44,14 +44,12 @@ const Home: NextPage<IHomeProps> = () => {
   return <></>
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  const queryClient = new QueryClient()
-
-  const { articlePreFetchQuery } = useArticleQuery({
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { queryClient, articlePreFetchQuery } = useArticleQuery({
     page: 1,
     pageSize: 2, //todo: pageSize settings
   })
-  await articlePreFetchQuery(queryClient)
+  await articlePreFetchQuery()
 
   return {
     props: {

@@ -27,22 +27,22 @@ export default function App({ Component, pageProps }: AppProps) {
   )
 
   return (
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <Hydrate state={pageProps.dehydratedState}>
-          <Head>
-            <meta
-              name="viewport"
-              content="minimum-scale=1, initial-scale=1, width=device-width"
-            />
-          </Head>
-          <NextSeo defaultTitle={''} />
+    <QueryClientProvider client={queryClient}>
+      <Hydrate state={pageProps.dehydratedState}>
+        <Head>
+          <meta
+            name="viewport"
+            content="minimum-scale=1, initial-scale=1, width=device-width"
+          />
+        </Head>
+        <NextSeo defaultTitle={''} />
+        <Provider store={store}>
           <Theme>
             <Component {...pageProps} />
           </Theme>
-          <ReactQueryDevtools initialIsOpen={false} />
-        </Hydrate>
-      </QueryClientProvider>
-    </Provider>
+        </Provider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </Hydrate>
+    </QueryClientProvider>
   )
 }

@@ -1,7 +1,9 @@
 import { SettingsActionType, SettingsState, SettingsActions } from './types'
+import BrowserDarkMode from '@/utils/BrowserDarkMode'
 
 const initialState: SettingsState = {
-  darkMode: false,
+  //darkMode: BrowserDarkMode(),
+  darkMode: true,
 }
 
 const settings = (

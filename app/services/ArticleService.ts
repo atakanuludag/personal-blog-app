@@ -73,4 +73,15 @@ export default class ArticleService {
       return {} as any
     }
   }
+
+  getItemByGuid = async (guid: string): Promise<IArticle> => {
+    try {
+      const ret = await axios.get(`/article/getByGuid/${guid}`)
+      return this.itemToModel(ret.data)
+    } catch (err) {
+      //const error: AxiosError = err;
+      console.log('[ArticleService] getItemByGuid() Error: ', err)
+      return {} as any
+    }
+  }
 }

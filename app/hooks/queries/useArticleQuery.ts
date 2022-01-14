@@ -1,9 +1,15 @@
-import { QueryClient, useQueryClient, useInfiniteQuery } from 'react-query'
+import {
+  QueryClient,
+  useQueryClient,
+  useInfiniteQuery,
+  useQuery,
+} from 'react-query'
 import { QUERY_NAMES } from '@/core/Constants'
 import ArticleService from '@/services/ArticleService'
 import IListQuery from '@/models/IListQuery'
 
-export default function useArticleQuery(params: IListQuery) {
+export default function useArticleQuery(params?: IListQuery) {
+  const queryClient = new QueryClient()
   const service = new ArticleService()
   const queryName = QUERY_NAMES.ARTICLE
 
@@ -11,10 +17,12 @@ export default function useArticleQuery(params: IListQuery) {
     useInfiniteQuery(
       [queryName],
       ({ pageParam }) =>
-        service.getItems({
-          ...params,
-          page: pageParam,
-        }),
+        service.getItems(
+          params && {
+            ...params,
+            page: pageParam,
+          },
+        ),
       {
         getNextPageParam: (lastPage) => {
           return lastPage.hasNextPage
@@ -22,15 +30,28 @@ export default function useArticleQuery(params: IListQuery) {
       },
     )
 
-  const articlePreFetchQuery = (queryClient: QueryClient) =>
+  const articlePreFetchQuery = () =>
     queryClient.prefetchInfiniteQuery([queryName], () =>
       service.getItems(params),
     )
+
+  const articleGetByGuidQuery = (guid: string) =>
+    useQuery([queryName], () => service.getItemByGuid(guid))
+
+  const articleByGuidPreFetchQuery = (guid: string) =>
+    queryClient.prefetchQuery([queryName], () => service.getItemByGuid(guid))
 
   const invalidateArticleQuery = () => {
     const queryClientHook = useQueryClient()
     queryClientHook.invalidateQueries(queryName)
   }
 
-  return { articleQuery, invalidateArticleQuery, articlePreFetchQuery }
+  return {
+    queryClient,
+    articleQuery,
+    articlePreFetchQuery,
+    articleGetByGuidQuery,
+    articleByGuidPreFetchQuery,
+    invalidateArticleQuery,
+  }
 }

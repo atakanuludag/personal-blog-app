@@ -2,7 +2,7 @@ import { useQueryClient, useQuery } from 'react-query'
 import { QUERY_NAMES } from '@/core/Constants'
 import SettingService from '@/services/SettingService'
 
-export default function useSetting() {
+export default function useSettingQuery() {
   const service = new SettingService()
   const queryName = QUERY_NAMES.SETTING
 

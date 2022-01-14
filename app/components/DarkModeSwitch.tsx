@@ -2,7 +2,8 @@ import React from 'react'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { styled } from '@mui/material/styles'
 import Switch from '@mui/material/Switch'
-import Brightness6Icon from '@mui/icons-material/Brightness6'
+import Box from '@mui/material/Box'
+import useStoreSettings from '@/hooks/useStoreSettings'
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -52,15 +53,23 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 }))
 
 export default function DarkModeSwitch() {
+  const { settingsStore, setSettingsStore } = useStoreSettings()
   return (
-    <FormControlLabel
-      label={
-        <>
-          <Brightness6Icon sx={{ fontSize: 14 }} /> Dark Mode
-        </>
-      }
-      labelPlacement="top"
-      control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked />}
-    />
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <FormControlLabel
+        label=""
+        checked={settingsStore.darkMode}
+        onChange={(e, checked) =>
+          setSettingsStore({ ...settingsStore, darkMode: checked })
+        }
+        labelPlacement="top"
+        control={<MaterialUISwitch sx={{ m: 1 }} />}
+      />
+    </Box>
   )
 }

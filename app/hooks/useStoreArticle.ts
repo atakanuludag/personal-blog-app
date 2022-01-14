@@ -7,14 +7,14 @@ import IListQuery from '@/models/IListQuery'
 export default function useStoreArticle() {
   const dispatch = useDispatch()
 
-  const articleParams = useSelector(
+  const articleParamsStore = useSelector(
     (state: AppState) => state.articleReducers.params,
   )
 
-  const setArticleParams = useCallback(
+  const setArticleParamsStore = useCallback(
     (data: IListQuery) => dispatch(setParams(data)),
     [dispatch],
   )
 
-  return { articleParams, setArticleParams }
+  return { articleParamsStore, setArticleParamsStore }
 }

@@ -5,14 +5,16 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { common, grey } from '@mui/material/colors'
 import { trTR } from '@mui/material/locale'
 import Main from '@/layouts'
+import useStoreSettings from '@/hooks/useStoreSettings'
 
 interface ITheme {
   children: React.ReactNode
 }
 
 const AppTheme = ({ children }: ITheme): React.ReactElement => {
+  const { settingsStore } = useStoreSettings()
   const darkColor = '#202020'
-  const darkMode = true
+  const darkMode = settingsStore.darkMode
 
   const defaultThemeSettings: any = {
     typography: {

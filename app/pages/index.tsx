@@ -13,8 +13,8 @@ import useRefScroll from '@/hooks/useRefScroll'
 interface IHomeProps {}
 
 const Home: NextPage<IHomeProps> = () => {
-  const { articleParams } = useStoreArticle()
-  const { articleQuery } = useArticleQuery(articleParams)
+  const { articleParamsStore } = useStoreArticle()
+  const { articleQuery } = useArticleQuery(articleParamsStore)
   const article = articleQuery()
   const articleRef = useRef<HTMLDivElement>(null)
   const refScroll = useRefScroll(articleRef)

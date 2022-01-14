@@ -7,14 +7,14 @@ import useArticleQuery from '@/hooks/queries/useArticleQuery'
 interface IPaginationProps {}
 
 export default function Pagination({}: IPaginationProps) {
-  const { articleParams, setArticleParams } = useStoreArticle()
-  const { articleQuery } = useArticleQuery(articleParams)
+  const { articleParamsStore, setArticleParamsStore } = useStoreArticle()
+  const { articleQuery } = useArticleQuery(articleParamsStore)
   const article = articleQuery()
 
   const handleNextPage = () => {
-    const nextPageNumber = articleParams.page + 1
-    setArticleParams({
-      ...articleParams,
+    const nextPageNumber = articleParamsStore.page + 1
+    setArticleParamsStore({
+      ...articleParamsStore,
       page: nextPageNumber,
     })
     article.fetchNextPage({

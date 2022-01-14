@@ -1,10 +1,13 @@
 import { applyMiddleware, combineReducers, createStore } from 'redux'
 import logger from 'redux-logger'
-import articleReducers from '@/store/article/reducers'
 import InitialState from '@/store/initialState'
+
+import articleReducers from '@/store/article/reducers'
+import settingsReducers from '@/store/settings/reducers'
 
 export const reducer = combineReducers<InitialState>({
   articleReducers,
+  settingsReducers,
 })
 
 const configureStore = (initialState?: InitialState) =>

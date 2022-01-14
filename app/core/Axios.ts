@@ -14,6 +14,11 @@ const defaultOptions = {
 const instance = axios.create(defaultOptions)
 export const AxiosSetTokenInterceptor = (token: string) => {
   instance.interceptors.request.use((config) => {
+    if (!config?.headers) {
+      throw new Error(
+        `Expected 'config' and 'config.headers' not to be undefined`,
+      )
+    }
     config.headers['Authorization'] = token ? `Bearer ${token}` : ''
     return config
   })
@@ -21,6 +26,11 @@ export const AxiosSetTokenInterceptor = (token: string) => {
 
 export const AxiosRemoveTokenInterceptor = () => {
   instance.interceptors.request.use((config) => {
+    if (!config?.headers) {
+      throw new Error(
+        `Expected 'config' and 'config.headers' not to be undefined`,
+      )
+    }
     delete config.headers['Authorization']
     return config
   })

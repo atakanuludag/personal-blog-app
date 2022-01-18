@@ -65,13 +65,13 @@ export class SettingsService {
   async setInitialItems(): Promise<void> {
     try {
       ;(Object.keys(ESettings) as Array<keyof typeof ESettings>).map(
-        async (key: ESettings) => {
+        async (key: string) => {
           const count = await this.settingsModel
-            .find({ name: key })
+            .find({ name: ESettings[key] })
             .countDocuments()
           if (count <= 0) {
             const create = new this.settingsModel({
-              name: key,
+              name: ESettings[key],
               value: ESettingsInitialData[key],
             })
             await create.save()

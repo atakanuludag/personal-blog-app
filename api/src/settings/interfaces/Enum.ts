@@ -1,9 +1,9 @@
 export enum ESettings {
-  SiteUrl = 'SiteUrl',
-  SiteTitle = 'SiteTitle',
-  Description = 'Description',
-  AdminMail = 'AdminMail',
-  PageSize = 'PageSize',
+  SiteUrl = 'siteUrl',
+  SiteTitle = 'siteTitle',
+  Description = 'description',
+  AdminMail = 'adminMail',
+  PageSize = 'pageSize',
 }
 
 export enum ESettingsInitialData {

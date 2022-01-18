@@ -6,6 +6,7 @@ export class SettingsDto {
   @ApiProperty({
     description: 'Name',
     type: String,
+    enum: ESettings,
   })
   @IsNotEmpty()
   @IsEnum(ESettings)

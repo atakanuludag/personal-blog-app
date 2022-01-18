@@ -6,7 +6,7 @@ export type SettingsDocument = Settings & Document
 
 @Schema()
 export class Settings {
-  @Prop({ type: ESettings, required: true })
+  @Prop({ type: ESettings, required: true, unique: true })
   name: ESettings
 
   @Prop({ required: true })

@@ -6,7 +6,7 @@ import { Settings, SettingsDocument } from './schemas/settings.schema'
 import { SettingsDto } from './dto/settings.dto'
 import { ExceptionHelper } from '../common/helpers/exception.helper'
 import { CoreMessage } from '../common/messages'
-import { ESettings } from './interfaces/Enum'
+import { ESettings, ESettingsInitialData } from './interfaces/Enum'
 
 @Injectable()
 export class SettingsService {
@@ -54,6 +54,30 @@ export class SettingsService {
   async getItems(): Promise<ISettings[]> {
     try {
       return await this.settingsModel.find().exec()
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  async setInitialItems(): Promise<void> {
+    try {
+      ;(Object.keys(ESettings) as Array<keyof typeof ESettings>).map(
+        async (key: ESettings) => {
+          const count = await this.settingsModel
+            .find({ name: key })
+            .countDocuments()
+          if (count <= 0) {
+            const create = new this.settingsModel({
+              name: key,
+              value: ESettingsInitialData[key],
+            })
+            await create.save()
+          }
+        },
+      )
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

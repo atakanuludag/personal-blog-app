@@ -19,17 +19,15 @@ import {
 import { SettingsDto } from './dto/settings.dto'
 import { DefaultException } from '../common/dto/default-exception.dto'
 import { SettingsService } from './settings.service'
-import { CoreMessage } from '../common/messages'
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
 import { ESettings } from './interfaces/Enum'
 
 @ApiTags('Settings')
 @Controller('settings')
 export class SettingsController {
-  constructor(
-    private readonly service: SettingsService,
-    private readonly coreMessage: CoreMessage,
-  ) {}
+  constructor(private readonly service: SettingsService) {
+    this.service.setInitialItems()
+  }
 
   @ApiOperation({
     summary: 'Create/Update setting items.',

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
-import { GetServerSideProps, NextPage } from 'next/types'
-import { dehydrate } from 'react-query'
+import { NextPage, GetStaticProps, GetServerSideProps } from 'next/types'
+import { dehydrate, QueryClient } from 'react-query'
 import { TransitionGroup } from 'react-transition-group'
 import Collapse from '@mui/material/Collapse'
 import Box from '@mui/material/Box'
@@ -9,12 +9,19 @@ import Pagination from '@/components/Pagination'
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
 import useStoreArticle from '@/hooks/useStoreArticle'
 import useRefScroll from '@/hooks/useRefScroll'
+import IPageProps from '@/models/IPageProps'
+import ISettings from '@/models/ISettings'
+import App from 'next/app'
+import Cookies from 'cookies'
+import SSRCookie from '@/utils/SSRCookie'
 
-interface IHomeProps {}
-
-const Home: NextPage<IHomeProps> = () => {
+const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
+  //console.log('settings', settings)
   const { articleParamsStore } = useStoreArticle()
-  const { articleQuery } = useArticleQuery(articleParamsStore)
+  const { articleQuery } = useArticleQuery({
+    ...articleParamsStore,
+    pageSize: settings.pageSize,
+  })
   const article = articleQuery()
   const articleRef = useRef<HTMLDivElement>(null)
   const refScroll = useRefScroll(articleRef)
@@ -44,12 +51,15 @@ const Home: NextPage<IHomeProps> = () => {
   return <></>
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const { queryClient, articlePreFetchQuery } = useArticleQuery({
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const queryClient = new QueryClient()
+  const { getCookie } = SSRCookie(req, res)
+  const settings: ISettings = getCookie('settings', true)
+  const { articlePreFetchQuery } = useArticleQuery({
     page: 1,
-    pageSize: 2, //todo: pageSize settings
+    pageSize: Number(settings.pageSize),
   })
-  await articlePreFetchQuery()
+  await articlePreFetchQuery(queryClient)
 
   return {
     props: {

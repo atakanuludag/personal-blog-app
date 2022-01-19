@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Theme } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
@@ -8,10 +8,10 @@ import Main from '@/layouts'
 import useStoreSettings from '@/hooks/useStoreSettings'
 
 interface ITheme {
-  children: React.ReactNode
+  children: ReactNode
 }
 
-const AppTheme = ({ children }: ITheme): React.ReactElement => {
+const AppTheme = ({ children }: ITheme) => {
   const { settingsStore } = useStoreSettings()
   const darkColor = '#202020'
   const darkMode = settingsStore.darkMode

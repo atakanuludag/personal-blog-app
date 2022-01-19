@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import type { AppProps } from 'next/app'
+import App from 'next/app'
+import type { AppContext, AppProps } from 'next/app'
 import Head from 'next/head'
 import { Provider } from 'react-redux'
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query'
@@ -7,14 +8,16 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import { NextSeo } from 'next-seo'
 import moment from 'moment'
 import 'moment/locale/tr'
-import Theme from '@/theme'
+import Theme from '@/layouts/Theme'
 import store from '@/store'
+import SettingService from '@/services/SettingService'
 import '../styles/global.scss'
 
-export default function App({ Component, pageProps }: AppProps) {
+import SSRCookie from '@/utils/SSRCookie'
+
+const NextApp = ({ Component, pageProps }: AppProps) => {
   //Moment lang setting
   moment.locale('tr')
-
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -46,3 +49,16 @@ export default function App({ Component, pageProps }: AppProps) {
     </QueryClientProvider>
   )
 }
+
+NextApp.getInitialProps = async (appContext: AppContext) => {
+  const { req, res }: any = appContext.ctx
+  const { setCookie } = SSRCookie(req, res)
+  const service = new SettingService()
+  const appProps = await App.getInitialProps(appContext)
+  const settings = await service.getItems()
+  await setCookie('settings', settings)
+  appProps.pageProps.settings = settings
+  return { ...appProps }
+}
+
+export default NextApp

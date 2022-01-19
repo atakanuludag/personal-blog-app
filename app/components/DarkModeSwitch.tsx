@@ -3,7 +3,9 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import { styled } from '@mui/material/styles'
 import Switch from '@mui/material/Switch'
 import Box from '@mui/material/Box'
+import { LOCAL_STORAGES } from '@/core/Constants'
 import useStoreSettings from '@/hooks/useStoreSettings'
+import { setLocalStorage } from '@/utils/LocalStorage'
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -64,9 +66,10 @@ export default function DarkModeSwitch() {
       <FormControlLabel
         label=""
         checked={settingsStore.darkMode}
-        onChange={(e, checked) =>
+        onChange={(e, checked) => {
           setSettingsStore({ ...settingsStore, darkMode: checked })
-        }
+          setLocalStorage(LOCAL_STORAGES.LS_DARK_MODE, checked)
+        }}
         labelPlacement="top"
         control={<MaterialUISwitch sx={{ m: 1 }} />}
       />

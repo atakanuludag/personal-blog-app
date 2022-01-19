@@ -9,8 +9,6 @@
       "@/components/*": ["components/*"],
       "@/hooks": ["hooks"],
       "@/hooks/*": ["hooks/*"],
-      "@/theme": ["theme"],
-      "@/theme/*": ["theme/*"],
       "@/services": ["services"],
       "@/services/*": ["services/*"],
       "@/models": ["models"],

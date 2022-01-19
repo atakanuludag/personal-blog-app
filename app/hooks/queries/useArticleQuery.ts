@@ -9,7 +9,6 @@ import ArticleService from '@/services/ArticleService'
 import IListQuery from '@/models/IListQuery'
 
 export default function useArticleQuery(params?: IListQuery) {
-  const queryClient = new QueryClient()
   const service = new ArticleService()
   const queryName = QUERY_NAMES.ARTICLE
 
@@ -30,7 +29,7 @@ export default function useArticleQuery(params?: IListQuery) {
       },
     )
 
-  const articlePreFetchQuery = () =>
+  const articlePreFetchQuery = (queryClient: QueryClient) =>
     queryClient.prefetchInfiniteQuery([queryName], () =>
       service.getItems(params),
     )
@@ -38,7 +37,7 @@ export default function useArticleQuery(params?: IListQuery) {
   const articleGetByGuidQuery = (guid: string) =>
     useQuery([queryName], () => service.getItemByGuid(guid))
 
-  const articleByGuidPreFetchQuery = (guid: string) =>
+  const articleByGuidPreFetchQuery = (queryClient: QueryClient, guid: string) =>
     queryClient.prefetchQuery([queryName], () => service.getItemByGuid(guid))
 
   const invalidateArticleQuery = () => {
@@ -47,7 +46,6 @@ export default function useArticleQuery(params?: IListQuery) {
   }
 
   return {
-    queryClient,
     articleQuery,
     articlePreFetchQuery,
     articleGetByGuidQuery,

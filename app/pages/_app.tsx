@@ -8,12 +8,11 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import { NextSeo } from 'next-seo'
 import moment from 'moment'
 import 'moment/locale/tr'
-import Theme from '@/layouts/Theme'
 import store from '@/store'
+import ResponseHeader from '@/utils/ResponseHeader'
 import SettingService from '@/services/SettingService'
+import Theme from '@/layouts/Theme'
 import '../styles/global.scss'
-
-import SSRCookie from '@/utils/SSRCookie'
 
 const NextApp = ({ Component, pageProps }: AppProps) => {
   //Moment lang setting
@@ -51,12 +50,12 @@ const NextApp = ({ Component, pageProps }: AppProps) => {
 }
 
 NextApp.getInitialProps = async (appContext: AppContext) => {
-  const { req, res }: any = appContext.ctx
-  const { setCookie } = SSRCookie(req, res)
+  const { res } = appContext.ctx
+  const { setHeader } = ResponseHeader(res as any)
   const service = new SettingService()
   const appProps = await App.getInitialProps(appContext)
   const settings = await service.getItems()
-  await setCookie('settings', settings)
+  setHeader('Settings', settings)
   appProps.pageProps.settings = settings
   return { ...appProps }
 }

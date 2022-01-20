@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { NextPage, GetStaticProps, GetServerSideProps } from 'next/types'
+import { NextPage, GetServerSideProps } from 'next/types'
 import { dehydrate, QueryClient } from 'react-query'
 import { TransitionGroup } from 'react-transition-group'
 import Collapse from '@mui/material/Collapse'
@@ -11,12 +11,9 @@ import useStoreArticle from '@/hooks/useStoreArticle'
 import useRefScroll from '@/hooks/useRefScroll'
 import IPageProps from '@/models/IPageProps'
 import ISettings from '@/models/ISettings'
-import App from 'next/app'
-import Cookies from 'cookies'
-import SSRCookie from '@/utils/SSRCookie'
+import ResponseHeader from '@/utils/ResponseHeader'
 
 const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
-  //console.log('settings', settings)
   const { articleParamsStore } = useStoreArticle()
   const { articleQuery } = useArticleQuery({
     ...articleParamsStore,
@@ -53,11 +50,11 @@ const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const queryClient = new QueryClient()
-  const { getCookie } = SSRCookie(req, res)
-  const settings: ISettings = getCookie('settings', true)
+  const { getHeader } = ResponseHeader(res as any)
+  const settings: ISettings = getHeader('Settings', true)
   const { articlePreFetchQuery } = useArticleQuery({
     page: 1,
-    pageSize: Number(settings.pageSize),
+    pageSize: settings.pageSize,
   })
   await articlePreFetchQuery(queryClient)
 

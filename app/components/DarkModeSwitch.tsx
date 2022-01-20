@@ -65,7 +65,7 @@ export default function DarkModeSwitch() {
     >
       <FormControlLabel
         label=""
-        checked={settingsStore.darkMode}
+        checked={settingsStore.darkMode as boolean}
         onChange={(e, checked) => {
           setSettingsStore({ ...settingsStore, darkMode: checked })
           setLocalStorage(LOCAL_STORAGES.LS_DARK_MODE, checked)

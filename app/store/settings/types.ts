@@ -1,7 +1,7 @@
 import { Action } from 'redux'
 
 export interface SettingsState {
-  darkMode: boolean
+  darkMode: boolean | null
 }
 
 export enum SettingsActionType {

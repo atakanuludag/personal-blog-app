@@ -2,15 +2,15 @@ import React from 'react'
 import { GetServerSideProps, NextPage } from 'next/types'
 import { useRouter } from 'next/router'
 import { dehydrate, QueryClient } from 'react-query'
+import { NextSeo } from 'next-seo'
 import Box from '@mui/material/Box'
+import IPageProps from '@/models/IPageProps'
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
 import useStoreArticle from '@/hooks/useStoreArticle'
 
 interface IGuidProps {}
 
-const Guid: NextPage<IGuidProps> = (props: any) => {
-  console.log('props guid page', props)
-
+const Guid: NextPage<IPageProps> = ({ settings }: IPageProps) => {
   const { query } = useRouter()
   const guid = !query.guid ? '' : query.guid
 

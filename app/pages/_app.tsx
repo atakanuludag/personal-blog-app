@@ -9,12 +9,14 @@ import { NextSeo } from 'next-seo'
 import moment from 'moment'
 import 'moment/locale/tr'
 import store from '@/store'
+import Theme from '@/layouts/Theme'
 import ResponseHeader from '@/utils/ResponseHeader'
 import SettingService from '@/services/SettingService'
-import Theme from '@/layouts/Theme'
+import ISettings from '@/models/ISettings'
 import '../styles/global.scss'
 
 const NextApp = ({ Component, pageProps }: AppProps) => {
+  const settings: ISettings = pageProps.settings
   //Moment lang setting
   moment.locale('tr')
   const [queryClient] = useState(
@@ -37,7 +39,20 @@ const NextApp = ({ Component, pageProps }: AppProps) => {
             content="minimum-scale=1, initial-scale=1, width=device-width"
           />
         </Head>
-        <NextSeo defaultTitle={''} />
+        <NextSeo
+          defaultTitle={settings.siteTitle}
+          titleTemplate={`%s | ${settings.siteTitle}`}
+          title={settings.siteTitle}
+          description={settings.description}
+          canonical={settings.siteUrl}
+          openGraph={{
+            type: 'website',
+            locale: 'tr_TR',
+            title: settings.siteTitle,
+            url: settings.siteUrl,
+            site_name: settings.siteTitle,
+          }}
+        />
         <Provider store={store}>
           <Theme>
             <Component {...pageProps} />

@@ -1,7 +1,7 @@
 import { SettingsActionType, SettingsState, SettingsActions } from './types'
 
 const initialState: SettingsState = {
-  darkMode: true,
+  darkMode: null,
 }
 
 const settings = (

@@ -8,7 +8,7 @@ import IPageProps from '@/models/IPageProps'
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
 import useStoreArticle from '@/hooks/useStoreArticle'
 
-interface IGuidProps {}
+import ArticleDetail from '@/components/ArticleDetail'
 
 const Guid: NextPage<IPageProps> = ({ settings }: IPageProps) => {
   const { query } = useRouter()
@@ -16,14 +16,28 @@ const Guid: NextPage<IPageProps> = ({ settings }: IPageProps) => {
 
   const { articleParamsStore } = useStoreArticle()
   const { articleGetByGuidQuery } = useArticleQuery(articleParamsStore)
-  const article = articleGetByGuidQuery(guid as string)
+  const { data, isSuccess } = articleGetByGuidQuery(guid as string)
+  const url = `${settings.siteUrl}/${data?.guid}`
 
-  if (article.isSuccess) {
+  if (isSuccess && data) {
     return (
       <>
-        <Box component="section">
-          <p>{article.data.title}</p>
-        </Box>
+        <NextSeo
+          title={data.title}
+          description={data.shortDescription}
+          canonical={url}
+          openGraph={{
+            type: 'article',
+            locale: 'tr_TR',
+            title: data.title,
+            url: url,
+            site_name: settings.siteTitle,
+          }}
+        />
+        <ArticleDetail data={data} />
+        {/* <Box component="section">
+          <p>{data.title}</p>
+        </Box> */}
       </>
     )
   }

@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
+import { default as NextLink } from 'next/link'
+import { Theme, useMediaQuery } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { styled, useTheme } from '@mui/material/styles'
 import Drawer from '@mui/material/Drawer'
 import List from '@mui/material/List'
 import Tooltip from '@mui/material/Tooltip'
@@ -16,9 +19,7 @@ import InstagramIcon from '@mui/icons-material/Instagram'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import PersonIcon from '@mui/icons-material/Person'
-import { Theme, useMediaQuery } from '@mui/material'
-import { useTheme } from '@mui/material/styles'
-
+//import { default as MaterialLink } from '@mui/material/Link'
 import DarkModeSwitch from '@/components/DarkModeSwitch'
 import AppBar from '@/layouts/AppBar'
 import { THEME_SETTINGS } from '@/core/Constants'
@@ -77,6 +78,18 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
+const Title = styled('h1')(({ theme }) => ({
+  fontSize: '1.5rem',
+  fontWeight: 'bold',
+  justifyContent: 'center',
+  margin: 0,
+  padding: 0,
+  '& a': {
+    color: theme.palette.primary.contrastText,
+    textDecoration: 'none',
+  },
+}))
+
 export default function Navigation() {
   const classes = useStyles()
   const theme = useTheme()
@@ -112,9 +125,11 @@ export default function Navigation() {
       >
         <nav className={classes.nav}>
           <div className={classes.profileSection}>
-            <Typography variant="h5" component="h1" justifyContent="center">
-              Atakan Yasin Uludağ
-            </Typography>
+            <Title>
+              <NextLink href="/" passHref>
+                <Link>Atakan Yasin Uludağ</Link>
+              </NextLink>
+            </Title>
 
             <img
               className={classes.avatar}

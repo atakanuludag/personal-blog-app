@@ -1,4 +1,4 @@
 export enum ArticleType {
-    POST = "post",
-    PAGE = "page"
+  Post = 'post',
+  Page = 'page',
 }

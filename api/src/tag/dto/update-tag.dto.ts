@@ -1,15 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { PartialType } from '@nestjs/swagger'
+import { TagDto } from './tag.dto'
 
-export class UpdateTagDto {
-    @IsOptional()
-    @IsString()
-    title: string;
-
-    @IsOptional()
-    @IsString()
-    description: string;
-
-    @IsOptional()
-    @IsString()
-    guid: string;
-}
+export class UpdateTagDto extends PartialType(TagDto) {}

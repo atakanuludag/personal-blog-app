@@ -1,21 +1,52 @@
-import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
-import { AppModule } from './app.module';
-import { ConfigService } from '@nestjs/config';
-import { EnvironmentVariables } from './common/interfaces/environment-variables.interface';
+import { NestFactory } from '@nestjs/core'
+import { ValidationPipe } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
+import { AppModule } from './app.module'
+import { IEnv } from './common/interfaces/env.interface'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     //bodyParser: true,
-    logger: console
-  });
+    logger: console,
+  })
 
-  const configService = app.get<ConfigService<EnvironmentVariables>>(ConfigService);
-  
-  app.setGlobalPrefix(configService.get<string>('API_PREFIX'));
-  app.useGlobalPipes(new ValidationPipe()); //Dtolarda tanımlanan tüm validasyonları uygulamaya yarar.
-  app.enableCors();
-  await app.listen(configService.get<string>('API_PORT'));
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  const configService = app.get<ConfigService<IEnv>>(ConfigService)
+  const apiPrefix = configService.get<string>('API_PREFIX')
+  const apiPort = configService.get<string>('API_PORT')
+  const swaggerUrl = configService.get<string>('API_SWAGGER_URL')
+
+  //Swagger
+  const config = new DocumentBuilder()
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'Bearer',
+        in: 'Header',
+      },
+      'accessToken',
+    )
+    .setTitle('Personal Blog App Rest API')
+    .setDescription('Personel blog app api.')
+    .setVersion('3.0.3')
+    .addServer(apiPrefix)
+    .addTag('User', 'User endpoint')
+    .addTag('Category', 'Category endpoint')
+    .addTag('Tag', 'Tag endpoint')
+    .addTag('File', 'File endpoint')
+    .addTag('Settings', 'Settings endpoint')
+    .addTag('Article', 'Article endpoint')
+    .build()
+  const document = SwaggerModule.createDocument(app, config)
+  SwaggerModule.setup(swaggerUrl, app, document)
+
+  app.setGlobalPrefix(apiPrefix)
+  app.useGlobalPipes(new ValidationPipe())
+  app.enableCors()
+  await app.listen(apiPort)
+  const appUrl = await app.getUrl()
+  console.log(`Application is running on: ${appUrl}`)
+  console.log(`Swagger: ${appUrl}/${swaggerUrl}`)
 }
-bootstrap();
+bootstrap()

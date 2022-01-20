@@ -1,41 +1,5 @@
-import { IsString, IsDate, IsArray, ArrayMinSize, IsOptional, IsEnum } from 'class-validator';
-import { Type } from 'class-transformer';
-import { ObjectId } from 'mongoose';
-import { ArticleType } from '../../common/interfaces/enums';
+import { PartialType } from '@nestjs/swagger'
+//import { OmitType, PartialType } from '@nestjs/mapped-types'
+import { ArticleDto } from './article.dto'
 
-export class UpdateArticleDto {
-    @IsOptional()
-    @IsString()
-    title: string;
-
-    @IsOptional()
-    @IsString()
-    shortDescription: string;
-
-    @IsOptional()
-    @IsString()
-    content: string;
-
-    @IsOptional()
-    @IsString()
-    guid: string;
-
-    @IsOptional()
-    @IsDate()
-    @Type(() => Date)
-    publishingDate: Date;
-
-    @IsOptional()
-    @IsArray()
-    @ArrayMinSize(1)
-    categories: ObjectId[];
-
-    @IsOptional()
-    @IsArray()
-    @ArrayMinSize(1)
-    tags: ObjectId[];
-
-    @IsOptional()
-    @IsEnum(ArticleType)
-    articleType: ArticleType;
-}
+export class UpdateArticleDto extends PartialType(ArticleDto) {}

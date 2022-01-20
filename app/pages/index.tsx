@@ -1,58 +1,68 @@
-import React, { useState } from 'react';
-import type { GetServerSideProps, NextPage } from 'next';
-import ArticleService from '@/services/ArticleService';
-import IArticle from '@/models/IArticle';
-import ArticleItem from '@/components/ArticleItem';
+import React, { useRef } from 'react'
+import { NextPage, GetServerSideProps } from 'next/types'
+import { dehydrate, QueryClient } from 'react-query'
+import { TransitionGroup } from 'react-transition-group'
+import Collapse from '@mui/material/Collapse'
+import Box from '@mui/material/Box'
+import ArticleItem from '@/components/ArticleItem'
+import Pagination from '@/components/Pagination'
+import useArticleQuery from '@/hooks/queries/useArticleQuery'
+import useStoreArticle from '@/hooks/useStoreArticle'
+import useRefScroll from '@/hooks/useRefScroll'
+import IPageProps from '@/models/IPageProps'
+import ISettings from '@/models/ISettings'
+import ResponseHeader from '@/utils/ResponseHeader'
 
-interface IHomeProps {
-  items: IArticle[];
+const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
+  const { articleParamsStore } = useStoreArticle()
+  const { articleQuery } = useArticleQuery({
+    ...articleParamsStore,
+    pageSize: settings.pageSize,
+  })
+  const article = articleQuery()
+  const articleRef = useRef<HTMLDivElement>(null)
+  const refScroll = useRefScroll(articleRef)
+
+  if (article.isSuccess) {
+    return (
+      <>
+        <Box component="section">
+          <TransitionGroup>
+            {article.data.pages.map((p) =>
+              p.results.map((item) => (
+                <Collapse key={item.id} addEndListener={refScroll}>
+                  <ArticleItem key={item.id} item={item} ref={articleRef} />
+                </Collapse>
+              )),
+            )}
+          </TransitionGroup>
+        </Box>
+
+        <Box component="section" hidden={!article.hasNextPage}>
+          <Pagination />
+        </Box>
+      </>
+    )
+  }
+
+  return <></>
 }
 
-const service = new ArticleService();
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const queryClient = new QueryClient()
+  const { getHeader } = ResponseHeader(res as any)
+  const settings: ISettings = getHeader('Settings', true)
+  const { articlePreFetchQuery } = useArticleQuery({
+    page: 1,
+    pageSize: settings.pageSize,
+  })
+  await articlePreFetchQuery(queryClient)
 
-const Home: NextPage<IHomeProps> = (props) => {
-
-  const [items] = useState<IArticle[]>(props.items);
-
-  return (
-    <React.Fragment>
-      <section className="cta-section theme-bg-light py-5">
-        <div className="container text-center">
-          <h2 className="heading">DevBlog - A Blog Template Made For Developers</h2>
-          <div className="intro">Welcome to my blog. Subscribe and get my latest blog post in your inbox.</div>
-          <form className="signup-form form-inline justify-content-center pt-3">
-            <div className="form-group">
-              <label className="sr-only" htmlFor="semail">Your email</label>
-              <input type="email" id="semail" name="semail1" className="form-control mr-md-1 semail" placeholder="Enter email" />
-            </div>
-            <button type="submit" className="btn btn-primary">Subscribe</button>
-          </form>
-        </div>
-      </section>
-
-      <section className="blog-list px-3 py-5 p-md-5">
-        <div className="container">
-          {items.map(item => <ArticleItem key={item.id} item={item} />)}
-
-          <nav className="blog-nav nav nav-justified my-5">
-            <a className="nav-link-next nav-item nav-link rounded" href="#">Daha Fazlası...<i className="arrow-next fas fa-long-arrow-alt-right"></i></a>
-          </nav>
-        </div>
-      </section>
-    </React.Fragment>
-  )
+  return {
+    props: {
+      dehydratedState: JSON.parse(JSON.stringify(dehydrate(queryClient))),
+    },
+  }
 }
 
-export default Home;
-
-export const getServerSideProps: GetServerSideProps = async ({ }) => {
-
-  let props: IHomeProps = {
-    items: new Array<IArticle>()
-  };
-
-  const test = await service.getItems();
-  props.items = test.results;
-
-  return { props };
-}
+export default Home

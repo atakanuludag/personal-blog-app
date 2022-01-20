@@ -1,13 +1,21 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { ESettings } from '../interfaces/Enum';
+import { ApiProperty } from '@nestjs/swagger'
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator'
+import { ESettings } from '../interfaces/Enum'
 
 export class SettingsDto {
+  @ApiProperty({
+    description: 'Name',
+    type: String,
+    enum: ESettings,
+  })
+  @IsNotEmpty()
+  @IsEnum(ESettings)
+  name: ESettings
 
-    @IsNotEmpty()
-    @IsEnum(ESettings)
-    name: ESettings;
-
-    @IsNotEmpty()
-    @IsString()
-    value: string;
+  @ApiProperty({
+    description: 'Value',
+  })
+  @IsNotEmpty()
+  @IsString()
+  value: string
 }

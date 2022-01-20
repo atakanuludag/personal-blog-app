@@ -1,9 +1,9 @@
-import { Document } from 'mongoose';
+import { Document } from 'mongoose'
 
 export interface IUser extends Document {
-    readonly userName: string;
-    readonly email: string;
-    readonly password: string;
-    readonly name: string;
-    readonly surname: string;
+  readonly userName: string
+  readonly email: string
+  readonly password: string
+  readonly name: string
+  readonly surname: string
 }

@@ -1,3 +1,3 @@
 export interface IItem {
-    readonly title: string;
+  readonly title: string
 }

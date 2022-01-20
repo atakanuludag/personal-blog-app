@@ -1,22 +1,4 @@
-import { IsString, IsOptional } from 'class-validator';
-import { ObjectId } from 'mongoose';
+import { PartialType } from '@nestjs/swagger'
+import { CategoryDto } from './category.dto'
 
-//Todo: https://www.npmjs.com/package/@nestjs/mapped-types
-
-export class UpdateCategoryDto  {
-    @IsOptional()
-    @IsString()
-    title: string;
-
-    @IsOptional()
-    @IsString()
-    description: string;
-
-    @IsOptional()
-    @IsString()
-    guid: string;
-
-    @IsOptional()
-    @IsString()
-    parent?: ObjectId;
-}
+export class UpdateCategoryDto extends PartialType(CategoryDto) {}

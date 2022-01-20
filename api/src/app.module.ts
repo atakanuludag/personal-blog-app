@@ -1,36 +1,35 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { MongooseModule } from '@nestjs/mongoose';
+import { Module } from '@nestjs/common'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import { AppController } from './app.controller'
+import { MongooseModule } from '@nestjs/mongoose'
 
-import { EnvironmentVariables } from './common/interfaces/environment-variables.interface';
+import { IEnv } from './common/interfaces/env.interface'
 
 //Modules
-import { CategoryModule } from './category/category.module';
-import { UserModule } from './user/user.module';
-import { TagModule } from './tag/tag.module';
-import { ArticleModule } from './article/article.module';
-import { FileModule } from './file/file.module';
-import { SettingsModule } from './settings/settings.module';
+import { CategoryModule } from './category/category.module'
+import { UserModule } from './user/user.module'
+import { TagModule } from './tag/tag.module'
+import { ArticleModule } from './article/article.module'
+import { FileModule } from './file/file.module'
+import { SettingsModule } from './settings/settings.module'
 
-import * as moment from 'moment';
-import 'moment/locale/tr';
-moment.locale("tr");
-
+import * as moment from 'moment'
+import 'moment/locale/tr'
+moment.locale('tr')
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService<EnvironmentVariables>) => ({
+      useFactory: async (configService: ConfigService<IEnv>) => ({
         uri: configService.get<string>('MONGODB_URI'),
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        useCreateIndex: true
+        useCreateIndex: true,
+        useFindAndModify: false,
       }),
       inject: [ConfigService],
     }),
@@ -39,9 +38,9 @@ moment.locale("tr");
     TagModule,
     ArticleModule,
     FileModule,
-    SettingsModule
+    SettingsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
-export class AppModule { }
+export class AppModule {}

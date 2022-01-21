@@ -4,7 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { common, grey } from '@mui/material/colors'
 import { trTR } from '@mui/material/locale'
-import Main from '@/layouts'
+//import Main from '@/layouts'
 import useStoreSettings from '@/hooks/useStoreSettings'
 import useInitialDarkMode from '@/hooks/useInitialDarkMode'
 import ISettings from '@/models/ISettings'
@@ -91,7 +91,7 @@ const AppTheme = ({ children, settings }: ITheme) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Main children={children} />
+      {children}
     </ThemeProvider>
   )
 }

@@ -10,12 +10,23 @@ import moment from 'moment'
 import 'moment/locale/tr'
 import store from '@/store'
 import Theme from '@/layouts/Theme'
+import GlobalStore from '@/utils/GlobalStore'
 import SettingService from '@/services/SettingService'
 import ISettings from '@/models/ISettings'
+import PageWithLayoutType from '@/models/PageWithLayoutType'
+import BlogPageLayout from '@/layouts/BlogPageLayout'
 import '../styles/global.scss'
-import GlobalStore from '@/utils/GlobalStore'
 
-const NextApp = ({ Component, pageProps }: AppProps) => {
+interface PersonalBlogAppProps extends AppProps {
+  Component: PageWithLayoutType
+  pageProps: any
+}
+
+const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
+  const Layout = Component.layout
+    ? Component.layout || ((children) => <>{children}</>)
+    : BlogPageLayout
+
   const settings: ISettings = pageProps.settings
   //Moment lang setting
   moment.locale('tr')
@@ -55,7 +66,9 @@ const NextApp = ({ Component, pageProps }: AppProps) => {
         />
         <Provider store={store}>
           <Theme settings={settings}>
-            <Component {...pageProps} />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
           </Theme>
         </Provider>
         <ReactQueryDevtools initialIsOpen={false} />
@@ -64,8 +77,7 @@ const NextApp = ({ Component, pageProps }: AppProps) => {
   )
 }
 
-NextApp.getInitialProps = async (appContext: AppContext) => {
-  const { res } = appContext.ctx
+PersonalBlogApp.getInitialProps = async (appContext: AppContext) => {
   const service = new SettingService()
   const appProps = await App.getInitialProps(appContext)
   const settings = await service.getItems()
@@ -74,4 +86,4 @@ NextApp.getInitialProps = async (appContext: AppContext) => {
   return { ...appProps }
 }
 
-export default NextApp
+export default PersonalBlogApp

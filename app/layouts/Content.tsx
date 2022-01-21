@@ -3,8 +3,9 @@ import { Theme } from '@mui/material'
 import makeStyles from '@mui/styles/makeStyles'
 import Container from '@mui/material/Container'
 import Footer from '@/layouts/Footer'
+import { LayoutPageType } from '@/models/enums'
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useBlogPageStyle = makeStyles((theme: Theme) => ({
   content: {
     flexGrow: 1,
     height: '100vh',
@@ -21,14 +22,39 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
+const useFullPageStyle = makeStyles((theme: Theme) => ({
+  content: {
+    flexGrow: 1,
+    height: '100vh',
+    [theme.breakpoints.down('md')]: {
+      paddingTop: theme.spacing(2),
+    },
+    [theme.breakpoints.up('md')]: {
+      paddingTop: theme.spacing(5),
+    },
+  },
+}))
+
 interface IContent {
   children: React.ReactNode
+  layoutPageType: LayoutPageType
 }
 
-export default function Content({ children }: IContent) {
-  const classes = useStyles()
+export default function Content({ children, layoutPageType }: IContent) {
+  const blogPageClasses = useBlogPageStyle()
+  const fullPageClasses = useFullPageStyle()
+
   return (
-    <Container component="main" maxWidth="lg" fixed className={classes.content}>
+    <Container
+      component="main"
+      maxWidth="lg"
+      fixed
+      className={
+        layoutPageType === LayoutPageType.BlogPage
+          ? blogPageClasses.content
+          : fullPageClasses.content
+      }
+    >
       {children}
       <Footer />
     </Container>

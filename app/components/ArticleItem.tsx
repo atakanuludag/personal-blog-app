@@ -2,7 +2,6 @@ import React, { forwardRef, Ref } from 'react'
 import moment from 'moment'
 import { default as NextLink } from 'next/link'
 import { styled } from '@mui/material/styles'
-import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 import Button from '@mui/material/Button'
@@ -16,16 +15,15 @@ interface IArticleItemProps {
   data: IArticle
 }
 
-const Item = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2),
-  marginBottom: theme.spacing(2),
+const Item = styled('div')(({ theme }) => ({
+  marginBottom: theme.spacing(6),
 }))
 
 const Image = styled('img')(({ theme }) => ({
   maxWidth: '150px',
   [theme.breakpoints.down('md')]: {
-    width: '80%',
     maxWidth: 'none',
+    minWidth: '100%',
   },
 }))
 

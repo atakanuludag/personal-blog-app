@@ -7,24 +7,32 @@ import { trTR } from '@mui/material/locale'
 import Main from '@/layouts'
 import useStoreSettings from '@/hooks/useStoreSettings'
 import useInitialDarkMode from '@/hooks/useInitialDarkMode'
+import ISettings from '@/models/ISettings'
 
 interface ITheme {
   children: ReactNode
+  settings: ISettings
 }
 
-const AppTheme = ({ children }: ITheme) => {
+const AppTheme = ({ children, settings }: ITheme) => {
   const { settingsStore, setSettingsStore } = useStoreSettings()
   const darkColor = '#202020'
   const darkMode = settingsStore.darkMode
 
   useEffect(() => {
-    const initialDarkMode = useInitialDarkMode()
-    if (settingsStore.darkMode === null) {
-      setSettingsStore({
-        ...settingsStore,
-        darkMode: initialDarkMode(),
-      })
+    let data = {
+      ...settingsStore,
+      ...settings,
     }
+
+    if (settingsStore.darkMode === null) {
+      const initialDarkMode = useInitialDarkMode()
+      data.darkMode = initialDarkMode()
+    }
+
+    setSettingsStore({
+      ...data,
+    })
   }, [])
 
   const defaultThemeSettings: any = {

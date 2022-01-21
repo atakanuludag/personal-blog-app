@@ -1,6 +1,7 @@
 import { Action } from 'redux'
+import ISettings from '@/models/ISettings'
 
-export interface SettingsState {
+export interface SettingsState extends ISettings {
   darkMode: boolean | null
 }
 

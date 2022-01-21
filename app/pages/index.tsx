@@ -11,7 +11,7 @@ import useStoreArticle from '@/hooks/useStoreArticle'
 import useRefScroll from '@/hooks/useRefScroll'
 import IPageProps from '@/models/IPageProps'
 import ISettings from '@/models/ISettings'
-import ResponseHeader from '@/utils/ResponseHeader'
+import GlobalStore from '@/utils/GlobalStore'
 
 const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
   const { articleParamsStore } = useStoreArticle()
@@ -50,8 +50,7 @@ const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   const queryClient = new QueryClient()
-  const { getHeader } = ResponseHeader(res as any)
-  const settings: ISettings = getHeader('Settings', true)
+  const settings: ISettings = GlobalStore.get('settings')
   const { articlePreFetchQuery } = useArticleQuery({
     page: 1,
     pageSize: settings.pageSize,

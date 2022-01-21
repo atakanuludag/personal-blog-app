@@ -35,9 +35,7 @@ export default function Pagination({}: IPaginationProps) {
         variant="contained"
         size="large"
         onClick={handleNextPage}
-        sx={{
-          width: '20%',
-        }}
+        fullWidth
       >
         Daha fazla
       </LoadingButton>

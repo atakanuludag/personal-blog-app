@@ -9,10 +9,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexGrow: 1,
     height: '100vh',
     [theme.breakpoints.down('md')]: {
-      paddingTop: theme.spacing(12),
+      paddingTop: theme.spacing(9),
+      paddingLeft: theme.spacing(5),
+      paddingRight: theme.spacing(5),
     },
     [theme.breakpoints.up('md')]: {
-      paddingTop: theme.spacing(3),
+      paddingTop: theme.spacing(5),
+      paddingLeft: theme.spacing(20),
+      paddingRight: theme.spacing(20),
     },
   },
 }))

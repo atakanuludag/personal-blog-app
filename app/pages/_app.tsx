@@ -6,6 +6,7 @@ import { Provider } from 'react-redux'
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { NextSeo } from 'next-seo'
+import { SnackbarProvider } from 'notistack'
 import moment from 'moment'
 import 'moment/locale/tr'
 import store from '@/store'
@@ -66,9 +67,11 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
         />
         <Provider store={store}>
           <Theme settings={settings}>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
+            <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </SnackbarProvider>
           </Theme>
         </Provider>
         <ReactQueryDevtools initialIsOpen={false} />

@@ -1,6 +1,7 @@
 export enum LayoutPageType {
   BlogPage,
   AdminPage,
+  FullPage,
 }
 
 export enum OrderBy {

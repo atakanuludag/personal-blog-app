@@ -20,6 +20,7 @@ const AppTheme = ({ children, settings }: ITheme) => {
   const darkMode = settingsStore.darkMode
 
   useEffect(() => {
+    1
     let data = {
       ...settingsStore,
       ...settings,
@@ -48,6 +49,21 @@ const AppTheme = ({ children, settings }: ITheme) => {
 
   const darkTheme = createTheme({
     ...defaultThemeSettings,
+    components: {
+      MuiListItemButton: {
+        styleOverrides: {
+          root: {
+            "&.Mui-selected": {
+              backgroundColor: grey[700],
+              "&:hover": {
+                backgroundColor: grey[600],
+              }
+            },
+            
+          }
+        },
+      },
+    },
     palette: {
       mode: darkMode ? 'dark' : 'light',
       primary: {
@@ -68,6 +84,20 @@ const AppTheme = ({ children, settings }: ITheme) => {
 
   const lightTheme = createTheme({
     ...defaultThemeSettings,
+    components: {
+      MuiListItemButton: {
+        styleOverrides: {
+          root: {
+            "&.Mui-selected": {
+              backgroundColor: grey[300],
+              "&:hover": {
+                backgroundColor: grey[200],
+              }
+            }
+          }
+        },
+      },
+    },
     palette: {
       mode: darkMode ? 'dark' : 'light',
       primary: {

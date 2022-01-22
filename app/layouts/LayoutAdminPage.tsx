@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import { makeStyles } from '@mui/styles'
-import Navigation from '@/layouts/Navigation'
 import Content from '@/layouts/Content'
+import NavigationAdmin from '@/layouts/NavigationAdmin'
 import { LayoutPageType } from '@/models/enums'
 
 interface IMain {
@@ -24,12 +24,12 @@ const useStyles = makeStyles({
   },
 })
 
-export default function BlogPageLayout({ children }: IMain) {
+export default function LayoutAdminPage({ children }: IMain) {
   const classes = useStyles()
   return (
     <div className={classes.root}>
-      <Navigation />
-      <Content children={children} layoutPageType={LayoutPageType.BlogPage} />
+      <NavigationAdmin />
+      <Content children={children} layoutPageType={LayoutPageType.AdminPage} />
     </div>
   )
 }

@@ -5,24 +5,23 @@ import { makeStyles } from '@mui/styles'
 import { styled, useTheme } from '@mui/material/styles'
 import Drawer from '@mui/material/Drawer'
 import List from '@mui/material/List'
-import Tooltip from '@mui/material/Tooltip'
-import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import Link from '@mui/material/Link'
-import ListItem from '@mui/material/ListItem'
+import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import Box from '@mui/material/Box'
-import EmailIcon from '@mui/icons-material/Email'
-import TwitterIcon from '@mui/icons-material/Twitter'
-import InstagramIcon from '@mui/icons-material/Instagram'
-import LinkedInIcon from '@mui/icons-material/LinkedIn'
-import GitHubIcon from '@mui/icons-material/GitHub'
-import PersonIcon from '@mui/icons-material/Person'
+import DashboardIcon from '@mui/icons-material/Dashboard'
+import ArticleIcon from '@mui/icons-material/Article'
+import SettingsIcon from '@mui/icons-material/Settings'
+import CategoryIcon from '@mui/icons-material/Category'
+import TagIcon from '@mui/icons-material/Tag'
+import PermMediaIcon from '@mui/icons-material/PermMedia'
 import DarkModeSwitch from '@/components/DarkModeSwitch'
 import AppBar from '@/layouts/AppBar'
 import useStoreSettings from '@/hooks/useStoreSettings'
 import { THEME_SETTINGS } from '@/core/Constants'
+import useRouterActive from '@/hooks/useRouterActive'
+import IListItemMenu from '@/models/IListItemMenu'
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {},
@@ -92,17 +91,47 @@ const Title = styled('h1')(({ theme }) => ({
   },
 }))
 
-export default function Navigation() {
+export default function NavigationAdmin() {
   const { settingsStore } = useStoreSettings()
 
   const classes = useStyles()
   const theme = useTheme()
+  const routerActive = useRouterActive()
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'))
   const [navOpen, setNavOpen] = useState(false)
-  const handleNavigationButton = (link: string) => {
-    //console.log("link", link);
-    //history.push(`/${link}`);
-  }
+
+  const adminMenu: IListItemMenu[] = [
+    {
+      title: 'Dashboard',
+      path: '/admin',
+      icon: <DashboardIcon />,
+    },
+    {
+      title: 'Makaleler',
+      path: '/admin/articles',
+      icon: <ArticleIcon />,
+    },
+    {
+      title: 'Kategoriler',
+      path: '/admin/categories',
+      icon: <CategoryIcon />,
+    },
+    {
+      title: 'Etiketler',
+      path: '/admin/tags',
+      icon: <TagIcon />,
+    },
+    {
+      title: 'Ortam',
+      path: '/admin/files',
+      icon: <PermMediaIcon />,
+    },
+    {
+      title: 'Ayarlar',
+      path: '/admin/settings',
+      icon: <SettingsIcon />,
+    },
+  ]
 
   const toggleDrawer = (e: React.KeyboardEvent | React.MouseEvent) => {
     const key = (e as React.KeyboardEvent).key
@@ -140,67 +169,19 @@ export default function Navigation() {
                 <Link>{settingsStore.personDisplayName}</Link>
               </NextLink>
             </Title>
-
-            <img
-              className={classes.avatar}
-              src="https://www.atakanuludag.com/wp-content/uploads/2019/09/avatar.jpg"
-              alt={settingsStore.personDisplayName}
-            />
-            <Typography variant="caption" component="p">
-              {settingsStore.personDescription}
-            </Typography>
-
-            <Box component="ul" className={classes.socialMedia}>
-              <li>
-                <Link href={settingsStore.personTwitterUrl}>
-                  <Tooltip title="Twitter">
-                    <TwitterIcon color="action" />
-                  </Tooltip>
-                </Link>
-              </li>
-              <li>
-                <Link href={settingsStore.personInstagramUrl}>
-                  <Tooltip title="Instagram">
-                    <InstagramIcon color="action" />
-                  </Tooltip>
-                </Link>
-              </li>
-              <li>
-                <Link href={settingsStore.personGithubUrl}>
-                  <Tooltip title="Github">
-                    <GitHubIcon color="action" />
-                  </Tooltip>
-                </Link>
-              </li>
-              <li>
-                <Link href={settingsStore.personLinkedinUrl}>
-                  <Tooltip title="Linkedin">
-                    <LinkedInIcon color="action" />
-                  </Tooltip>
-                </Link>
-              </li>
-            </Box>
           </div>
 
           <Divider />
 
           <List className={classes.menu}>
-            <ListItem
-              button
-              onClick={() => handleNavigationButton('dashboard')}
-            >
-              <ListItemIcon>
-                <PersonIcon />
-              </ListItemIcon>
-              <ListItemText primary="Hakkımda" />
-            </ListItem>
-
-            <ListItem button onClick={() => handleNavigationButton('users')}>
-              <ListItemIcon>
-                <EmailIcon />
-              </ListItemIcon>
-              <ListItemText primary="İletişim" />
-            </ListItem>
+            {adminMenu.map((m, i) => (
+              <NextLink key={i} href={m.path} passHref>
+                <ListItemButton component="a" selected={routerActive(m.path)}>
+                  <ListItemIcon>{m.icon}</ListItemIcon>
+                  <ListItemText primary={m.title} />
+                </ListItemButton>
+              </NextLink>
+            ))}
           </List>
 
           <Divider />

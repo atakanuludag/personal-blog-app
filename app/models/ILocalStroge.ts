@@ -1,4 +1,4 @@
 export default interface ILocalStorage {
-  key: string
-  expired?: number
+  readonly key: string
+  readonly expired?: number
 }

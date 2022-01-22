@@ -1,15 +1,15 @@
 import React from 'react'
 import { NextPage } from 'next/types'
 import IPageProps from '@/models/IPageProps'
-import FullPageLayout from '@/layouts/FullPageLayout'
+import LayoutAdminPage from '@/layouts/LayoutAdminPage'
 
 type AdminHomeComponent = NextPage<IPageProps> & {
-  layout: typeof FullPageLayout
+  layout: typeof LayoutAdminPage
 }
 
 const AdminHome: AdminHomeComponent = ({ settings }: IPageProps) => {
   return <>Admin test</>
 }
 
-AdminHome.layout = FullPageLayout
+AdminHome.layout = LayoutAdminPage
 export default AdminHome

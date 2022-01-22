@@ -1,2 +1,2 @@
-export { default as BlogPageLayout } from '@/layouts/BlogPageLayout'
-export { default as FullPageLayout } from '@/layouts/FullPageLayout'
+export { default as LayoutBlogPage } from '@/layouts/LayoutBlogPage'
+export { default as LayoutAdminPage } from '@/layouts/LayoutAdminPage'

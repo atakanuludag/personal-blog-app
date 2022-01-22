@@ -1,11 +1,13 @@
 import { NextPage } from 'next'
-import { BlogPageLayout, FullPageLayout } from '@/layouts'
+import { LayoutBlogPage, LayoutAdminPage } from '@/layouts'
 
-type PageWithFullPageLayoutType = NextPage & { layout: typeof FullPageLayout }
-type PageWithBlogPageLayoutType = NextPage & { layout: typeof BlogPageLayout }
+type PageWithBlogPageLayoutType = NextPage & { layout: typeof LayoutBlogPage }
+type PageWithAdminPageLayoutType = NextPage & {
+  layout: typeof LayoutAdminPage
+}
 
 type PageWithLayoutType =
-  | PageWithFullPageLayoutType
   | PageWithBlogPageLayoutType
+  | PageWithAdminPageLayoutType
 
 export default PageWithLayoutType

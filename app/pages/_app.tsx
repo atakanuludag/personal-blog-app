@@ -14,7 +14,7 @@ import GlobalStore from '@/utils/GlobalStore'
 import SettingService from '@/services/SettingService'
 import ISettings from '@/models/ISettings'
 import PageWithLayoutType from '@/models/PageWithLayoutType'
-import BlogPageLayout from '@/layouts/BlogPageLayout'
+import LayoutBlogPage from '@/layouts/LayoutBlogPage'
 import '../styles/global.scss'
 
 interface PersonalBlogAppProps extends AppProps {
@@ -25,7 +25,7 @@ interface PersonalBlogAppProps extends AppProps {
 const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
   const Layout = Component.layout
     ? Component.layout || ((children) => <>{children}</>)
-    : BlogPageLayout
+    : LayoutBlogPage
 
   const settings: ISettings = pageProps.settings
   //Moment lang setting

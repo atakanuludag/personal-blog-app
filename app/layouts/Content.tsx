@@ -22,7 +22,7 @@ const useBlogPageStyle = makeStyles((theme: Theme) => ({
   },
 }))
 
-const useFullPageStyle = makeStyles((theme: Theme) => ({
+const useAdminPageStyle = makeStyles((theme: Theme) => ({
   content: {
     flexGrow: 1,
     height: '100vh',
@@ -42,7 +42,7 @@ interface IContent {
 
 export default function Content({ children, layoutPageType }: IContent) {
   const blogPageClasses = useBlogPageStyle()
-  const fullPageClasses = useFullPageStyle()
+  const adminPageClasses = useAdminPageStyle()
 
   return (
     <Container
@@ -52,7 +52,7 @@ export default function Content({ children, layoutPageType }: IContent) {
       className={
         layoutPageType === LayoutPageType.BlogPage
           ? blogPageClasses.content
-          : fullPageClasses.content
+          : adminPageClasses.content
       }
     >
       {children}

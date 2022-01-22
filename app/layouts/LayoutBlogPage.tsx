@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 import { makeStyles } from '@mui/styles'
+import Navigation from '@/layouts/Navigation'
 import Content from '@/layouts/Content'
 import { LayoutPageType } from '@/models/enums'
 
@@ -23,11 +24,12 @@ const useStyles = makeStyles({
   },
 })
 
-export default function FullPageLayout({ children }: IMain) {
+export default function LayoutBlogPage({ children }: IMain) {
   const classes = useStyles()
   return (
     <div className={classes.root}>
-      <Content children={children} layoutPageType={LayoutPageType.FullPage} />
+      <Navigation />
+      <Content children={children} layoutPageType={LayoutPageType.BlogPage} />
     </div>
   )
 }

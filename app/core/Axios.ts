@@ -13,6 +13,7 @@ const defaultOptions = {
 
 const instance = axios.create(defaultOptions)
 export const AxiosSetTokenInterceptor = (token: string) => {
+  console.log('Token interceptora eklendi: ', token)
   instance.interceptors.request.use((config) => {
     if (!config?.headers) {
       throw new Error(

@@ -1,4 +1,4 @@
-import axios from '../core/Axios'
+import axios from '@/core/Axios'
 import ISettings, { ISettingItem } from '@/models/ISettings'
 
 export default class SettingService {

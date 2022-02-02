@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useRouter } from 'next/router'
-import { NextPage } from 'next/types'
+import { GetServerSideProps, NextPage } from 'next/types'
+import axios from 'axios'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useSnackbar } from 'notistack'
@@ -11,12 +12,10 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import LoadingButton from '@mui/lab/LoadingButton'
 import LayoutFullPage from '@/layouts/LayoutFullPage'
-import useStoreSettings from '@/hooks/useStoreSettings'
 import IPageProps from '@/models/IPageProps'
 import ILoginForm from '@/models/ILoginForm'
-import { postApiLogin } from '@/services/LoginService'
-import { setLocalStorage } from '@/utils/LocalStorage'
-import { LOCAL_STORAGES } from '@/core/Constants'
+import IToken from '@/models/IToken'
+import Cookie from '@/utils/Cookie'
 
 type AdminLoginComponent = NextPage<IPageProps> & {
   layout: typeof LayoutFullPage
@@ -37,16 +36,11 @@ const Form = styled('form')(({ theme }) => ({
 const AdminLogin: AdminLoginComponent = ({ settings }: IPageProps) => {
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
-  const { settingsStore, setSettingsStore } = useStoreSettings()
 
   const initialValues: ILoginForm = {
-    username: '',
-    password: '',
+    username: 'atakanuludag',
+    password: '123456',
   }
-
-  useEffect(() => {
-    if (settingsStore.isLogin) router.push('/admin')
-  }, [])
 
   // form validate
   const validationSchema = Yup.object().shape({
@@ -60,15 +54,7 @@ const AdminLogin: AdminLoginComponent = ({ settings }: IPageProps) => {
       validationSchema,
       onSubmit: async (values, { setSubmitting, resetForm }) => {
         try {
-          const data = await postApiLogin(values)
-          const { accessToken, userId } = data
-          setSettingsStore({
-            ...settingsStore,
-            isLogin: true,
-            accessToken,
-            userId,
-          })
-          setLocalStorage(LOCAL_STORAGES.LS_AUTH, data)
+          await axios.post(`/api/login`, values)
           enqueueSnackbar('Başarıyla giriş yapıldı.', {
             variant: 'success',
           })
@@ -86,7 +72,7 @@ const AdminLogin: AdminLoginComponent = ({ settings }: IPageProps) => {
 
   return (
     <LoginBox elevation={24}>
-      <Form onSubmit={handleSubmit} noValidate>
+      <Form method="post" onSubmit={handleSubmit} noValidate>
         <Stack spacing={2}>
           <Typography variant="h4" component="div" gutterBottom>
             Admin Panel Login
@@ -130,6 +116,24 @@ const AdminLogin: AdminLoginComponent = ({ settings }: IPageProps) => {
       </Form>
     </LoginBox>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const { getCookie } = Cookie(req, res)
+  const auth: IToken | null = getCookie('auth', true)
+
+  if (!auth) {
+    return {
+      props: {},
+    }
+  }
+
+  return {
+    redirect: {
+      permanent: false,
+      destination: '/admin',
+    },
+  }
 }
 
 AdminLogin.layout = LayoutFullPage

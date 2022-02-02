@@ -13,9 +13,9 @@ const initialState: SettingsState = {
   personLinkedinUrl: '',
   adminMail: '',
   pageSize: 10,
-  isLogin: false,
-  accessToken: null,
-  userId: null,
+  // isLogin: false,
+  // accessToken: null,
+  // userId: null,
 }
 
 const settings = (
@@ -25,8 +25,8 @@ const settings = (
   switch (action.type) {
     case SettingsActionType.SET_SETTINGS:
       return { ...state, ...action.data }
-    case SettingsActionType.SET_AUTH:
-      return { ...state, ...action.data }
+    // case SettingsActionType.SET_AUTH:
+    //   return { ...state, ...action.data }
     default:
       return state
   }

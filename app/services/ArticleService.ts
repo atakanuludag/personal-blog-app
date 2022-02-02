@@ -1,4 +1,4 @@
-import axios, { AxiosError } from '../core/Axios'
+import axios, { AxiosError } from '@/core/Axios'
 import IArticle, { IArticleResponse } from '@/models/IArticle'
 import IListQuery from '@/models/IListQuery'
 /*import IDHItem from '../interfaces/IDHItem'

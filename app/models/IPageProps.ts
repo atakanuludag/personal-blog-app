@@ -1,4 +1,3 @@
-import { AppInitialProps } from 'next/app'
 import { DehydratedState } from 'react-query'
 import ISettings from '@/models/ISettings'
 

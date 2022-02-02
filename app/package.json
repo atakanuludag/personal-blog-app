@@ -20,6 +20,7 @@
     "@types/cookies": "^0.7.7",
     "@types/react-transition-group": "^4.4.4",
     "axios": "^0.24.0",
+    "cookies": "^0.8.0",
     "dotenv": "^11.0.0",
     "express": "^4.17.2",
     "formik": "^2.2.9",

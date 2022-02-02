@@ -4,27 +4,37 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { common, grey } from '@mui/material/colors'
 import { trTR } from '@mui/material/locale'
-//import Main from '@/layouts'
 import useStoreSettings from '@/hooks/useStoreSettings'
 import useInitialDarkMode from '@/hooks/useInitialDarkMode'
 import ISettings from '@/models/ISettings'
+import IToken from '@/models/IToken'
+import { getLocalStorage } from '@/utils/LocalStorage'
+import { LOCAL_STORAGES } from '@/core/Constants'
 
 interface ITheme {
   children: ReactNode
   settings: ISettings
+  //auth: IToken | null
 }
 
 const AppTheme = ({ children, settings }: ITheme) => {
+  //console.log("auth", auth);
+  
   const { settingsStore, setSettingsStore } = useStoreSettings()
   const darkColor = '#202020'
   const darkMode = settingsStore.darkMode
-
   useEffect(() => {
-    1
+
+    //const auth: IToken  = getLocalStorage(LOCAL_STORAGES.LS_AUTH)
+
     let data = {
       ...settingsStore,
       ...settings,
     }
+
+    // if(auth !== null){
+    //   data = {...data, ...auth, isLogin: true}
+    // }
 
     if (settingsStore.darkMode === null) {
       const initialDarkMode = useInitialDarkMode()

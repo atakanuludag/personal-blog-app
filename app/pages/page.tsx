@@ -8,22 +8,10 @@ interface IHomeProps {
   items: IArticle[]
 }
 
-const service = new ArticleService()
-
 const Home: NextPage<IHomeProps> = (props) => {
   const [items] = useState<IArticle[]>(props.items)
 
-  return (
-    <>
-      <section className="blog-list px-3 py-5 p-md-5">
-        <div className="container">
-          {items.map((item) => (
-            <ArticleItem key={item.id} item={item} />
-          ))}
-        </div>
-      </section>
-    </>
-  )
+  return <></>
 }
 
 export default Home
@@ -33,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async ({}) => {
     items: new Array<IArticle>(),
   }
 
-  const test = await service.getItems()
+  const test = await ArticleService.getItems()
   props.items = test.results
 
   return { props }

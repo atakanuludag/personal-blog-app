@@ -92,9 +92,8 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
 PersonalBlogApp.getInitialProps = async (appContext: AppContext) => {
   const { req, res } = appContext.ctx
   const { getCookie } = Cookie(req, res)
-  const service = new SettingService()
   const appProps = await App.getInitialProps(appContext)
-  const settings = await service.getItems()
+  const settings = await SettingService.getItems()
   //buralarda auth datası varsa axiosa setleyeceğiz.
   //import { AxiosSetTokenInterceptor } from '@/core/Axios'
 

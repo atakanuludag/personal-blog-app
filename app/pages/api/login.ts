@@ -1,6 +1,6 @@
 import { NextApiResponse, NextApiRequest } from 'next'
 import ILoginForm from '@/models/ILoginForm'
-import { postApiLogin } from '@/services/LoginService'
+import LoginService from '@/services/LoginService'
 import Cookie from '@/utils/Cookie'
 
 export default async function handler(
@@ -12,7 +12,7 @@ export default async function handler(
     const body: ILoginForm = req.body
     if (!body) return res.status(500).end()
 
-    const data = await postApiLogin(body)
+    const data = await LoginService.postLogin(body)
     if (!data) return res.status(500).end()
 
     setCookie('auth', data)

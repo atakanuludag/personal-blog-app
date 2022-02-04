@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { OrderBy } from '../interfaces/query.interface'
+import { OrderType } from '../interfaces/query.interface'
 
 export class ListQueryDto {
   @ApiProperty({
@@ -25,7 +25,7 @@ export class ListQueryDto {
     enum: ['asc', 'desc'],
     required: false,
   })
-  orderBy: OrderBy
+  orderBy: OrderType
 
   @ApiProperty({
     description: 'Number of data to show on current page.',

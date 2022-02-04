@@ -20,7 +20,7 @@ export interface IListQueryResponse {
   results: any
 }
 
-export enum OrderBy {
+export enum OrderType {
   DESC = 'DESC',
   ASC = 'ASC',
 }

@@ -1,5 +1,5 @@
 import { Query } from '@nestjs/common'
-import { IQuery, OrderBy } from '../interfaces/query.interface'
+import { IQuery, OrderType } from '../interfaces/query.interface'
 
 export class QueryHelper {
   public constructor() {}
@@ -12,8 +12,8 @@ export class QueryHelper {
       searchQuery = { [searchType]: { $regex: search, $options: '$i' } }
 
     const orderName = query.order ? query.order : 'createdAt'
-    const orderBy = query.orderBy ? query.orderBy : OrderBy.DESC
-    const order = { [orderName]: orderBy }
+    const orderType = query.orderBy ? query.orderBy : OrderType.DESC
+    const order = { [orderName]: orderType }
 
     const pageSize = query.pageSize ? parseInt(query.pageSize) : 10
     const page = query.page ? parseInt(query.page) : 1

@@ -6,7 +6,7 @@ import Cookie from '@/utils/Cookie'
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
-) {
+): Promise<void> {
   const { setCookie } = Cookie(req, res)
   if (req.method === 'POST') {
     const body: ILoginForm = req.body

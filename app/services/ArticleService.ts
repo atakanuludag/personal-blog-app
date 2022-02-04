@@ -28,9 +28,14 @@ const itemToModel = (item: any): IArticle => {
     content,
     guid,
     publishingDate,
+    categories,
+    tags,
+    articleType,
     isShow,
     viewCount,
     likeCount,
+    createdAt,
+    updatedAt,
   } = item
 
   return {
@@ -40,10 +45,15 @@ const itemToModel = (item: any): IArticle => {
     content,
     guid,
     publishingDate,
+    categories,
+    tags,
+    articleType,
     coverImage: item.coverImage ? item.coverImage.path : '',
     isShow,
     viewCount,
     likeCount,
+    createdAt,
+    updatedAt,
   }
 }
 

@@ -6,7 +6,8 @@ import { Settings, SettingsDocument } from './schemas/settings.schema'
 import { SettingsDto } from './dto/settings.dto'
 import { ExceptionHelper } from '../common/helpers/exception.helper'
 import { CoreMessage } from '../common/messages'
-import { ESettings, ESettingsInitialData } from './interfaces/Enum'
+import { ESettings, ESettingsType } from './interfaces/Enum'
+import { SettingsInitialData } from './data/initial.data'
 
 @Injectable()
 export class SettingsService {
@@ -72,7 +73,9 @@ export class SettingsService {
           if (count <= 0) {
             const create = new this.settingsModel({
               name: ESettings[key],
-              value: ESettingsInitialData[key],
+              title: SettingsInitialData[key].title,
+              value: SettingsInitialData[key].value,
+              type: ESettingsType[key],
             })
             await create.save()
           }

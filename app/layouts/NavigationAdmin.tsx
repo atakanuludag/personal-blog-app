@@ -21,10 +21,12 @@ import TagIcon from '@mui/icons-material/Tag'
 import PermMediaIcon from '@mui/icons-material/PermMedia'
 import DarkModeSwitch from '@/components/DarkModeSwitch'
 import LogoutIcon from '@mui/icons-material/Logout'
+import { THEME_SETTINGS } from '@/core/Constants'
 import AppBar from '@/layouts/AppBar'
 import useStoreSettings from '@/hooks/useStoreSettings'
-import { THEME_SETTINGS } from '@/core/Constants'
 import useRouterActive from '@/hooks/useRouterActive'
+import { axiosRemoveTokenInterceptor } from '@/core/Axios'
+
 import IListItemMenu from '@/models/IListItemMenu'
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -149,6 +151,7 @@ export default function NavigationAdmin() {
   const handleLogout = async () => {
     setLogoutLoading(true)
     await axios.post(`/api/logout`)
+    axiosRemoveTokenInterceptor()
     router.push('/')
     enqueueSnackbar('Başarıyla çıkış yapıldı.', {
       variant: 'success',

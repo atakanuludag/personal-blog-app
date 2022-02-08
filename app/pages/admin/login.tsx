@@ -17,7 +17,7 @@ import ILoginForm from '@/models/ILoginForm'
 import IToken from '@/models/IToken'
 import Cookie from '@/utils/Cookie'
 
-type AdminLoginComponent = NextPage<IPageProps> & {
+type AdminComponent = NextPage<IPageProps> & {
   layout: typeof LayoutFullPage
 }
 
@@ -33,7 +33,7 @@ const Form = styled('form')(({ theme }) => ({
   width: '50%',
 }))
 
-const AdminLogin: AdminLoginComponent = ({ settings }: IPageProps) => {
+const AdminLogin: AdminComponent = ({}: IPageProps) => {
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
 

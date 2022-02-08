@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 import { default as NextLink } from 'next/link'
+import { useRouter } from 'next/router'
+import axios from 'axios'
+import { useSnackbar } from 'notistack'
 import { Theme, useMediaQuery } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { styled, useTheme } from '@mui/material/styles'
@@ -17,6 +20,7 @@ import CategoryIcon from '@mui/icons-material/Category'
 import TagIcon from '@mui/icons-material/Tag'
 import PermMediaIcon from '@mui/icons-material/PermMedia'
 import DarkModeSwitch from '@/components/DarkModeSwitch'
+import LogoutIcon from '@mui/icons-material/Logout'
 import AppBar from '@/layouts/AppBar'
 import useStoreSettings from '@/hooks/useStoreSettings'
 import { THEME_SETTINGS } from '@/core/Constants'
@@ -93,12 +97,15 @@ const Title = styled('h1')(({ theme }) => ({
 
 export default function NavigationAdmin() {
   const { settingsStore } = useStoreSettings()
-
   const classes = useStyles()
   const theme = useTheme()
   const routerActive = useRouterActive()
+  const router = useRouter()
+  const { enqueueSnackbar } = useSnackbar()
+
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'))
   const [navOpen, setNavOpen] = useState(false)
+  const [logoutLoading, setLogoutLoading] = useState(false)
 
   const adminMenu: IListItemMenu[] = [
     {
@@ -131,7 +138,22 @@ export default function NavigationAdmin() {
       path: '/admin/settings',
       icon: <SettingsIcon />,
     },
+    // {
+    //   title: 'Çıkış',
+    //   path: '',
+    //   icon: <LogoutIcon />,
+    //   onClick: handleLogout,
+    // },
   ]
+
+  const handleLogout = async () => {
+    setLogoutLoading(true)
+    await axios.post(`/api/logout`)
+    router.push('/')
+    enqueueSnackbar('Başarıyla çıkış yapıldı.', {
+      variant: 'success',
+    })
+  }
 
   const toggleDrawer = (e: React.KeyboardEvent | React.MouseEvent) => {
     const key = (e as React.KeyboardEvent).key
@@ -174,14 +196,29 @@ export default function NavigationAdmin() {
           <Divider />
 
           <List className={classes.menu}>
-            {adminMenu.map((m, i) => (
-              <NextLink key={i} href={m.path} passHref>
-                <ListItemButton component="a" selected={routerActive(m.path)}>
+            {adminMenu.map((m, i) =>
+              !m.onClick ? (
+                <NextLink key={i} href={m.path} passHref>
+                  <ListItemButton component="a" selected={routerActive(m.path)}>
+                    <ListItemIcon>{m.icon}</ListItemIcon>
+                    <ListItemText primary={m.title} />
+                  </ListItemButton>
+                </NextLink>
+              ) : (
+                <ListItemButton key={i} onClick={m.onClick}>
                   <ListItemIcon>{m.icon}</ListItemIcon>
                   <ListItemText primary={m.title} />
                 </ListItemButton>
-              </NextLink>
-            ))}
+              ),
+            )}
+            <ListItemButton onClick={handleLogout} disabled={logoutLoading}>
+              <ListItemIcon>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={logoutLoading ? 'Yükleniyor...' : 'Çıkış Yap'}
+              />
+            </ListItemButton>
           </List>
 
           <Divider />

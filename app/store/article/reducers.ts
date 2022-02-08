@@ -4,8 +4,9 @@ import IArticle from '@/models/IArticle'
 
 const initialState: ArticleState = {
   items: new Array<IArticle>(),
+  currentPageItems: new Array<IArticle>(),
   params: {
-    pageSize: 2,
+    pageSize: 2, //todo: settings store'da zaten var. burada tekrar tanımlamaya gerek yok. _app'de buraya setleme yapılacak.
     page: 1,
   },
 }

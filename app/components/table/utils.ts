@@ -18,7 +18,7 @@ const getComparator = (order: OrderType, orderBy: any) => {
 
 // This method is created for cross-browser compatibility, if you don't
 // need to support IE11, you can use Array.prototype.sort() directly
-const stableSort = (array: any, comparator: any) => {
+const stableSort = (array: any[], comparator: any) => {
   const stabilizedThis = array.map((el: any, index: any) => [el, index])
   stabilizedThis.sort((a: any, b: any) => {
     const order = comparator(a[0], b[0])

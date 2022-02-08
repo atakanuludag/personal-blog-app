@@ -4,8 +4,8 @@ export enum ArticleType {
 }
 
 export enum ValueType {
-  String = 'string',
-  Link = 'link',
+  Text = 'text',
+  Url = 'url',
   EMail = 'email',
   Number = 'number',
 }

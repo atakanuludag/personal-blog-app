@@ -9,10 +9,11 @@ export default function Cookie(
 
   if (req && res) cookies = new Cookies(req, res)
 
-  const setCookie = (name: string, data: any) =>
+  const setCookie = (name: string, data: any, expires: Date) =>
     cookies &&
     cookies.set(name, typeof data === 'object' ? JSON.stringify(data) : data, {
       httpOnly: true,
+      expires,
     })
 
   const getCookie = (name: string, isParse: boolean = false) => {
@@ -23,8 +24,17 @@ export default function Cookie(
     return data
   }
 
+  const removeCookie = (name: string) => {
+    cookies &&
+      cookies.set(name, null, {
+        httpOnly: true,
+        expires: new Date(),
+      })
+  }
+
   return {
     setCookie,
     getCookie,
+    removeCookie,
   }
 }

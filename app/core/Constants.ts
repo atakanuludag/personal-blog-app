@@ -6,6 +6,7 @@ const THEME_SETTINGS = {
 
 const QUERY_NAMES = {
   ARTICLE: 'article',
+  SETTINGS: 'settings',
 }
 
 const LS_DARK_MODE: ILocalStorage = {

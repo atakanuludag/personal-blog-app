@@ -11,19 +11,15 @@ import moment from 'moment'
 import 'moment/locale/tr'
 import store from '@/store'
 import Theme from '@/layouts/Theme'
-import { AxiosSetTokenInterceptor } from '@/core/Axios'
+import LayoutBlogPage from '@/layouts/LayoutBlogPage'
+import { axiosSetTokenInterceptor } from '@/core/Axios'
 import GlobalStore from '@/utils/GlobalStore'
 import Cookie from '@/utils/Cookie'
 import SettingService from '@/services/SettingService'
 import ISettings from '@/models/ISettings'
-import PageWithLayoutType from '@/models/PageWithLayoutType'
-import LayoutBlogPage from '@/layouts/LayoutBlogPage'
-
-import '../styles/global.scss'
-
 import IToken from '@/models/IToken'
-import { getLocalStorage } from '@/utils/LocalStorage'
-import { LOCAL_STORAGES } from '@/core/Constants'
+import PageWithLayoutType from '@/models/PageWithLayoutType'
+import '../styles/global.scss'
 
 interface PersonalBlogAppProps extends AppProps {
   Component: PageWithLayoutType
@@ -36,6 +32,8 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
     : LayoutBlogPage
 
   const settings: ISettings = pageProps.settings
+  const auth: IToken | undefined = pageProps.auth
+  if (auth) axiosSetTokenInterceptor(auth.accessToken)
 
   //Moment lang setting
   moment.locale('tr')
@@ -93,18 +91,16 @@ PersonalBlogApp.getInitialProps = async (appContext: AppContext) => {
   const { req, res } = appContext.ctx
   const { getCookie } = Cookie(req, res)
   const appProps = await App.getInitialProps(appContext)
-  const settings = await SettingService.getItems()
-  //buralarda auth datası varsa axiosa setleyeceğiz.
-  //import { AxiosSetTokenInterceptor } from '@/core/Axios'
-
+  const settings = await SettingService.getItemsAsObject()
   const auth: IToken | null = getCookie('auth', true)
-  if (auth) AxiosSetTokenInterceptor(auth.accessToken)
-
-  GlobalStore.set('settings', settings) //use SSR (getServerSideProps)
-  // if (auth) {
-  //   GlobalStore.set('auth', auth) //use SSR (getServerSideProps)
-  //   AxiosSetTokenInterceptor(auth.accessToken)
-  // }
+  if (auth) {
+    //Client side ve server side interceptor için ayrı ayrı setlememiz gerekiyor. Bence bu bir bug.
+    //Server side'da token ile bir işlem yapmayacağım için burayı kapattım.
+    //AxiosSetTokenInterceptor(auth.accessToken)
+    appProps.pageProps.auth = auth
+  }
+  //Todo: globalstore will be deleted later.
+  GlobalStore.set('settings', settings) //use SSR and use getServerSideProps
   appProps.pageProps.settings = settings
   return { ...appProps }
 }

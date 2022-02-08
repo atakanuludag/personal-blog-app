@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import LinearProgress from '@mui/material/LinearProgress'
@@ -25,27 +25,37 @@ import { getComparator, stableSort } from './utils'
 
 import TableHead from '@/components/table/TableHead'
 import TableToolbar from '@/components/table/TableToolbar'
-import IArticle from '@/models/IArticle'
 import { OrderType } from '@/models/enums'
 
 interface IMuiTableProps {
   loading: boolean
+  page: number
+  pageSize: number
+  totalPages: number
   rows: any[]
   cells: ITableCell[]
+  handleChangePage: (event: any, newPage: number) => void
 }
 
 export default function MuiTable({
   loading,
+  page,
+  pageSize,
+  totalPages,
   rows = [],
   cells,
+  handleChangePage,
 }: IMuiTableProps) {
+  console.log('rows', rows)
   const [order, setOrder] = useState<OrderType>(OrderType.ASC)
-  const [orderBy, setOrderBy] = useState('calories')
+  const [orderBy, setOrderBy] = useState('calories') //todo
   const [selected, setSelected] = useState<string[]>([])
-  console.log('selected', selected)
-  const [page, setPage] = useState(0)
+  //console.log('selected', selected)
+  //const [page, setPage] = useState(0)
   const [dense, setDense] = useState(false)
-  const [rowsPerPage, setRowsPerPage] = useState(5)
+  //const [rowsPerPage, setRowsPerPage] = useState(10)
+
+  useEffect(() => {}, [])
 
   const handleRequestSort = (event: any, property: any) => {
     const isAsc = orderBy === property && order === OrderType.ASC
@@ -82,13 +92,13 @@ export default function MuiTable({
     setSelected(newSelected)
   }
 
-  const handleChangePage = (event: any, newPage: any) => {
-    setPage(newPage)
-  }
+  // const handleChangePage = (event: any, newPage: any) => {
+  //   //setPage(newPage)
+  // }
 
   const handleChangeRowsPerPage = (event: any) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
+    //setRowsPerPage(parseInt(event.target.value, 10))
+    //setPage(0)
   }
 
   const handleChangeDense = (event: any) => {
@@ -98,8 +108,8 @@ export default function MuiTable({
   const isSelected = (id: string) => selected.indexOf(id) !== -1
 
   // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
+  // const emptyRows =
+  //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -129,12 +139,10 @@ export default function MuiTable({
                   </TableCell>
                 </TableRow>
               )}
-
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.slice().sort(getComparator(order, orderBy)) */}
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row: any, index: number) => {
+              {stableSort(rows, getComparator(order, orderBy)).map(
+                (row: any, index: number) => {
                   const isItemSelected = isSelected(row.id)
                   const labelId = `mui-table-checkbox-${index}`
 
@@ -170,8 +178,9 @@ export default function MuiTable({
                       ))}
                     </TableRow>
                   )
-                })}
-              {emptyRows > 0 && (
+                },
+              )}
+              {/* {emptyRows > 0 && (
                 <TableRow
                   style={{
                     height: (dense ? 33 : 53) * emptyRows,
@@ -179,19 +188,19 @@ export default function MuiTable({
                 >
                   <TableCell colSpan={6} />
                 </TableRow>
-              )}
+              )} */}
             </TableBody>
           </Table>
         </TableContainer>
-        {/* <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+        <TablePagination
+          rowsPerPageOptions={[]}
           component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
+          count={-1}
+          rowsPerPage={pageSize}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-        /> */}
+        />
       </Paper>
     </Box>
   )

@@ -13,15 +13,15 @@ export enum ESettings {
 }
 
 export enum ESettingsType {
-  SiteUrl = 'string',
-  SiteTitle = 'string',
-  SiteDescription = 'string',
-  PersonDisplayName = 'string',
-  PersonDescription = 'string',
-  PersonTwitterUrl = 'link',
-  PersonInstagramUrl = 'link',
-  PersonGithubUrl = 'link',
-  PersonLinkedinUrl = 'link',
+  SiteUrl = 'text',
+  SiteTitle = 'text',
+  SiteDescription = 'text',
+  PersonDisplayName = 'text',
+  PersonDescription = 'text',
+  PersonTwitterUrl = 'url',
+  PersonInstagramUrl = 'url',
+  PersonGithubUrl = 'url',
+  PersonLinkedinUrl = 'url',
   AdminMail = 'email',
   PageSize = 'number',
 }

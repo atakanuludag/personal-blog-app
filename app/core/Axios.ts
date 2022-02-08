@@ -12,20 +12,21 @@ const defaultOptions = {
 }
 
 const instance = axios.create(defaultOptions)
-export const AxiosSetTokenInterceptor = (token: string) => {
-  console.log('Token interceptora eklendi: ', token)
+
+export const axiosSetTokenInterceptor = (token: string) => {
   instance.interceptors.request.use((config) => {
     if (!config?.headers) {
       throw new Error(
         `Expected 'config' and 'config.headers' not to be undefined`,
       )
     }
+    console.log('trigger axiosSetTokenInterceptor()')
     config.headers['Authorization'] = token ? `Bearer ${token}` : ''
     return config
   })
 }
 
-export const AxiosRemoveTokenInterceptor = () => {
+export const axiosRemoveTokenInterceptor = () => {
   instance.interceptors.request.use((config) => {
     if (!config?.headers) {
       throw new Error(

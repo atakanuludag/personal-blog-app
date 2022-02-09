@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack'
 import Box from '@mui/material/Box'
 import LoadingButton from '@mui/lab/LoadingButton'
 import IPageProps from '@/models/IPageProps'
+import { ValueType } from '@/models/enums'
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
 import getServerSideProps from '@/utils/AdminServerSideProps'
 import ISettings, { ISettingItem } from '@/models/ISettings'
@@ -74,16 +75,17 @@ const AdminSettings: AdminComponent = ({}: IPageProps) => {
   return (
     <Box component="div">
       <form method="post" onSubmit={handleSubmit} noValidate>
-        <Stack spacing={2}>
+        <Stack spacing={3}>
           {data.map((d, i) => (
             <TextField
               key={i}
-              type={d.type}
+              type={d.type === ValueType.Multiline ? ValueType.Text : d.type}
               id={d.id}
               label={d.title}
               value={d.value}
               variant="outlined"
               fullWidth
+              multiline={d.type === ValueType.Multiline}
             />
           ))}
         </Stack>

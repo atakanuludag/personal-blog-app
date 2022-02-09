@@ -17,7 +17,7 @@ export enum ESettingsType {
   SiteTitle = 'text',
   SiteDescription = 'text',
   PersonDisplayName = 'text',
-  PersonDescription = 'text',
+  PersonDescription = 'multiline',
   PersonTwitterUrl = 'url',
   PersonInstagramUrl = 'url',
   PersonGithubUrl = 'url',

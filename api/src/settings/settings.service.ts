@@ -65,22 +65,22 @@ export class SettingsService {
 
   async setInitialItems(): Promise<void> {
     try {
-      ;(Object.keys(ESettings) as Array<keyof typeof ESettings>).map(
-        async (key: string) => {
-          const count = await this.settingsModel
-            .find({ name: ESettings[key] })
-            .countDocuments()
-          if (count <= 0) {
-            const create = new this.settingsModel({
-              name: ESettings[key],
-              title: SettingsInitialData[key].title,
-              value: SettingsInitialData[key].value,
-              type: ESettingsType[key],
-            })
-            await create.save()
-          }
-        },
-      )
+      for (const key of Object.keys(ESettings) as Array<
+        keyof typeof ESettings
+      >) {
+        const find = await this.settingsModel
+          .findOne({ name: ESettings[key] })
+          .exec()
+        if (!find) {
+          const create = new this.settingsModel({
+            name: ESettings[key],
+            title: SettingsInitialData[key].title,
+            value: SettingsInitialData[key].value,
+            type: ESettingsType[key],
+          })
+          await create.save()
+        }
+      }
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

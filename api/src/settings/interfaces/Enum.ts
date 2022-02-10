@@ -13,7 +13,7 @@ export enum ESettings {
 }
 
 export enum ESettingsType {
-  SiteUrl = 'text',
+  SiteUrl = 'url',
   SiteTitle = 'text',
   SiteDescription = 'text',
   PersonDisplayName = 'text',

@@ -1,6 +1,5 @@
-import CircularProgress, {
-  circularProgressClasses,
-} from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 
 export enum LoadingType {
   Circular,
@@ -11,21 +10,18 @@ interface ILoadingProps {
   type?: LoadingType
 }
 
-function Loading({ type = LoadingType.Circular }: ILoadingProps) {
+function Loading({ type = LoadingType.Circular, ...props }: ILoadingProps) {
   if (type === LoadingType.Circular) {
     return (
-      <CircularProgress
-        variant="determinate"
-        sx={{
-          color: (theme) =>
-            theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
-        }}
-        size={40}
-        thickness={4}
-        value={100}
-      />
+      <Box
+        display="flex"
+        justifyContent="center"
+        sx={{ padding: (theme) => theme.spacing(2) }}
+      >
+        <CircularProgress {...props} />
+      </Box>
     )
-  } else return <>test</>
+  } else return <>Linear Progress</>
 }
 
 export default Loading

@@ -1,11 +1,11 @@
 import { ValueType } from '@/models/enums'
 
 export interface ISettingItem {
-  readonly id: string
-  readonly name: string
-  readonly title: string
-  readonly value: string
-  readonly type: ValueType
+  id: string
+  name: string
+  title: string
+  value: string
+  type: ValueType
 }
 
 export default interface ISettings {

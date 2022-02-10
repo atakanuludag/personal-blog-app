@@ -4,6 +4,7 @@ import IListQuery from '@/models/IListQuery'
 
 export interface ArticleState {
   items: IArticle[]
+  currentPageItems: IArticle[]
   params: IListQuery
 }
 

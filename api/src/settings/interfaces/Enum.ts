@@ -1,15 +1,27 @@
 export enum ESettings {
   SiteUrl = 'siteUrl',
   SiteTitle = 'siteTitle',
-  Description = 'description',
+  SiteDescription = 'siteDescription',
+  PersonDisplayName = 'personDisplayName',
+  PersonDescription = 'personDescription',
+  PersonTwitterUrl = 'personTwitterUrl',
+  PersonInstagramUrl = 'personInstagramUrl',
+  PersonGithubUrl = 'personGithubUrl',
+  PersonLinkedinUrl = 'personLinkedinUrl',
   AdminMail = 'adminMail',
   PageSize = 'pageSize',
 }
 
-export enum ESettingsInitialData {
-  SiteUrl = 'http://localhost',
-  SiteTitle = 'Site Title',
-  Description = 'Description',
-  AdminMail = 'atknuludag@gmail.com',
-  PageSize = '10',
+export enum ESettingsType {
+  SiteUrl = 'url',
+  SiteTitle = 'text',
+  SiteDescription = 'text',
+  PersonDisplayName = 'text',
+  PersonDescription = 'multiline',
+  PersonTwitterUrl = 'url',
+  PersonInstagramUrl = 'url',
+  PersonGithubUrl = 'url',
+  PersonLinkedinUrl = 'url',
+  AdminMail = 'email',
+  PageSize = 'number',
 }

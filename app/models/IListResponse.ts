@@ -1,9 +1,9 @@
 export default interface IListResponse {
-  totalResults: number
-  totalPages: number
-  pageSize: number
-  currentPage: number
-  currentPageSize: number
-  hasNextPage: boolean
-  results: any
+  readonly totalResults: number
+  readonly totalPages: number
+  readonly pageSize: number
+  readonly currentPage: number
+  readonly currentPageSize: number
+  readonly hasNextPage: boolean
+  readonly results: any
 }

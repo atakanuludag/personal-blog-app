@@ -11,7 +11,7 @@ import useStoreArticle from '@/hooks/useStoreArticle'
 import useRefScroll from '@/hooks/useRefScroll'
 import IPageProps from '@/models/IPageProps'
 import ISettings from '@/models/ISettings'
-import ResponseHeader from '@/utils/ResponseHeader'
+import GlobalStore from '@/utils/GlobalStore'
 
 const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
   const { articleParamsStore } = useStoreArticle()
@@ -19,26 +19,26 @@ const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
     ...articleParamsStore,
     pageSize: settings.pageSize,
   })
-  const article = articleQuery()
+  const { data, isSuccess, hasNextPage } = articleQuery()
   const articleRef = useRef<HTMLDivElement>(null)
   const refScroll = useRefScroll(articleRef)
 
-  if (article.isSuccess) {
+  if (isSuccess && data) {
     return (
       <>
         <Box component="section">
           <TransitionGroup>
-            {article.data.pages.map((p) =>
+            {data.pages.map((p) =>
               p.results.map((item) => (
                 <Collapse key={item.id} addEndListener={refScroll}>
-                  <ArticleItem key={item.id} item={item} ref={articleRef} />
+                  <ArticleItem key={item.id} data={item} ref={articleRef} />
                 </Collapse>
               )),
             )}
           </TransitionGroup>
         </Box>
 
-        <Box component="section" hidden={!article.hasNextPage}>
+        <Box component="section" hidden={!hasNextPage}>
           <Pagination />
         </Box>
       </>
@@ -48,10 +48,9 @@ const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
   return <></>
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   const queryClient = new QueryClient()
-  const { getHeader } = ResponseHeader(res as any)
-  const settings: ISettings = getHeader('Settings', true)
+  const settings: ISettings = GlobalStore.get('settings')
   const { articlePreFetchQuery } = useArticleQuery({
     page: 1,
     pageSize: settings.pageSize,

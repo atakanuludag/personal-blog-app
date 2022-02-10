@@ -2,6 +2,17 @@ import { SettingsActionType, SettingsState, SettingsActions } from './types'
 
 const initialState: SettingsState = {
   darkMode: null,
+  siteUrl: '',
+  siteTitle: '',
+  siteDescription: '',
+  personDisplayName: '',
+  personDescription: '',
+  personTwitterUrl: '',
+  personInstagramUrl: '',
+  personGithubUrl: '',
+  personLinkedinUrl: '',
+  adminMail: '',
+  pageSize: 10,
 }
 
 const settings = (

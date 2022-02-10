@@ -9,7 +9,7 @@ import ArticleService from '@/services/ArticleService'
 import IListQuery from '@/models/IListQuery'
 
 export default function useArticleQuery(params?: IListQuery) {
-  const service = new ArticleService()
+  const service = ArticleService
   const queryName = QUERY_NAMES.ARTICLE
 
   const articleQuery = () =>

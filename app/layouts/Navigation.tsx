@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
+import { default as NextLink } from 'next/link'
+import { Theme, useMediaQuery } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { styled, useTheme } from '@mui/material/styles'
 import Drawer from '@mui/material/Drawer'
 import List from '@mui/material/List'
 import Tooltip from '@mui/material/Tooltip'
@@ -16,11 +19,9 @@ import InstagramIcon from '@mui/icons-material/Instagram'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import PersonIcon from '@mui/icons-material/Person'
-import { Theme, useMediaQuery } from '@mui/material'
-import { useTheme } from '@mui/material/styles'
-
 import DarkModeSwitch from '@/components/DarkModeSwitch'
 import AppBar from '@/layouts/AppBar'
+import useStoreSettings from '@/hooks/useStoreSettings'
 import { THEME_SETTINGS } from '@/core/Constants'
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -77,7 +78,23 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
+const Title = styled('h1')(({ theme }) => ({
+  fontSize: '1.5rem',
+  fontWeight: 'bold',
+  textAlign: 'center',
+  margin: 0,
+  padding: 0,
+  '& a': {
+    display: 'block',
+    width: '100%',
+    color: theme.palette.primary.contrastText,
+    textDecoration: 'none',
+  },
+}))
+
 export default function Navigation() {
+  const { settingsStore } = useStoreSettings()
+
   const classes = useStyles()
   const theme = useTheme()
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'))
@@ -97,7 +114,13 @@ export default function Navigation() {
 
   return (
     <div className={classes.root}>
-      {!isMdUp && <AppBar open={navOpen} toggleDrawer={toggleDrawer} />}
+      {!isMdUp && (
+        <AppBar
+          open={navOpen}
+          toggleDrawer={toggleDrawer}
+          personDisplayName={settingsStore.personDisplayName}
+        />
+      )}
       <Drawer
         className={classes.drawer}
         variant={isMdUp ? 'permanent' : 'temporary'}
@@ -112,46 +135,45 @@ export default function Navigation() {
       >
         <nav className={classes.nav}>
           <div className={classes.profileSection}>
-            <Typography variant="h5" component="h1" justifyContent="center">
-              Atakan Yasin Uludağ
-            </Typography>
+            <Title>
+              <NextLink href="/" passHref>
+                <Link>{settingsStore.personDisplayName}</Link>
+              </NextLink>
+            </Title>
 
             <img
               className={classes.avatar}
               src="https://www.atakanuludag.com/wp-content/uploads/2019/09/avatar.jpg"
-              alt="Atakan Yasin Uludağ"
+              alt={settingsStore.personDisplayName}
             />
             <Typography variant="caption" component="p">
-              İstanbul’da doğdum ve senelerdir İstanbul’da yaşıyorum. Aslen
-              Erzincanlıyım. Zaman zaman başka şehirlere ve ülkelere turistik
-              gezilerim oldu ancak döndüm dolaştım yine aynı yere geldim. Yeni
-              yerler görmeyi ve farklı ülkelere gitmeyi çok seviyorum.
+              {settingsStore.personDescription}
             </Typography>
 
             <Box component="ul" className={classes.socialMedia}>
               <li>
-                <Link href="#">
+                <Link href={settingsStore.personTwitterUrl}>
                   <Tooltip title="Twitter">
                     <TwitterIcon color="action" />
                   </Tooltip>
                 </Link>
               </li>
               <li>
-                <Link href="#">
+                <Link href={settingsStore.personInstagramUrl}>
                   <Tooltip title="Instagram">
                     <InstagramIcon color="action" />
                   </Tooltip>
                 </Link>
               </li>
               <li>
-                <Link href="#">
-                  <Tooltip title="Twitter">
+                <Link href={settingsStore.personGithubUrl}>
+                  <Tooltip title="Github">
                     <GitHubIcon color="action" />
                   </Tooltip>
                 </Link>
               </li>
               <li>
-                <Link href="#">
+                <Link href={settingsStore.personLinkedinUrl}>
                   <Tooltip title="Linkedin">
                     <LinkedInIcon color="action" />
                   </Tooltip>

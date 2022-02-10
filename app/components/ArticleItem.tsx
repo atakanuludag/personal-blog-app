@@ -2,7 +2,6 @@ import React, { forwardRef, Ref } from 'react'
 import moment from 'moment'
 import { default as NextLink } from 'next/link'
 import { styled } from '@mui/material/styles'
-import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 import Button from '@mui/material/Button'
@@ -13,19 +12,18 @@ import { default as MaterialLink } from '@mui/material/Link'
 import IArticle from '@/models/IArticle'
 
 interface IArticleItemProps {
-  item: IArticle
+  data: IArticle
 }
 
-const Item = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2),
-  marginBottom: theme.spacing(2),
+const Item = styled('div')(({ theme }) => ({
+  marginBottom: theme.spacing(6),
 }))
 
 const Image = styled('img')(({ theme }) => ({
   maxWidth: '150px',
   [theme.breakpoints.down('md')]: {
-    width: '80%',
     maxWidth: 'none',
+    minWidth: '100%',
   },
 }))
 
@@ -54,11 +52,11 @@ const StackItem = styled('p')(({ theme }) => ({
   fontSize: '0.770rem',
 }))
 
-function ArticleItem({ item }: IArticleItemProps, ref: Ref<HTMLDivElement>) {
+function ArticleItem({ data }: IArticleItemProps, ref: Ref<HTMLDivElement>) {
   const { textLimit } = useText()
 
   const coverImage = `./example-thumb.jpeg`
-  //item.coverImage
+  //data.coverImage
 
   return (
     <Item ref={ref}>
@@ -71,14 +69,14 @@ function ArticleItem({ item }: IArticleItemProps, ref: Ref<HTMLDivElement>) {
         spacing={1}
       >
         <Grid item>
-          <Image src={coverImage} alt={item.title} />
+          <Image src={coverImage} alt={data.title} />
         </Grid>
 
         <Grid item xs={12} sm>
           <div>
             <Title>
-              <NextLink href={`/${item.guid}`} passHref>
-                <Link>{item.title}</Link>
+              <NextLink href={`/${data.guid}`} passHref>
+                <Link>{data.title}</Link>
               </NextLink>
             </Title>
 
@@ -87,14 +85,14 @@ function ArticleItem({ item }: IArticleItemProps, ref: Ref<HTMLDivElement>) {
               divider={<Divider orientation="vertical" flexItem />}
               spacing={1}
             >
-              <StackItem>{moment(item.publishingDate).fromNow()}</StackItem>
+              <StackItem>{moment(data.publishingDate).fromNow()}</StackItem>
               <StackItem>5 min read</StackItem>
-              <StackItem>{`${item.viewCount} okunma`}</StackItem>
-              <StackItem>{`${item.likeCount} beğeni`}</StackItem>
+              <StackItem>{`${data.viewCount} okunma`}</StackItem>
+              <StackItem>{`${data.likeCount} beğeni`}</StackItem>
             </Stack>
 
-            <Description>{textLimit(item.shortDescription, 330)}</Description>
-            <NextLink href={`/${item.guid}`} passHref>
+            <Description>{textLimit(data.shortDescription, 330)}</Description>
+            <NextLink href={`/${data.guid}`} passHref>
               <Button color="secondary">
                 Devamını oku <ArrowRightAltIcon />
               </Button>

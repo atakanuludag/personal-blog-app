@@ -3,12 +3,12 @@ import { GetServerSideProps, NextPage } from 'next/types'
 import { useRouter } from 'next/router'
 import { dehydrate, QueryClient } from 'react-query'
 import { NextSeo } from 'next-seo'
-import Box from '@mui/material/Box'
+//import Box from '@mui/material/Box'
 import IPageProps from '@/models/IPageProps'
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
 import useStoreArticle from '@/hooks/useStoreArticle'
-
 import ArticleDetail from '@/components/ArticleDetail'
+import Breadcrumb, { IBreadCrumb } from '@/components/Breadcrumb'
 
 const Guid: NextPage<IPageProps> = ({ settings }: IPageProps) => {
   const { query } = useRouter()
@@ -18,6 +18,13 @@ const Guid: NextPage<IPageProps> = ({ settings }: IPageProps) => {
   const { articleGetByGuidQuery } = useArticleQuery(articleParamsStore)
   const { data, isSuccess } = articleGetByGuidQuery(guid as string)
   const url = `${settings.siteUrl}/${data?.guid}`
+
+  const breadcrumb: IBreadCrumb[] = [
+    {
+      title: isSuccess && data ? data.title : '',
+      link: null,
+    },
+  ]
 
   if (isSuccess && data) {
     return (
@@ -34,10 +41,8 @@ const Guid: NextPage<IPageProps> = ({ settings }: IPageProps) => {
             site_name: settings.siteTitle,
           }}
         />
+        <Breadcrumb data={breadcrumb} />
         <ArticleDetail data={data} />
-        {/* <Box component="section">
-          <p>{data.title}</p>
-        </Box> */}
       </>
     )
   }

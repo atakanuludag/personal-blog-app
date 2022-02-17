@@ -1,16 +1,23 @@
 import { useRouter } from 'next/router'
+import { default as NextLink } from 'next/link'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Link from '@mui/material/Link'
 
-interface IBreadcrumbProps {}
+export interface IBreadCrumb {
+  title: string
+  link: string | null
+}
 
-function Breadcrumb({ ...props }: IBreadcrumbProps) {
+interface IBreadcrumbProps {
+  isShowHome?: boolean
+  data: IBreadCrumb[]
+}
+
+function Breadcrumb({ data, isShowHome = true, ...props }: IBreadcrumbProps) {
   const router = useRouter()
-  const { pathname } = router
 
-  if (pathname === '/' || pathname.indexOf('admin') > 0) return null
   return (
     <Box
       display="flex"
@@ -23,17 +30,36 @@ function Breadcrumb({ ...props }: IBreadcrumbProps) {
         separator="›"
         sx={{ color: (theme) => theme.palette.grey[800] }}
       >
-        <Link underline="hover" color="inherit" href="/">
-          MUI
-        </Link>
-        <Link
+        {isShowHome && (
+          <NextLink href="/" passHref>
+            <Link underline="hover" color="inherit">
+              Ana Sayfa
+            </Link>
+          </NextLink>
+        )}
+
+        {/* <Link
           underline="hover"
           color="inherit"
           href="/getting-started/installation/"
         >
           Core
         </Link>
-        <Typography>Breadcrumbs</Typography>
+        <Typography>Breadcrumbs</Typography> */}
+
+        {data.map((breadcrumb, i) => {
+          if (breadcrumb.link) {
+            return (
+              <NextLink href={breadcrumb.link} passHref key={i}>
+                <Link underline="hover" color="inherit">
+                  {breadcrumb.title}
+                </Link>
+              </NextLink>
+            )
+          } else {
+            return <Typography key={i}>{breadcrumb.title}</Typography>
+          }
+        })}
       </Breadcrumbs>
     </Box>
   )

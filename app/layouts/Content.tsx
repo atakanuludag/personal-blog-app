@@ -3,7 +3,6 @@ import { Theme } from '@mui/material'
 import makeStyles from '@mui/styles/makeStyles'
 import Container from '@mui/material/Container'
 import Footer from '@/layouts/Footer'
-import Breadcrumb from '@/components/Breadcrumb'
 import { LayoutPageType } from '@/models/enums'
 
 const useBlogPageStyle = makeStyles((theme: Theme) => ({
@@ -56,7 +55,6 @@ export default function Content({ children, layoutPageType }: IContent) {
           : adminPageClasses.content
       }
     >
-      {layoutPageType === LayoutPageType.BlogPage && <Breadcrumb />}
       {children}
       <Footer />
     </Container>

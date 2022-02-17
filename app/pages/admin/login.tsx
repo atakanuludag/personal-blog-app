@@ -31,10 +31,6 @@ type AdminComponent = NextPage<IPageProps> & {
   layout: typeof LayoutFullPage
 }
 
-const Wrapper = styled(Box)(() => ({
-  width: '100%',
-}))
-
 const LoginBox = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(5),
@@ -180,3 +176,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
 AdminLogin.layout = LayoutFullPage
 export default AdminLogin
+
+/*
+loginde sayfanın ortalanması için main elementine bunu vermek gerekiyor;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+*/

@@ -13,7 +13,7 @@ import { SettingsInitialData } from './data/initial.data'
 export class SettingsService {
   constructor(
     @InjectModel(Settings.name)
-    private readonly settingsModel: Model<SettingsDocument>,
+    private readonly serviceModel: Model<SettingsDocument>,
     private readonly coreMessage: CoreMessage,
   ) {}
 
@@ -22,7 +22,7 @@ export class SettingsService {
       let response = []
       for (let item of data) {
         response.push(
-          await this.settingsModel.findOneAndUpdate(
+          await this.serviceModel.findOneAndUpdate(
             { name: item.name },
             { value: item.value },
             {
@@ -43,7 +43,7 @@ export class SettingsService {
 
   async getByName(name: ESettings): Promise<ISettings> {
     try {
-      return await this.settingsModel.findOne({ name }).exec()
+      return await this.serviceModel.findOne({ name }).exec()
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -54,7 +54,7 @@ export class SettingsService {
 
   async getItems(): Promise<ISettings[]> {
     try {
-      return await this.settingsModel.find().exec()
+      return await this.serviceModel.find().exec()
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -68,11 +68,11 @@ export class SettingsService {
       for (const key of Object.keys(ESettings) as Array<
         keyof typeof ESettings
       >) {
-        const find = await this.settingsModel
+        const find = await this.serviceModel
           .findOne({ name: ESettings[key] })
           .exec()
         if (!find) {
-          const create = new this.settingsModel({
+          const create = new this.serviceModel({
             name: ESettings[key],
             title: SettingsInitialData[key].title,
             value: SettingsInitialData[key].value,

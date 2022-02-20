@@ -11,6 +11,10 @@ const SettingsInitialData = {
     value: 'NextJS, NestJS project :)',
     title: 'Site Açıklaması',
   },
+  NavbarPages: {
+    value: [],
+    title: 'Navbarda gözükecek sayfalar',
+  },
   PersonDisplayName: {
     value: 'Atakan Yasin Uludağ',
     title: 'İsim & Soyisim',

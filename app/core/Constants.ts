@@ -6,6 +6,7 @@ const THEME_SETTINGS = {
 
 const QUERY_NAMES = {
   ARTICLE: 'article',
+  PAGE: 'page',
   SETTINGS: 'settings',
 }
 

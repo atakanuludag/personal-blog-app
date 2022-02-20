@@ -20,4 +20,5 @@ export enum ValueType {
   Url = 'url',
   EMail = 'email',
   Number = 'number',
+  PageSelects = 'pageSelects',
 }

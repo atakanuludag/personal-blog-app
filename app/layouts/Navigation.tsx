@@ -9,7 +9,7 @@ import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import Link from '@mui/material/Link'
-import ListItem from '@mui/material/ListItem'
+import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Box from '@mui/material/Box'
@@ -23,6 +23,7 @@ import DarkModeSwitch from '@/components/DarkModeSwitch'
 import AppBar from '@/layouts/AppBar'
 import useStoreSettings from '@/hooks/useStoreSettings'
 import { THEME_SETTINGS } from '@/core/Constants'
+import Icon from '@mui/material/Icon'
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {},
@@ -94,15 +95,10 @@ const Title = styled('h1')(({ theme }) => ({
 
 export default function Navigation() {
   const { settingsStore } = useStoreSettings()
-
   const classes = useStyles()
   const theme = useTheme()
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'))
   const [navOpen, setNavOpen] = useState(false)
-  const handleNavigationButton = (link: string) => {
-    //console.log("link", link);
-    //history.push(`/${link}`);
-  }
 
   const toggleDrawer = (e: React.KeyboardEvent | React.MouseEvent) => {
     const key = (e as React.KeyboardEvent).key
@@ -185,22 +181,16 @@ export default function Navigation() {
           <Divider />
 
           <List className={classes.menu}>
-            <ListItem
-              button
-              onClick={() => handleNavigationButton('dashboard')}
-            >
-              <ListItemIcon>
-                <PersonIcon />
-              </ListItemIcon>
-              <ListItemText primary="Hakkımda" />
-            </ListItem>
-
-            <ListItem button onClick={() => handleNavigationButton('users')}>
-              <ListItemIcon>
-                <EmailIcon />
-              </ListItemIcon>
-              <ListItemText primary="İletişim" />
-            </ListItem>
+            {settingsStore.navbarPages.map((p, i) => (
+              <NextLink key={i} href={p.guid} passHref>
+                <ListItemButton component="a">
+                  {/* <ListItemIcon>
+                    <PersonIcon />
+                  </ListItemIcon> */}
+                  <ListItemText primary={p.title} />
+                </ListItemButton>
+              </NextLink>
+            ))}
           </List>
 
           <Divider />

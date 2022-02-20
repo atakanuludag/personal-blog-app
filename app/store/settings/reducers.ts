@@ -13,6 +13,7 @@ const initialState: SettingsState = {
   personLinkedinUrl: '',
   adminMail: '',
   pageSize: 10,
+  navbarPages: [],
 }
 
 const settings = (

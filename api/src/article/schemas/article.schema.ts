@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import * as mongoose from 'mongoose'
 import { Document, ObjectId } from 'mongoose'
-import { ArticleType } from '../../common/interfaces/enums'
 
 export type ArticleDocument = Article & Document
 
@@ -33,9 +32,6 @@ export class Article {
 
   @Prop({ required: true, type: [mongoose.Schema.Types.ObjectId], ref: 'Tag' })
   tags: ObjectId[]
-
-  @Prop({ type: ArticleType, default: ArticleType.Post })
-  articleType: ArticleType
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'File', default: null })
   coverImage: ObjectId

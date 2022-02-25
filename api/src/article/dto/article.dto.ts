@@ -11,7 +11,6 @@ import {
 } from 'class-validator'
 import { Type } from 'class-transformer'
 import { ObjectId } from 'mongoose'
-import { ArticleType } from '../../common/interfaces/enums'
 
 export class ArticleDto {
   @ApiProperty({
@@ -64,15 +63,6 @@ export class ArticleDto {
   @IsArray()
   @ArrayMinSize(1)
   tags: ObjectId[]
-
-  @ApiProperty({
-    description: 'Article type (post/page)',
-    type: String,
-    enum: ArticleType,
-  })
-  @IsNotEmpty()
-  @IsEnum(ArticleType)
-  articleType: ArticleType
 
   @ApiProperty({
     type: String,

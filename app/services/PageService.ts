@@ -27,7 +27,7 @@ const getItems = async (params?: IListQuery): Promise<IPageResponse> => {
 
 const getItemByGuid = async (guid: string): Promise<IPage> => {
   try {
-    const ret = await axios.get(`/article/getByGuid/${guid}`)
+    const ret = await axios.get(`/page/getByGuid/${guid}`)
     return ret.data
   } catch (err) {
     console.log('[PageService] getItemByGuid() Error: ', err)

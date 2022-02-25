@@ -182,7 +182,7 @@ export default function Navigation() {
 
           <List className={classes.menu}>
             {settingsStore.navbarPages.map((p, i) => (
-              <NextLink key={i} href={p.guid} passHref>
+              <NextLink key={i} href={`/page/${p.guid}`} passHref>
                 <ListItemButton component="a">
                   {/* <ListItemIcon>
                     <PersonIcon />

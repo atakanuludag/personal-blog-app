@@ -9,6 +9,7 @@ import {
   Patch,
   Delete,
   Query,
+  HttpCode,
 } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -30,6 +31,7 @@ import { ExceptionHelper } from '../common/helpers/exception.helper'
 import { QueryHelper } from '../common/helpers/query.helper'
 import { CoreMessage, ArticleMessage } from '../common/messages'
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
+import { IpAddress } from '../common/decorators/ip.decorator'
 
 //Todo: https://www.npmjs.com/package/reading-time
 
@@ -96,13 +98,15 @@ export class ArticleController {
   })
   @ApiParam({ name: 'guid', type: String })
   @Get('getByGuid/:guid')
-  async getItemByGuid(@Param() params: GuidParamsDto) {
+  async getItemByGuid(@Param() params: GuidParamsDto, @IpAddress() ipAddress) {
     const data = await this.service.getItemByGuid(params.guid)
     if (!data)
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
         HttpStatus.BAD_REQUEST,
       )
+
+    await this.service.updateIPViewByGuid(params.guid, ipAddress)
     return data
   }
 
@@ -165,5 +169,23 @@ export class ArticleController {
   @Delete(':id')
   async delete(@Param() params: IdParamsDto) {
     await this.service.delete(params.id)
+  }
+
+  @ApiOperation({
+    summary: 'Like article item by id.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: DefaultException,
+  })
+  @ApiOkResponse({
+    description: 'Liked count',
+    type: Number,
+  })
+  @ApiParam({ name: 'id', type: String })
+  @Post('/like/:id')
+  @HttpCode(200)
+  async likeItemById(@Param() params: IdParamsDto, @IpAddress() ipAddress) {
+    return await this.service.updateIPLikeById(params.id, ipAddress)
   }
 }

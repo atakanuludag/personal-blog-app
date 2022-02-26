@@ -120,4 +120,20 @@ export class PageService {
       )
     }
   }
+
+  async updateIPViewByGuid(guid: string, ip: string): Promise<void> {
+    try {
+      await this.serviceModel.findOneAndUpdate(
+        { guid },
+        {
+          $addToSet: { viewIPs: ip },
+        },
+      )
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
 }

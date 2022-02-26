@@ -10,6 +10,8 @@ export interface IArticle extends Document {
   readonly tags: ObjectId[]
   readonly coverImage: ObjectId
   readonly isShow: boolean
+  readonly viewIPs?: string[]
+  readonly likedIPs?: string[]
   readonly viewCount: number
-  readonly likeCount: number
+  readonly likedCount: number
 }

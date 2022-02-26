@@ -8,4 +8,5 @@ export interface IPage extends Document {
   readonly publishingDate: Date
   readonly isShow: boolean
   readonly viewCount: number
+  readonly viewIPs?: string[]
 }

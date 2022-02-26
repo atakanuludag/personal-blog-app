@@ -61,7 +61,6 @@ function PageDetail({ data }: IPageDetailProps) {
             spacing={1}
           >
             <StackItem>{moment(data.publishingDate).fromNow()}</StackItem>
-            <StackItem>5 min read</StackItem>
             <StackItem>{`${data.viewCount} okunma`}</StackItem>
           </Stack>
         </Grid>

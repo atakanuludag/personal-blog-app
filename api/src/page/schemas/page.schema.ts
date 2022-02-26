@@ -25,8 +25,29 @@ export class Page {
   @Prop({ default: true })
   isShow: boolean
 
-  @Prop({ default: 0 })
+  @Prop({
+    default: [],
+    required: false,
+  })
+  viewIPs: string[]
+
+  // Virtual;
   viewCount: number
 }
 
 export const PageSchema = SchemaFactory.createForClass(Page)
+
+// PageSchema.virtual('viewCount').get(function () {
+//   return this.viewIPs.length
+// })
+
+PageSchema.set('toJSON', {
+  transform: function (doc, ret: PageDocument, options) {
+    let data = {
+      viewCount: ret.viewIPs ? ret.viewIPs.length : 0,
+      ...ret,
+    }
+    delete data.viewIPs
+    return data
+  },
+})

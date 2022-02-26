@@ -30,6 +30,7 @@ import { ExceptionHelper } from '../common/helpers/exception.helper'
 import { QueryHelper } from '../common/helpers/query.helper'
 import { CoreMessage, PageMessage } from '../common/messages'
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
+import { IpAddress } from '../common/decorators/ip.decorator'
 
 @ApiTags('Page')
 @Controller('page')
@@ -94,13 +95,14 @@ export class PageController {
   })
   @ApiParam({ name: 'guid', type: String })
   @Get('getByGuid/:guid')
-  async getItemByGuid(@Param() params: GuidParamsDto) {
+  async getItemByGuid(@Param() params: GuidParamsDto, @IpAddress() ipAddress) {
     const data = await this.service.getItemByGuid(params.guid)
     if (!data)
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
         HttpStatus.BAD_REQUEST,
       )
+    await this.service.updateIPViewByGuid(params.guid, ipAddress)
     return data
   }
 

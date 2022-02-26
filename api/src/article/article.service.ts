@@ -163,4 +163,38 @@ export class ArticleService {
       )
     }
   }
+
+  async updateIPViewByGuid(guid: string, ip: string): Promise<void> {
+    try {
+      await this.serviceModel.findOneAndUpdate(
+        { guid },
+        {
+          $addToSet: { viewIPs: ip },
+        },
+      )
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  async updateIPLikeById(_id: ObjectId, ip: string): Promise<number> {
+    try {
+      await this.serviceModel.findByIdAndUpdate(
+        { _id },
+        {
+          $addToSet: { likedIPs: ip },
+        },
+      )
+      const data = await this.serviceModel.findById(_id).exec()
+      return data.likedIPs.length
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
 }

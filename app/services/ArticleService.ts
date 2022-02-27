@@ -1,24 +1,7 @@
-import axios, { AxiosError } from '@/core/Axios'
+import axios from '@/core/Axios'
 import IArticle, { IArticleResponse } from '@/models/IArticle'
 import IListQuery from '@/models/IListQuery'
-/*import IDHItem from '../interfaces/IDHItem'
-import ILoginForm from '../interfaces/ILoginForm'
-import IAuth from '../interfaces/IAuth'
-import IServiceResponse from '../interfaces/IServiceResponse'
-*/
-
-/*
-export const initialItemValue: IDHItem = {
-    id: "",
-    title: "",
-    content:  "",
-    date: "",
-    guid: "",
-    link: "",
-    previewLink: "",
-    topicId: "",
-    likeCount: 0
-}*/
+import readingTime from 'reading-time'
 
 const itemToModel = (item: any): IArticle => {
   const {
@@ -33,10 +16,12 @@ const itemToModel = (item: any): IArticle => {
     articleType,
     isShow,
     viewCount,
-    likeCount,
+    likedCount,
     createdAt,
     updatedAt,
   } = item
+
+  const stats = readingTime(content)
 
   return {
     id: _id,
@@ -51,9 +36,10 @@ const itemToModel = (item: any): IArticle => {
     coverImage: item.coverImage ? item.coverImage.path : '',
     isShow,
     viewCount,
-    likeCount,
+    likedCount,
     createdAt,
     updatedAt,
+    readingTimeMin: Math.round(stats.minutes),
   }
 }
 
@@ -94,9 +80,35 @@ const getItemByGuid = async (guid: string): Promise<IArticle> => {
   }
 }
 
+const getLikeIPCheck = async (guid: string, ip: string): Promise<boolean> => {
+  try {
+    const res = await axios.get(`/article/likeIpCheck/${guid}`, {
+      params: {
+        ip,
+      },
+    })
+    return typeof res.data !== 'undefined' ? res.data : true
+  } catch (err) {
+    console.log('[ArticleService] getLikeIPCheck() Error: ', err)
+    return true
+  }
+}
+
+const likePost = async (id: string): Promise<number> => {
+  try {
+    const res = await axios.post(`/article/like/${id}`)
+    return typeof res.data !== 'undefined' ? res.data : 0
+  } catch (err) {
+    console.log('[ArticleService] likePost() Error: ', err)
+    return 0
+  }
+}
+
 const service = {
   getItems,
   getItemByGuid,
+  getLikeIPCheck,
+  likePost,
 }
 
 export default service

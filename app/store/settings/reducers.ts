@@ -1,6 +1,7 @@
 import { SettingsActionType, SettingsState, SettingsActions } from './types'
 
 const initialState: SettingsState = {
+  userIpAddress: '127.0.0.1',
   darkMode: null,
   siteUrl: '',
   siteTitle: '',

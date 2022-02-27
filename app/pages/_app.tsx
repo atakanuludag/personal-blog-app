@@ -32,6 +32,8 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
     : LayoutBlogPage
 
   const settings: ISettings = pageProps.settings
+  const userIpAdress: string = pageProps.userIpAdress
+
   const auth: IToken | undefined = pageProps.auth
   if (auth) axiosSetTokenInterceptor(auth.accessToken)
 
@@ -73,7 +75,7 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
           }}
         />
         <Provider store={store}>
-          <Theme settings={settings}>
+          <Theme settings={settings} userIpAdress={userIpAdress}>
             <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
               <Layout>
                 <Component {...pageProps} />
@@ -91,6 +93,13 @@ PersonalBlogApp.getInitialProps = async (appContext: AppContext) => {
   const { req, res } = appContext.ctx
   const { getCookie } = Cookie(req, res)
   const appProps = await App.getInitialProps(appContext)
+  let userIpAdress = '127.0.0.1'
+
+  if (res) {
+    userIpAdress = res.getHeader('IpAddress') as string
+    if (process.env.NODE_ENV === 'development') userIpAdress = '127.0.0.1'
+  }
+
   const settings = await SettingService.getItemsAsObject()
   const auth: IToken | null = getCookie('auth', true)
   if (auth) {
@@ -99,9 +108,12 @@ PersonalBlogApp.getInitialProps = async (appContext: AppContext) => {
     //AxiosSetTokenInterceptor(auth.accessToken)
     appProps.pageProps.auth = auth
   }
-  //Todo: globalstore will be deleted later.
+
   GlobalStore.set('settings', settings) //use SSR and use getServerSideProps
+  GlobalStore.set('userIpAdress', userIpAdress) //use SSR and use getServerSideProps
+
   appProps.pageProps.settings = settings
+  appProps.pageProps.userIpAdress = userIpAdress
   return { ...appProps }
 }
 

@@ -16,9 +16,10 @@ export default interface IArticle {
   readonly coverImage: string
   readonly isShow: boolean
   readonly viewCount: number
-  readonly likeCount: number
+  readonly likedCount: number
   readonly createdAt: Date
   readonly updatedAt: Date
+  readonly readingTimeMin: number
 }
 
 export interface IArticleResponse extends IListResponse {

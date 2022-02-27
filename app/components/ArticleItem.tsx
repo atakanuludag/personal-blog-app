@@ -86,9 +86,13 @@ function ArticleItem({ data }: IArticleItemProps, ref: Ref<HTMLDivElement>) {
               spacing={1}
             >
               <StackItem>{moment(data.publishingDate).fromNow()}</StackItem>
-              <StackItem>5 min read</StackItem>
+              <StackItem>
+                {data.readingTimeMin <= 0
+                  ? '1 dakikadan az'
+                  : `${data.readingTimeMin} dakikalık okuma`}
+              </StackItem>
               <StackItem>{`${data.viewCount} okunma`}</StackItem>
-              <StackItem>{`${data.likeCount} beğeni`}</StackItem>
+              <StackItem>{`${data.likedCount} beğeni`}</StackItem>
             </Stack>
 
             <Description>{textLimit(data.shortDescription, 330)}</Description>

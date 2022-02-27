@@ -197,4 +197,21 @@ export class ArticleService {
       )
     }
   }
+
+  async searchByIpAndGuid(guid: string, ip: string): Promise<boolean> {
+    try {
+      const find = await this.serviceModel
+        .findOne({
+          guid,
+          likedIPs: { $in: [ip] },
+        })
+        .exec()
+      return find ? true : false
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
 }

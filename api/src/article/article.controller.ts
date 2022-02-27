@@ -18,6 +18,7 @@ import {
   ApiCreatedResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger'
 import { ArticleDto } from './dto/article.dto'
@@ -32,8 +33,6 @@ import { QueryHelper } from '../common/helpers/query.helper'
 import { CoreMessage, ArticleMessage } from '../common/messages'
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
 import { IpAddress } from '../common/decorators/ip.decorator'
-
-//Todo: https://www.npmjs.com/package/reading-time
 
 @ApiTags('Article')
 @Controller('article')
@@ -187,5 +186,30 @@ export class ArticleController {
   @HttpCode(200)
   async likeItemById(@Param() params: IdParamsDto, @IpAddress() ipAddress) {
     return await this.service.updateIPLikeById(params.id, ipAddress)
+  }
+
+  /*
+   * Bu servis NextJS tarafında Server side olarak çağrıldığı için IP'yi direkt alamıyoruz.
+   * o nedenle ip adresini query'den alıp kontrol ediyoruz.
+   */
+  @ApiOperation({
+    summary: 'Like article item by id.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: DefaultException,
+  })
+  @ApiOkResponse({
+    description: 'Success',
+    type: Boolean,
+  })
+  @ApiParam({ name: 'guid', type: String })
+  @ApiQuery({ name: 'ip', type: String })
+  @Get('/likeIpCheck/:guid')
+  async getTopicLikeIpCheck(
+    @Param() params: GuidParamsDto,
+    @Query() query: { ip: string },
+  ) {
+    return await this.service.searchByIpAndGuid(params.guid, query.ip)
   }
 }

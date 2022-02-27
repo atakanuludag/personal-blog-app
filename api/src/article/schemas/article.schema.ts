@@ -57,9 +57,9 @@ export const ArticleSchema = SchemaFactory.createForClass(Article)
 ArticleSchema.set('toJSON', {
   transform: function (doc, ret: ArticleDocument, options) {
     let data = {
+      ...ret,
       viewCount: ret.viewIPs ? ret.viewIPs.length : 0,
       likedCount: ret.likedIPs ? ret.likedIPs.length : 0,
-      ...ret,
     }
     delete data.viewIPs
     delete data.likedIPs

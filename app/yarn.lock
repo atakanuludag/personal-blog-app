@@ -3619,6 +3619,11 @@
   dependencies:
     "picomatch" "^2.2.1"
 
+"reading-time@^1.5.0":
+  "integrity" "sha512-onYyVhBNr4CmAxFsKS7bz+uTLRakypIe4R+5A824vBSkQy/hB3fZepoVEf8OVAxzLvK+H/jm9TzpI3ETSm64Kg=="
+  "resolved" "https://registry.npmjs.org/reading-time/-/reading-time-1.5.0.tgz"
+  "version" "1.5.0"
+
 "redux-logger@^3.0.6":
   "integrity" "sha1-91VZZvMJjzyIYExEnPC69XeCdL8="
   "resolved" "https://registry.npmjs.org/redux-logger/-/redux-logger-3.0.6.tgz"

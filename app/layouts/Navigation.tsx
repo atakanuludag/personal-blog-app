@@ -180,20 +180,26 @@ export default function Navigation() {
 
           <Divider />
 
-          <List className={classes.menu}>
-            {settingsStore.navbarPages.map((p, i) => (
-              <NextLink key={i} href={`/page/${p.guid}`} passHref>
-                <ListItemButton component="a">
-                  {/* <ListItemIcon>
+          {settingsStore.navbarPages ? (
+            <>
+              <List className={classes.menu}>
+                {settingsStore.navbarPages.map((p, i) => (
+                  <NextLink key={i} href={`/page/${p.guid}`} passHref>
+                    <ListItemButton component="a">
+                      {/* <ListItemIcon>
                     <PersonIcon />
                   </ListItemIcon> */}
-                  <ListItemText primary={p.title} />
-                </ListItemButton>
-              </NextLink>
-            ))}
-          </List>
+                      <ListItemText primary={p.title} />
+                    </ListItemButton>
+                  </NextLink>
+                ))}
+              </List>
 
-          <Divider />
+              <Divider />
+            </>
+          ) : (
+            <></>
+          )}
 
           <DarkModeSwitch />
         </nav>

@@ -13,6 +13,7 @@ import { ArticleModule } from './article/article.module'
 import { FileModule } from './file/file.module'
 import { SettingsModule } from './settings/settings.module'
 import { PageModule } from './page/page.module'
+import { ReportModule } from './report/report.module';
 
 import * as moment from 'moment'
 import 'moment/locale/tr'
@@ -42,6 +43,7 @@ moment.locale('tr')
     FileModule,
     SettingsModule,
     PageModule,
+    ReportModule,
   ],
   controllers: [AppController],
   providers: [],

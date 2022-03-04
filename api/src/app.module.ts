@@ -12,7 +12,7 @@ import { TagModule } from './tag/tag.module'
 import { ArticleModule } from './article/article.module'
 import { FileModule } from './file/file.module'
 import { SettingsModule } from './settings/settings.module'
-import { PageModule } from './page/page.module';
+import { PageModule } from './page/page.module'
 
 import * as moment from 'moment'
 import 'moment/locale/tr'
@@ -28,7 +28,8 @@ moment.locale('tr')
       useFactory: async (configService: ConfigService<IEnv>) => ({
         uri: configService.get<string>('MONGODB_URI'),
         useNewUrlParser: true,
-        useUnifiedTopology: true,
+        socketTimeoutMS: 0,
+        connectTimeoutMS: 0,
         useCreateIndex: true,
         useFindAndModify: false,
       }),

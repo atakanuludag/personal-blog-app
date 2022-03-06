@@ -18,6 +18,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     borderRadius: '50%',
     alignItems: 'center',
+    backgroundColor: theme.palette.secondary.main,
+    color: theme.palette.primary.main,
     padding: theme.spacing(2),
     width: theme.spacing(8),
     height: theme.spacing(8),

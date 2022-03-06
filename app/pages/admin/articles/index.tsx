@@ -16,7 +16,7 @@ type AdminComponent = NextPage<IPageProps> & {
   layout: typeof LayoutAdminPage
 }
 
-const AdminHome: AdminComponent = ({ settings }: IPageProps) => {
+const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
   const { articleParamsStore, setArticleParamsStore } = useStoreArticle()
   const { articleQuery } = useArticleQuery({
     ...articleParamsStore,
@@ -84,7 +84,7 @@ const AdminHome: AdminComponent = ({ settings }: IPageProps) => {
   return <></>
 }
 
-AdminHome.layout = LayoutAdminPage
-export default AdminHome
+AdminArticleIndex.layout = LayoutAdminPage
+export default AdminArticleIndex
 
 export { getServerSideProps }

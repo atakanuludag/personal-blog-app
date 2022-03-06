@@ -25,3 +25,15 @@ export default interface IArticle {
 export interface IArticleResponse extends IListResponse {
   results: IArticle[]
 }
+
+export interface INewArticle {
+  readonly title: string
+  readonly shortDescription: string
+  readonly content: string
+  readonly guid: string
+  readonly publishingDate: Date
+  readonly categories: string[]
+  readonly tags: string[]
+  readonly coverImage: string
+  readonly isShow: boolean
+}

@@ -8,6 +8,7 @@ const QUERY_NAMES = {
   ARTICLE: 'article',
   PAGE: 'page',
   SETTINGS: 'settings',
+  ADMIN_DASHBOARD_REPORT: 'admin_dashboard_report',
 }
 
 const LS_DARK_MODE: ILocalStorage = {

@@ -38,15 +38,6 @@ function Breadcrumb({ data, isShowHome = true, ...props }: IBreadcrumbProps) {
           </NextLink>
         )}
 
-        {/* <Link
-          underline="hover"
-          color="inherit"
-          href="/getting-started/installation/"
-        >
-          Core
-        </Link>
-        <Typography>Breadcrumbs</Typography> */}
-
         {data.map((breadcrumb, i) => {
           if (breadcrumb.link) {
             return (

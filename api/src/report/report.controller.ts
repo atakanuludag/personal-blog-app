@@ -1,15 +1,12 @@
-import { Controller, Get } from '@nestjs/common'
+import { Controller, Get, UseGuards } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiOkResponse,
-  ApiCreatedResponse,
   ApiOperation,
-  ApiParam,
-  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger'
-
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
 import { ReportService } from './report.service'
 import { IDashboardReport } from './interfaces/IDashboardReport'
 import { DashboardReportDto } from './dto/dashboard-report.dto'
@@ -31,12 +28,18 @@ export class ReportController {
     description: 'Success',
     type: DashboardReportDto,
   })
+  @ApiBearerAuth('accessToken')
+  @UseGuards(JwtAuthGuard)
   @Get('/dashboard')
   async list() {
     let response: IDashboardReport = {
       articleCount: 0,
+      pageCount: 0,
+      fileCount: 0,
     }
     response.articleCount = await this.service.getArticleCount()
+    response.pageCount = await this.service.getPageCount()
+    response.fileCount = await this.service.getFileCount()
     return response
   }
 }

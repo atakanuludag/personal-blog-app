@@ -13,7 +13,7 @@ import { UserDto } from './dto/user.dto'
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(User.name) private readonly serviceModel: Model<UserDocument>,
     private jwtService: JwtService,
     private passwordHelper: PasswordHelper,
     private readonly coreMessage: CoreMessage,
@@ -39,7 +39,7 @@ export class UserService {
     password: string,
   ): Promise<IUser | null> {
     try {
-      const find = await this.userModel
+      const find = await this.serviceModel
         .findOne({ userName })
         .select('+password')
         .exec()
@@ -62,7 +62,7 @@ export class UserService {
 
   async findUserById(id: ObjectId): Promise<IUser> {
     try {
-      return await this.userModel.findById(id).exec()
+      return await this.serviceModel.findById(id).exec()
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.INTERNAL_SERVER_ERROR,
@@ -76,7 +76,7 @@ export class UserService {
     email: string | undefined,
   ): Promise<boolean> {
     try {
-      return await this.userModel.exists({ $or: [{ userName }, { email }] })
+      return await this.serviceModel.exists({ $or: [{ userName }, { email }] })
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.INTERNAL_SERVER_ERROR,
@@ -87,7 +87,7 @@ export class UserService {
 
   async register(registerUserDto: UserDto): Promise<User> {
     try {
-      const create = new this.userModel(registerUserDto)
+      const create = new this.serviceModel(registerUserDto)
       return create.save()
     } catch (err) {
       throw new ExceptionHelper(

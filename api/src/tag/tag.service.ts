@@ -11,13 +11,13 @@ import { CoreMessage } from '../common/messages'
 @Injectable()
 export class TagService {
   constructor(
-    @InjectModel(Tag.name) private readonly tagModel: Model<TagDocument>,
+    @InjectModel(Tag.name) private readonly serviceModel: Model<TagDocument>,
     private readonly coreMessage: CoreMessage,
   ) {}
 
   async create(data: TagDto): Promise<ITag> {
     try {
-      const create = new this.tagModel(data)
+      const create = new this.serviceModel(data)
       return create.save()
     } catch (err) {
       throw new ExceptionHelper(
@@ -29,7 +29,7 @@ export class TagService {
 
   async update(body: UpdateTagDto, id: ObjectId): Promise<ITag> {
     try {
-      return await this.tagModel.findByIdAndUpdate(id, {
+      return await this.serviceModel.findByIdAndUpdate(id, {
         $set: body,
       })
     } catch (err) {
@@ -42,7 +42,7 @@ export class TagService {
 
   async getItems(): Promise<ITag[]> {
     try {
-      const items = await this.tagModel.find().sort('-title').exec()
+      const items = await this.serviceModel.find().sort('-title').exec()
       return items
     } catch (err) {
       throw new ExceptionHelper(
@@ -54,7 +54,7 @@ export class TagService {
 
   async getItemById(id: ObjectId): Promise<ITag> {
     try {
-      return await this.tagModel.findOne({ id }).exec()
+      return await this.serviceModel.findOne({ id }).exec()
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -65,7 +65,7 @@ export class TagService {
 
   async getItemByGuid(guid: string): Promise<ITag> {
     try {
-      return await this.tagModel.findOne({ guid }).exec()
+      return await this.serviceModel.findOne({ guid }).exec()
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -76,7 +76,7 @@ export class TagService {
 
   async guidExists(guid: string): Promise<boolean> {
     try {
-      return await this.tagModel.exists({ guid })
+      return await this.serviceModel.exists({ guid })
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -87,7 +87,7 @@ export class TagService {
 
   async delete(id: ObjectId): Promise<void> {
     try {
-      await this.tagModel.findByIdAndDelete(id)
+      await this.serviceModel.findByIdAndDelete(id)
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.INTERNAL_SERVER_ERROR,

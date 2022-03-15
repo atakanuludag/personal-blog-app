@@ -1,5 +1,4 @@
 import { Document, ObjectId } from 'mongoose'
-import { ArticleType } from '../../common/interfaces/enums'
 
 export interface IArticle extends Document {
   readonly title: string
@@ -9,9 +8,10 @@ export interface IArticle extends Document {
   readonly publishingDate: Date
   readonly categories: ObjectId[]
   readonly tags: ObjectId[]
-  readonly articleType: ArticleType
   readonly coverImage: ObjectId
   readonly isShow: boolean
+  readonly viewIPs?: string[]
+  readonly likedIPs?: string[]
   readonly viewCount: number
-  readonly likeCount: number
+  readonly likedCount: number
 }

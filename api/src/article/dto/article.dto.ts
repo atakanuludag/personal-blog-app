@@ -6,11 +6,10 @@ import {
   IsDate,
   IsArray,
   ArrayMinSize,
-  IsEnum,
+  IsBoolean,
 } from 'class-validator'
 import { Type } from 'class-transformer'
 import { ObjectId } from 'mongoose'
-import { ArticleType } from '../../common/interfaces/enums'
 
 export class ArticleDto {
   @ApiProperty({
@@ -65,17 +64,17 @@ export class ArticleDto {
   tags: ObjectId[]
 
   @ApiProperty({
-    description: 'Article type (post/page)',
-  })
-  @IsNotEmpty()
-  @IsEnum(ArticleType)
-  articleType: ArticleType
-
-  @ApiProperty({
     type: String,
     description: 'Cover image file id',
   })
   @IsOptional()
   @IsString()
   coverImage: ObjectId
+
+  @ApiProperty({
+    description: 'Show/Hide',
+  })
+  @IsNotEmpty()
+  @IsBoolean()
+  isShow: boolean
 }

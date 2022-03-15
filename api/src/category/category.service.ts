@@ -12,13 +12,13 @@ import { CoreMessage } from '../common/messages'
 export class CategoryService {
   constructor(
     @InjectModel(Category.name)
-    private readonly categoryModel: Model<CategoryDocument>,
+    private readonly serviceModel: Model<CategoryDocument>,
     private readonly coreMessage: CoreMessage,
   ) {}
 
   async create(data: CategoryDto): Promise<ICategory> {
     try {
-      const create = new this.categoryModel(data)
+      const create = new this.serviceModel(data)
       return create.save()
     } catch (err) {
       throw new ExceptionHelper(
@@ -30,7 +30,7 @@ export class CategoryService {
 
   async update(body: UpdateCategoryDto, id: ObjectId): Promise<ICategory> {
     try {
-      return await this.categoryModel.findByIdAndUpdate(id, {
+      return await this.serviceModel.findByIdAndUpdate(id, {
         $set: body,
       })
     } catch (err) {
@@ -43,7 +43,7 @@ export class CategoryService {
 
   async getItems(): Promise<ICategory[]> {
     try {
-      const items = await this.categoryModel
+      const items = await this.serviceModel
         .find()
         .populate('parent')
         .sort('-title')
@@ -59,7 +59,7 @@ export class CategoryService {
 
   async getItemById(id: ObjectId): Promise<ICategory> {
     try {
-      return await this.categoryModel.findOne({ id }).populate('parent').exec()
+      return await this.serviceModel.findOne({ id }).populate('parent').exec()
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -70,10 +70,7 @@ export class CategoryService {
 
   async getItemByGuid(guid: string): Promise<ICategory> {
     try {
-      return await this.categoryModel
-        .findOne({ guid })
-        .populate('parent')
-        .exec()
+      return await this.serviceModel.findOne({ guid }).populate('parent').exec()
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -84,7 +81,7 @@ export class CategoryService {
 
   async guidExists(guid: string): Promise<boolean> {
     try {
-      return await this.categoryModel.exists({ guid })
+      return await this.serviceModel.exists({ guid })
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -95,7 +92,7 @@ export class CategoryService {
 
   async delete(id: ObjectId): Promise<void> {
     try {
-      await this.categoryModel.findByIdAndDelete(id)
+      await this.serviceModel.findByIdAndDelete(id)
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.INTERNAL_SERVER_ERROR,
@@ -106,7 +103,7 @@ export class CategoryService {
 
   async parentExists(parent: ObjectId): Promise<boolean> {
     try {
-      return await this.categoryModel.exists({ parent })
+      return await this.serviceModel.exists({ parent })
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

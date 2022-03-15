@@ -5,11 +5,12 @@ export class QueryHelper {
   public constructor() {}
 
   public instance(@Query() query): IQuery {
+    const s: string = query.s
     let searchQuery = {}
-    const search = query.s ? query.s : null
+    const search = s ? s.toLocaleLowerCase() : null
     const searchType = query.sType ? query.sType : null
     if (search && searchType)
-      searchQuery = { [searchType]: { $regex: search, $options: '$i' } }
+      searchQuery = { [searchType]: { $regex: `^${search}`, $options: '$i' } }
 
     const orderName = query.order ? query.order : 'createdAt'
     const orderType = query.orderBy ? query.orderBy : OrderType.DESC

@@ -14,13 +14,13 @@ import { CoreMessage } from '../common/messages'
 export class ArticleService {
   constructor(
     @InjectModel(Article.name)
-    private readonly articleModel: Model<ArticleDocument>,
+    private readonly serviceModel: Model<ArticleDocument>,
     private readonly coreMessage: CoreMessage,
   ) {}
 
   async create(data: ArticleDto): Promise<IArticle> {
     try {
-      const create = new this.articleModel(data)
+      const create = new this.serviceModel(data)
       return create.save()
     } catch (err) {
       throw new ExceptionHelper(
@@ -32,7 +32,7 @@ export class ArticleService {
 
   async update(body: UpdateArticleDto, id: ObjectId): Promise<IArticle> {
     try {
-      return await this.articleModel.findByIdAndUpdate(id, {
+      return await this.serviceModel.findByIdAndUpdate(id, {
         $set: body,
       })
     } catch (err) {
@@ -48,7 +48,7 @@ export class ArticleService {
       const { pagination, searchQuery, order } = query
       const { page, pageSize, skip } = pagination
 
-      const items = await this.articleModel
+      const items = await this.serviceModel
         .find(searchQuery)
         .limit(pageSize)
         .sort(order)
@@ -58,7 +58,7 @@ export class ArticleService {
         .populate('coverImage')
         .exec()
 
-      const count = await this.articleModel.find(searchQuery).countDocuments()
+      const count = await this.serviceModel.find(searchQuery).countDocuments()
 
       const totalPages = Math.ceil(count / pageSize)
 
@@ -82,7 +82,7 @@ export class ArticleService {
 
   async getItemById(_id: ObjectId): Promise<IArticle> {
     try {
-      return await this.articleModel
+      return await this.serviceModel
         .findOne({ _id })
         .populate('categories')
         .populate('tags')
@@ -98,7 +98,7 @@ export class ArticleService {
 
   async getItemByGuid(guid: string): Promise<IArticle> {
     try {
-      return await this.articleModel
+      return await this.serviceModel
         .findOne({ guid })
         .populate('categories')
         .populate('tags')
@@ -114,7 +114,7 @@ export class ArticleService {
 
   async guidExists(guid: string): Promise<boolean> {
     try {
-      return await this.articleModel.exists({ guid })
+      return await this.serviceModel.exists({ guid })
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -125,7 +125,7 @@ export class ArticleService {
 
   async delete(id: ObjectId): Promise<void> {
     try {
-      await this.articleModel.findByIdAndDelete(id)
+      await this.serviceModel.findByIdAndDelete(id)
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -136,7 +136,7 @@ export class ArticleService {
 
   async categoryRemoveByObjectId(id: ObjectId): Promise<void> {
     try {
-      await this.articleModel.updateMany(
+      await this.serviceModel.updateMany(
         { categories: id },
         { $pullAll: { categories: [id] } },
         { multi: true },
@@ -151,7 +151,7 @@ export class ArticleService {
 
   async tagRemoveByObjectId(id: ObjectId): Promise<void> {
     try {
-      await this.articleModel.updateMany(
+      await this.serviceModel.updateMany(
         { tags: id },
         { $pullAll: { tags: [id] } },
         { multi: true },
@@ -160,6 +160,57 @@ export class ArticleService {
       throw new ExceptionHelper(
         this.coreMessage.INTERNAL_SERVER_ERROR,
         HttpStatus.INTERNAL_SERVER_ERROR,
+      )
+    }
+  }
+
+  async updateIPViewByGuid(guid: string, ip: string): Promise<void> {
+    try {
+      await this.serviceModel.findOneAndUpdate(
+        { guid },
+        {
+          $addToSet: { viewIPs: ip },
+        },
+      )
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  async updateIPLikeById(_id: ObjectId, ip: string): Promise<number> {
+    try {
+      await this.serviceModel.findByIdAndUpdate(
+        { _id },
+        {
+          $addToSet: { likedIPs: ip },
+        },
+      )
+      const data = await this.serviceModel.findById(_id).exec()
+      return data.likedIPs.length
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  async searchByIpAndGuid(guid: string, ip: string): Promise<boolean> {
+    try {
+      const find = await this.serviceModel
+        .findOne({
+          guid,
+          likedIPs: { $in: [ip] },
+        })
+        .exec()
+      return find ? true : false
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
       )
     }
   }

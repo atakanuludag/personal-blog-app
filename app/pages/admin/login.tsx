@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import { GetServerSideProps, NextPage } from 'next/types'
 import axios from 'axios'
@@ -9,7 +9,17 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
+import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
+import FormHelperText from '@mui/material/FormHelperText'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import OutlinedInput from '@mui/material/OutlinedInput'
+import InputAdornment from '@mui/material/InputAdornment'
+import IconButton from '@mui/material/IconButton'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+
 import LoadingButton from '@mui/lab/LoadingButton'
 import LayoutFullPage from '@/layouts/LayoutFullPage'
 import IPageProps from '@/models/IPageProps'
@@ -24,19 +34,19 @@ type AdminComponent = NextPage<IPageProps> & {
 const LoginBox = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(5),
+  width: '50vw',
   display: 'flex',
   justifyContent: 'center',
 }))
 
-const Form = styled('form')(({ theme }) => ({
-  ...theme.typography.body2,
-  width: '50%',
+const Form = styled('form')(() => ({
+  width: '100%',
 }))
 
 const AdminLogin: AdminComponent = ({}: IPageProps) => {
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
-
+  const [showPassword, setShowPassword] = useState(false)
   const initialValues: ILoginForm = {
     username: 'atakanuludag',
     password: '123456',
@@ -70,51 +80,79 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
       },
     })
 
+  const handleClickShowPassword = () => setShowPassword(!showPassword)
+
+  const handleMouseDownPassword = (e: React.MouseEvent<HTMLButtonElement>) =>
+    e.preventDefault()
+
   return (
-    <LoginBox elevation={24}>
-      <Form method="post" onSubmit={handleSubmit} noValidate>
-        <Stack spacing={2}>
-          <Typography variant="h4" component="div" gutterBottom>
-            Admin Panel Login
-          </Typography>
-          <TextField
-            type="text"
-            id="username"
-            label="Kullanıcı Adı"
-            variant="outlined"
-            disabled={isSubmitting}
-            {...getFieldProps('username')}
-            helperText={
-              errors.username && touched.username ? errors.username : null
-            }
-            error={errors.username ? touched.username : false}
-            fullWidth
-          />
+    <Box display="flex" justifyContent="center">
+      <LoginBox elevation={5}>
+        <Form method="post" onSubmit={handleSubmit} noValidate>
+          <Stack spacing={2}>
+            <Typography variant="h4">Giriş Yap</Typography>
+            <Typography
+              variant="subtitle1"
+              sx={{ margin: '5px 0px 10px 0px !important' }}
+            >
+              Admin panele buradan giriş yapabilirsiniz.
+            </Typography>
+            <TextField
+              type="text"
+              id="username"
+              label="Kullanıcı Adı"
+              variant="outlined"
+              disabled={isSubmitting}
+              {...getFieldProps('username')}
+              helperText={
+                errors.username && touched.username ? errors.username : null
+              }
+              error={errors.username ? touched.username : false}
+              fullWidth
+            />
 
-          <TextField
-            type="password"
-            id="password"
-            label="Şifre"
-            variant="outlined"
-            {...getFieldProps('password')}
-            disabled={isSubmitting}
-            helperText={
-              errors.password && touched.password ? errors.password : null
-            }
-            error={errors.password ? touched.password : false}
-            fullWidth
-          />
+            <FormControl variant="outlined">
+              <InputLabel htmlFor="password">Şifre</InputLabel>
+              <OutlinedInput
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                {...getFieldProps('password')}
+                error={errors.password ? touched.password : false}
+                fullWidth
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? (
+                        <VisibilityOffIcon />
+                      ) : (
+                        <VisibilityIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Şifre"
+              />
+              <FormHelperText>
+                {errors.password && touched.password ? errors.password : null}
+              </FormHelperText>
+            </FormControl>
 
-          <LoadingButton
-            loading={isSubmitting}
-            variant="contained"
-            type="submit"
-          >
-            Giriş
-          </LoadingButton>
-        </Stack>
-      </Form>
-    </LoginBox>
+            <LoadingButton
+              loading={isSubmitting}
+              variant="contained"
+              type="submit"
+            >
+              Giriş
+            </LoadingButton>
+          </Stack>
+        </Form>
+      </LoginBox>
+    </Box>
   )
 }
 
@@ -138,3 +176,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
 AdminLogin.layout = LayoutFullPage
 export default AdminLogin
+
+/*
+loginde sayfanın ortalanması için main elementine bunu vermek gerekiyor;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+*/

@@ -1,4 +1,4 @@
-export default () => {
+const BrowserDarkMode = () => {
   if (
     typeof window !== 'undefined' &&
     window.matchMedia &&
@@ -8,3 +8,5 @@ export default () => {
   }
   return false
 }
+
+export default BrowserDarkMode

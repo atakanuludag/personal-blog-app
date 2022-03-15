@@ -9,6 +9,7 @@ import {
   Patch,
   Delete,
   Query,
+  HttpCode,
 } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -17,6 +18,7 @@ import {
   ApiCreatedResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger'
 import { ArticleDto } from './dto/article.dto'
@@ -30,8 +32,7 @@ import { ExceptionHelper } from '../common/helpers/exception.helper'
 import { QueryHelper } from '../common/helpers/query.helper'
 import { CoreMessage, ArticleMessage } from '../common/messages'
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
-
-//Todo: https://www.npmjs.com/package/reading-time
+import { IpAddress } from '../common/decorators/ip.decorator'
 
 @ApiTags('Article')
 @Controller('article')
@@ -96,13 +97,15 @@ export class ArticleController {
   })
   @ApiParam({ name: 'guid', type: String })
   @Get('getByGuid/:guid')
-  async getItemByGuid(@Param() params: GuidParamsDto) {
+  async getItemByGuid(@Param() params: GuidParamsDto, @IpAddress() ipAddress) {
     const data = await this.service.getItemByGuid(params.guid)
     if (!data)
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
         HttpStatus.BAD_REQUEST,
       )
+
+    await this.service.updateIPViewByGuid(params.guid, ipAddress)
     return data
   }
 
@@ -165,5 +168,48 @@ export class ArticleController {
   @Delete(':id')
   async delete(@Param() params: IdParamsDto) {
     await this.service.delete(params.id)
+  }
+
+  @ApiOperation({
+    summary: 'Like article item by id.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: DefaultException,
+  })
+  @ApiOkResponse({
+    description: 'Liked count',
+    type: Number,
+  })
+  @ApiParam({ name: 'id', type: String })
+  @Post('/like/:id')
+  @HttpCode(200)
+  async likeItemById(@Param() params: IdParamsDto, @IpAddress() ipAddress) {
+    return await this.service.updateIPLikeById(params.id, ipAddress)
+  }
+
+  /*
+   * Bu servis NextJS tarafında Server side olarak çağrıldığı için IP'yi direkt alamıyoruz.
+   * o nedenle ip adresini query'den alıp kontrol ediyoruz.
+   */
+  @ApiOperation({
+    summary: 'Like article item by id.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: DefaultException,
+  })
+  @ApiOkResponse({
+    description: 'Success',
+    type: Boolean,
+  })
+  @ApiParam({ name: 'guid', type: String })
+  @ApiQuery({ name: 'ip', type: String })
+  @Get('/likeIpCheck/:guid')
+  async getTopicLikeIpCheck(
+    @Param() params: GuidParamsDto,
+    @Query() query: { ip: string },
+  ) {
+    return await this.service.searchByIpAndGuid(params.guid, query.ip)
   }
 }

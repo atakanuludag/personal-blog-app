@@ -37,6 +37,8 @@ async function bootstrap() {
     .addTag('File', 'File endpoint')
     .addTag('Settings', 'Settings endpoint')
     .addTag('Article', 'Article endpoint')
+    .addTag('Page', 'Page endpoint')
+    .addTag('Report', 'Report endpoint')
     .build()
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup(swaggerUrl, app, document)

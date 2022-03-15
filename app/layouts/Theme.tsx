@@ -7,40 +7,32 @@ import { trTR } from '@mui/material/locale'
 import useStoreSettings from '@/hooks/useStoreSettings'
 import useInitialDarkMode from '@/hooks/useInitialDarkMode'
 import ISettings from '@/models/ISettings'
-import IToken from '@/models/IToken'
-import { getLocalStorage } from '@/utils/LocalStorage'
-import { LOCAL_STORAGES } from '@/core/Constants'
 
 interface ITheme {
   children: ReactNode
   settings: ISettings
-  //auth: IToken | null
+  userIpAdress: string;
 }
 
-const AppTheme = ({ children, settings }: ITheme) => {
-  //console.log("auth", auth);
-  
+const AppTheme = ({ children, settings, userIpAdress }: ITheme) => {
+
   const { settingsStore, setSettingsStore } = useStoreSettings()
   const darkColor = '#202020'
   const darkMode = settingsStore.darkMode
+
   useEffect(() => {
-
-    //const auth: IToken  = getLocalStorage(LOCAL_STORAGES.LS_AUTH)
-
     let data = {
       ...settingsStore,
       ...settings,
     }
-
-    // if(auth !== null){
-    //   data = {...data, ...auth, isLogin: true}
-    // }
 
     if (settingsStore.darkMode === null) {
       const initialDarkMode = useInitialDarkMode()
       data.darkMode = initialDarkMode()
     }
 
+    data.userIpAddress = userIpAdress;
+    
     setSettingsStore({
       ...data,
     })

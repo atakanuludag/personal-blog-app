@@ -2,6 +2,7 @@ import { Action } from 'redux'
 import ISettings from '@/models/ISettings'
 
 export interface SettingsState extends ISettings {
+  userIpAddress: string
   darkMode: boolean | null
 }
 

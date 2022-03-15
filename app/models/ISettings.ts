@@ -1,4 +1,5 @@
 import { ValueType } from '@/models/enums'
+import IPage from '@/models/IPage'
 
 export interface ISettingItem {
   id: string
@@ -20,4 +21,5 @@ export default interface ISettings {
   readonly personLinkedinUrl: string
   readonly adminMail: string
   readonly pageSize: number
+  readonly navbarPages: IPage[]
 }

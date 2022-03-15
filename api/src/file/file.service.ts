@@ -13,7 +13,7 @@ import { IFileList } from './interfaces/file-list.interface'
 @Injectable()
 export class FileService {
   constructor(
-    @InjectModel(File.name) private readonly fileModel: Model<FileDocument>,
+    @InjectModel(File.name) private readonly serviceModel: Model<FileDocument>,
     private readonly coreMessage: CoreMessage,
   ) {}
 
@@ -22,14 +22,14 @@ export class FileService {
       const { pagination, searchQuery, order } = query
       const { page, pageSize, skip } = pagination
 
-      const items = await this.fileModel
+      const items = await this.serviceModel
         .find(searchQuery)
         .limit(pageSize)
         .sort(order)
         .skip(skip)
         .exec()
 
-      const count = await this.fileModel
+      const count = await this.serviceModel
         .find(query.searchQuery)
         .countDocuments()
 
@@ -55,7 +55,7 @@ export class FileService {
 
   async saveFile(data: File[]): Promise<IFile[]> {
     try {
-      const createItems = await this.fileModel.insertMany(data)
+      const createItems = await this.serviceModel.insertMany(data)
       return createItems
     } catch (err) {
       throw new ExceptionHelper(

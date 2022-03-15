@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import * as mongoose from 'mongoose'
 import { Document, ObjectId } from 'mongoose'
-import { ArticleType } from '../../common/interfaces/enums'
 
 export type ArticleDocument = Article & Document
 
@@ -34,20 +33,36 @@ export class Article {
   @Prop({ required: true, type: [mongoose.Schema.Types.ObjectId], ref: 'Tag' })
   tags: ObjectId[]
 
-  @Prop({ type: ArticleType, default: ArticleType.Post })
-  articleType: ArticleType
-
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'File', default: null })
   coverImage: ObjectId
 
   @Prop({ default: true })
   isShow: boolean
 
-  @Prop({ default: 0 })
+  @Prop({ default: [], required: false })
+  viewIPs: string[]
+
+  @Prop({ default: [], required: false })
+  likedIPs: string[]
+
+  // Virtual;
   viewCount: number
 
-  @Prop({ default: 0 })
-  likeCount: number
+  // Virtual;
+  likedCount: number
 }
 
 export const ArticleSchema = SchemaFactory.createForClass(Article)
+
+ArticleSchema.set('toJSON', {
+  transform: function (doc, ret: ArticleDocument, options) {
+    let data = {
+      ...ret,
+      viewCount: ret.viewIPs ? ret.viewIPs.length : 0,
+      likedCount: ret.likedIPs ? ret.likedIPs.length : 0,
+    }
+    delete data.viewIPs
+    delete data.likedIPs
+    return data
+  },
+})

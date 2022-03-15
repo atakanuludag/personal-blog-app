@@ -3,14 +3,23 @@ import { GetServerSideProps, NextPage } from 'next/types'
 import { useRouter } from 'next/router'
 import { dehydrate, QueryClient } from 'react-query'
 import { NextSeo } from 'next-seo'
-import Box from '@mui/material/Box'
+import ArticleService from '@/services/ArticleService'
 import IPageProps from '@/models/IPageProps'
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
 import useStoreArticle from '@/hooks/useStoreArticle'
-
 import ArticleDetail from '@/components/ArticleDetail'
+import Breadcrumb, { IBreadCrumb } from '@/components/Breadcrumb'
+import GlobalStore from '@/utils/GlobalStore'
 
-const Guid: NextPage<IPageProps> = ({ settings }: IPageProps) => {
+interface IGuid extends IPageProps {
+  currentIpAdressIsLiked: boolean
+}
+
+const Guid: NextPage<IGuid> = ({
+  settings,
+  userIpAdress,
+  currentIpAdressIsLiked,
+}: IGuid) => {
   const { query } = useRouter()
   const guid = !query.guid ? '' : query.guid
 
@@ -18,6 +27,13 @@ const Guid: NextPage<IPageProps> = ({ settings }: IPageProps) => {
   const { articleGetByGuidQuery } = useArticleQuery(articleParamsStore)
   const { data, isSuccess } = articleGetByGuidQuery(guid as string)
   const url = `${settings.siteUrl}/${data?.guid}`
+
+  const breadcrumb: IBreadCrumb[] = [
+    {
+      title: isSuccess && data ? data.title : '',
+      link: null,
+    },
+  ]
 
   if (isSuccess && data) {
     return (
@@ -34,10 +50,11 @@ const Guid: NextPage<IPageProps> = ({ settings }: IPageProps) => {
             site_name: settings.siteTitle,
           }}
         />
-        <ArticleDetail data={data} />
-        {/* <Box component="section">
-          <p>{data.title}</p>
-        </Box> */}
+        <Breadcrumb data={breadcrumb} />
+        <ArticleDetail
+          data={data}
+          currentIpAdressIsLiked={currentIpAdressIsLiked}
+        />
       </>
     )
   }
@@ -47,14 +64,22 @@ const Guid: NextPage<IPageProps> = ({ settings }: IPageProps) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const guid = !query.guid ? '' : query.guid
+  const userIpAdress: string = GlobalStore.get('userIpAdress')
+
   const queryClient = new QueryClient()
 
   const { articleByGuidPreFetchQuery } = useArticleQuery()
   await articleByGuidPreFetchQuery(queryClient, guid as string)
 
+  const currentIpAdressIsLiked = await ArticleService.getLikeIPCheck(
+    guid as string,
+    userIpAdress,
+  )
+
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
+      currentIpAdressIsLiked,
     },
   }
 }

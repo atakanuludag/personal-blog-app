@@ -19,7 +19,6 @@ import InputAdornment from '@mui/material/InputAdornment'
 import IconButton from '@mui/material/IconButton'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-
 import LoadingButton from '@mui/lab/LoadingButton'
 import LayoutFullPage from '@/layouts/LayoutFullPage'
 import IPageProps from '@/models/IPageProps'
@@ -34,7 +33,7 @@ type AdminComponent = NextPage<IPageProps> & {
 const LoginBox = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(5),
-  width: '50vw',
+  width: '30vw',
   display: 'flex',
   justifyContent: 'center',
 }))

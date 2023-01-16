@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { NextPage } from 'next/types'
 import moment from 'moment'
+
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import Box from '@mui/material/Box'
@@ -10,6 +11,13 @@ import IPageProps from '@/models/IPageProps'
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
 import getServerSideProps from '@/utils/AdminServerSideProps'
 import { INewArticle } from '@/models/IArticle'
+
+import dynamic from 'next/dynamic'
+
+const Editor = dynamic((): Promise<any> => import('@/components/editor'), {
+  //besure to import dynamically
+  ssr: false,
+})
 
 type AdminComponent = NextPage<IPageProps> & {
   layout: typeof LayoutAdminPage
@@ -54,9 +62,10 @@ const AdminArticleNew: AdminComponent = ({ settings }: IPageProps) => {
         // resetForm()
       },
     })
-
+  //https://github.com/stjerdev/draft-js-next-js/blob/master/components/editor/TextEditor.tsx
   return (
     <>
+      <Editor />
       <TextField
         type="text"
         id="title"

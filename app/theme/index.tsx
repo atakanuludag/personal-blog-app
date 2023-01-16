@@ -8,14 +8,16 @@ import useStoreSettings from '@/hooks/useStoreSettings'
 import useInitialDarkMode from '@/hooks/useInitialDarkMode'
 import ISettings from '@/models/ISettings'
 
+import componentsOverride from '@/theme/overrides'
+
 interface ITheme {
   children: ReactNode
   settings: ISettings
-  userIpAdress: string;
+  userIpAdress: string
 }
 
 const AppTheme = ({ children, settings, userIpAdress }: ITheme) => {
-
+  //Todo: settings setleme burada yapılmayacak
   const { settingsStore, setSettingsStore } = useStoreSettings()
   const darkColor = '#202020'
   const darkMode = settingsStore.darkMode
@@ -31,8 +33,8 @@ const AppTheme = ({ children, settings, userIpAdress }: ITheme) => {
       data.darkMode = initialDarkMode()
     }
 
-    data.userIpAddress = userIpAdress;
-    
+    data.userIpAddress = userIpAdress
+
     setSettingsStore({
       ...data,
     })
@@ -55,14 +57,13 @@ const AppTheme = ({ children, settings, userIpAdress }: ITheme) => {
       MuiListItemButton: {
         styleOverrides: {
           root: {
-            "&.Mui-selected": {
+            '&.Mui-selected': {
               backgroundColor: grey[700],
-              "&:hover": {
+              '&:hover': {
                 backgroundColor: grey[600],
-              }
+              },
             },
-            
-          }
+          },
         },
       },
     },
@@ -90,13 +91,13 @@ const AppTheme = ({ children, settings, userIpAdress }: ITheme) => {
       MuiListItemButton: {
         styleOverrides: {
           root: {
-            "&.Mui-selected": {
+            '&.Mui-selected': {
               backgroundColor: grey[300],
-              "&:hover": {
+              '&:hover': {
                 backgroundColor: grey[200],
-              }
-            }
-          }
+              },
+            },
+          },
         },
       },
     },
@@ -119,6 +120,7 @@ const AppTheme = ({ children, settings, userIpAdress }: ITheme) => {
   })
 
   const theme: Theme = darkMode ? darkTheme : lightTheme
+  theme.components = componentsOverride(theme)
 
   return (
     <ThemeProvider theme={theme}>

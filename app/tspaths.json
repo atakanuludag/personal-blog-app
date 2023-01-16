@@ -4,6 +4,8 @@
     "paths": {
       "@/layouts": ["layouts"],
       "@/layouts/*": ["layouts/*"],
+      "@/theme": ["theme"],
+      "@/theme/*": ["theme/*"],
       "@/core/*": ["core/*"],
       "@/components": ["components"],
       "@/components/*": ["components/*"],

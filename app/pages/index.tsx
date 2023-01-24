@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { Fragment, useRef } from 'react'
 import { NextPage, GetServerSideProps } from 'next/types'
 import { dehydrate, QueryClient } from 'react-query'
 import { TransitionGroup } from 'react-transition-group'
@@ -25,7 +25,7 @@ const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
 
   if (isSuccess && data) {
     return (
-      <>
+      <Fragment>
         <Box component="section">
           <TransitionGroup>
             {data.pages.map((p) =>
@@ -41,11 +41,11 @@ const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
         <Box component="section" hidden={!hasNextPage}>
           <Pagination />
         </Box>
-      </>
+      </Fragment>
     )
   }
 
-  return <></>
+  return <Fragment> </Fragment>
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {

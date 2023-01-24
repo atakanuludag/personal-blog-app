@@ -52,9 +52,9 @@ export default function ApplicationBar({
           <MenuIcon />
         </IconButton>
         <Title>
-          <NextLink href="/" passHref>
-            <Link>{personDisplayName}</Link>
-          </NextLink>
+          <Link component={NextLink} href="/">
+            {personDisplayName}
+          </Link>
         </Title>
       </Toolbar>
     </AppBar>

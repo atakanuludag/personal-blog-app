@@ -31,21 +31,23 @@ function Breadcrumb({ data, isShowHome = true, ...props }: IBreadcrumbProps) {
         sx={{ color: (theme) => theme.palette.grey[800] }}
       >
         {isShowHome && (
-          <NextLink href="/" passHref>
-            <Link underline="hover" color="inherit">
-              Ana Sayfa
-            </Link>
-          </NextLink>
+          <Link href="/" component={NextLink} underline="hover" color="inherit">
+            Ana Sayfa
+          </Link>
         )}
 
         {data.map((breadcrumb, i) => {
           if (breadcrumb.link) {
             return (
-              <NextLink href={breadcrumb.link} passHref key={i}>
-                <Link underline="hover" color="inherit">
-                  {breadcrumb.title}
-                </Link>
-              </NextLink>
+              <Link
+                key={i}
+                component={NextLink}
+                href={breadcrumb.link}
+                underline="hover"
+                color="inherit"
+              >
+                {breadcrumb.title}
+              </Link>
             )
           } else {
             return <Typography key={i}>{breadcrumb.title}</Typography>

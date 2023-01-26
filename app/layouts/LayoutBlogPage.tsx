@@ -3,9 +3,11 @@ import { makeStyles } from '@mui/styles'
 import Navigation from '@/layouts/Navigation'
 import Content from '@/layouts/Content'
 import { LayoutPageType } from '@/models/enums'
+import ISettings from '@/models/ISettings'
 
 interface IMain {
   children: ReactNode
+  settings: ISettings
 }
 //Todo: scroolbar light ve dark temada farklı renklerde olacak...
 const useStyles = makeStyles({
@@ -24,11 +26,11 @@ const useStyles = makeStyles({
   },
 })
 
-export default function LayoutBlogPage({ children }: IMain) {
+export default function LayoutBlogPage({ children, settings }: IMain) {
   const classes = useStyles()
   return (
     <div className={classes.root}>
-      <Navigation />
+      <Navigation settings={settings} />
       <Content children={children} layoutPageType={LayoutPageType.BlogPage} />
     </div>
   )

@@ -21,9 +21,8 @@ import GitHubIcon from '@mui/icons-material/GitHub'
 import PersonIcon from '@mui/icons-material/Person'
 import DarkModeSwitch from '@/components/DarkModeSwitch'
 import AppBar from '@/layouts/AppBar'
-import useStoreSettings from '@/hooks/useStoreSettings'
 import { THEME_SETTINGS } from '@/core/Constants'
-import Icon from '@mui/material/Icon'
+import ISettings from '@/models/ISettings'
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {},
@@ -93,8 +92,11 @@ const Title = styled('h1')(({ theme }) => ({
   },
 }))
 
-export default function Navigation() {
-  const { settingsStore } = useStoreSettings()
+interface INavigation {
+  settings: ISettings
+}
+
+export default function Navigation({ settings }: INavigation) {
   const classes = useStyles()
   const theme = useTheme()
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'))
@@ -114,7 +116,7 @@ export default function Navigation() {
         <AppBar
           open={navOpen}
           toggleDrawer={toggleDrawer}
-          personDisplayName={settingsStore.personDisplayName}
+          personDisplayName={settings.personDisplayName}
         />
       )}
       <Drawer
@@ -132,44 +134,44 @@ export default function Navigation() {
         <nav className={classes.nav}>
           <div className={classes.profileSection}>
             <Title>
-              <NextLink href="/" passHref>
-                <Link>{settingsStore.personDisplayName}</Link>
-              </NextLink>
+              <Link component={NextLink} href="/">
+                {settings.personDisplayName}
+              </Link>
             </Title>
 
             <img
               className={classes.avatar}
               src="https://www.atakanuludag.com/wp-content/uploads/2019/09/avatar.jpg"
-              alt={settingsStore.personDisplayName}
+              alt={settings.personDisplayName}
             />
             <Typography variant="caption" component="p">
-              {settingsStore.personDescription}
+              {settings.personDescription}
             </Typography>
 
             <Box component="ul" className={classes.socialMedia}>
               <li>
-                <Link href={settingsStore.personTwitterUrl}>
+                <Link href={settings.personTwitterUrl}>
                   <Tooltip title="Twitter">
                     <TwitterIcon color="action" />
                   </Tooltip>
                 </Link>
               </li>
               <li>
-                <Link href={settingsStore.personInstagramUrl}>
+                <Link href={settings.personInstagramUrl}>
                   <Tooltip title="Instagram">
                     <InstagramIcon color="action" />
                   </Tooltip>
                 </Link>
               </li>
               <li>
-                <Link href={settingsStore.personGithubUrl}>
+                <Link href={settings.personGithubUrl}>
                   <Tooltip title="Github">
                     <GitHubIcon color="action" />
                   </Tooltip>
                 </Link>
               </li>
               <li>
-                <Link href={settingsStore.personLinkedinUrl}>
+                <Link href={settings.personLinkedinUrl}>
                   <Tooltip title="Linkedin">
                     <LinkedInIcon color="action" />
                   </Tooltip>
@@ -180,10 +182,10 @@ export default function Navigation() {
 
           <Divider />
 
-          {settingsStore.navbarPages ? (
-            <>
+          {settings.navbarPages && (
+            <Box>
               <List className={classes.menu}>
-                {settingsStore.navbarPages.map((p, i) => (
+                {settings.navbarPages.map((p, i) => (
                   <ListItemButton
                     key={i}
                     LinkComponent={NextLink}
@@ -195,9 +197,7 @@ export default function Navigation() {
               </List>
 
               <Divider />
-            </>
-          ) : (
-            <></>
+            </Box>
           )}
 
           <DarkModeSwitch />

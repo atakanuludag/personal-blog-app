@@ -12,7 +12,7 @@ const QUERY_NAMES = {
 }
 
 const LS_DARK_MODE: ILocalStorage = {
-  key: 'DARK_MODE',
+  key: 'dark-mode',
 }
 
 const LOCAL_STORAGES = {

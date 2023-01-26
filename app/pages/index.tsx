@@ -1,4 +1,4 @@
-import React, { Fragment, useRef } from 'react'
+import React, { Fragment, useRef, useState } from 'react'
 import { NextPage, GetServerSideProps } from 'next/types'
 import { dehydrate, QueryClient } from 'react-query'
 import { TransitionGroup } from 'react-transition-group'
@@ -7,18 +7,19 @@ import Box from '@mui/material/Box'
 import ArticleItem from '@/components/ArticleItem'
 import Pagination from '@/components/Pagination'
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
-import useStoreArticle from '@/hooks/useStoreArticle'
 import useRefScroll from '@/hooks/useRefScroll'
 import IPageProps from '@/models/IPageProps'
 import ISettings from '@/models/ISettings'
 import GlobalStore from '@/utils/GlobalStore'
+import IListQuery from '@/models/IListQuery'
 
 const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
-  const { articleParamsStore } = useStoreArticle()
-  const { articleQuery } = useArticleQuery({
-    ...articleParamsStore,
+  // const { articleParamsStore } = useStoreArticle()
+  const [params, setParams] = useState<IListQuery>({
+    page: 1,
     pageSize: settings.pageSize,
   })
+  const { articleQuery } = useArticleQuery(params)
   const { data, isSuccess, hasNextPage } = articleQuery()
   const articleRef = useRef<HTMLDivElement>(null)
   const refScroll = useRefScroll(articleRef)
@@ -39,7 +40,7 @@ const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
         </Box>
 
         <Box component="section" hidden={!hasNextPage}>
-          <Pagination />
+          <Pagination params={params} setParams={setParams} />
         </Box>
       </Fragment>
     )

@@ -10,6 +10,7 @@ module.exports = {
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
+  transpilePackages: ['@mui/material', '@mui/system'],
   webpack: (config, { dev }) => {
     config.plugins.push(
       new webpack.ProvidePlugin({

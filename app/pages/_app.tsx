@@ -1,15 +1,18 @@
-import React, { useState } from 'react'
+import { useState, ReactNode } from 'react'
 import App from 'next/app'
 import type { AppContext, AppProps } from 'next/app'
 import Head from 'next/head'
-import { Provider } from 'react-redux'
-import { Hydrate, QueryClient, QueryClientProvider } from 'react-query'
+import {
+  DehydratedState,
+  Hydrate,
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { NextSeo } from 'next-seo'
 import { SnackbarProvider } from 'notistack'
 import moment from 'moment'
 import 'moment/locale/tr'
-import store from '@/store'
 import Theme from '@/theme'
 import LayoutBlogPage from '@/layouts/LayoutBlogPage'
 import { axiosSetTokenInterceptor } from '@/core/Axios'
@@ -21,19 +24,29 @@ import IToken from '@/models/IToken'
 import PageWithLayoutType from '@/models/PageWithLayoutType'
 import '../styles/global.scss'
 
+import SettingsProvider from '@/context/SettingsContext'
+
+interface PersonalBlogPageProps {
+  dehydratedState: DehydratedState
+  settings: ISettings
+  userIpAdress: string
+  auth?: IToken
+}
 interface PersonalBlogAppProps extends AppProps {
-  Component: PageWithLayoutType
-  pageProps: any
+  Component: PageWithLayoutType<PersonalBlogPageProps>
+  pageProps: PersonalBlogPageProps
 }
 
 const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
   const Layout = Component.layout
-    ? Component.layout || ((children) => <>{children}</>)
+    ? Component.layout || ((children: any) => children)
     : LayoutBlogPage
+  // const Layout = Component.layout
+  //   ? Component.layout || ((page: any) => page)
+  //   : LayoutBlogPage
 
   const settings: ISettings = pageProps.settings
-  const userIpAdress: string = pageProps.userIpAdress
-
+  console.log('pageProps', pageProps)
   const auth: IToken | undefined = pageProps.auth
   if (auth) axiosSetTokenInterceptor(auth.accessToken)
 
@@ -74,15 +87,15 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
             site_name: settings.siteTitle,
           }}
         />
-        <Provider store={store}>
-          <Theme settings={settings} userIpAdress={userIpAdress}>
+        <SettingsProvider>
+          <Theme>
             <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
-              <Layout>
+              <Layout {...pageProps}>
                 <Component {...pageProps} />
               </Layout>
             </SnackbarProvider>
           </Theme>
-        </Provider>
+        </SettingsProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </Hydrate>
     </QueryClientProvider>

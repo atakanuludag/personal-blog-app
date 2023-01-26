@@ -9,7 +9,7 @@ import ICategory from '@/models/ICategory'
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
 
 import Table from '@/components/table/Table'
-import useStoreArticle from '@/hooks/useStoreArticle'
+//import useStoreArticle from '@/hooks/useStoreArticle'
 import { IArticleResponse } from '@/models/IArticle'
 
 type AdminComponent = NextPage<IPageProps> & {
@@ -17,23 +17,23 @@ type AdminComponent = NextPage<IPageProps> & {
 }
 
 const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
-  const { articleParamsStore, setArticleParamsStore } = useStoreArticle()
-  const { articleQuery } = useArticleQuery({
-    ...articleParamsStore,
-    pageSize: settings.pageSize,
-  })
-  const { data, isSuccess, hasNextPage, isLoading, isFetching, fetchNextPage } =
-    articleQuery()
+  //const { articleParamsStore, setArticleParamsStore } = useStoreArticle()
+  // const { articleQuery } = useArticleQuery({
+  //   ...articleParamsStore,
+  //   pageSize: settings.pageSize,
+  // })
+  // const { data, isSuccess, hasNextPage, isLoading, isFetching, fetchNextPage } =
+  //   articleQuery()
 
   const [currentPageData, setCurrentPageData] = useState<IArticleResponse>(
     {} as any,
   )
 
-  useEffect(() => {
-    if (data && isSuccess && !isFetching && !isLoading) {
-      setCurrentPageData(data?.pages[articleParamsStore.page - 1])
-    }
-  }, [isLoading, isFetching])
+  // useEffect(() => {
+  //   if (data && isSuccess && !isFetching && !isLoading) {
+  //     setCurrentPageData(data?.pages[articleParamsStore.page - 1])
+  //   }
+  // }, [isLoading, isFetching])
 
   const cells: ITableCell[] = [
     {
@@ -57,19 +57,19 @@ const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
   ]
 
   const handleChangePage = (event: any, newPage: number) => {
-    fetchNextPage({
-      pageParam: newPage,
-    })
-    setArticleParamsStore({
-      ...articleParamsStore,
-      page: newPage,
-    })
+    // fetchNextPage({
+    //   pageParam: newPage,
+    // })
+    // setArticleParamsStore({
+    //   ...articleParamsStore,
+    //   page: newPage,
+    // })
   }
 
   console.log('currentPageData', currentPageData)
   return (
     <>
-      <Table
+      {/* <Table
         loading={isLoading || isFetching}
         cells={cells}
         rows={currentPageData.results}
@@ -77,7 +77,7 @@ const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
         page={articleParamsStore.page}
         totalPages={currentPageData.totalResults}
         handleChangePage={handleChangePage}
-      />
+      /> */}
     </>
   )
 

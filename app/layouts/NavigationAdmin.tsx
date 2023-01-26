@@ -23,7 +23,7 @@ import DarkModeSwitch from '@/components/DarkModeSwitch'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { THEME_SETTINGS } from '@/core/Constants'
 import AppBar from '@/layouts/AppBar'
-import useStoreSettings from '@/hooks/useStoreSettings'
+// import useStoreSettings from '@/hooks/useStoreSettings'
 import useRouterActive from '@/hooks/useRouterActive'
 import { axiosRemoveTokenInterceptor } from '@/core/Axios'
 
@@ -98,7 +98,7 @@ const Title = styled('h1')(({ theme }) => ({
 }))
 
 export default function NavigationAdmin() {
-  const { settingsStore } = useStoreSettings()
+  // const { settingsStore } = useStoreSettings()
   const classes = useStyles()
   const theme = useTheme()
   const routerActive = useRouterActive()
@@ -168,13 +168,13 @@ export default function NavigationAdmin() {
 
   return (
     <div className={classes.root}>
-      {!isMdUp && (
+      {/* {!isMdUp && (
         <AppBar
           open={navOpen}
           toggleDrawer={toggleDrawer}
           personDisplayName={settingsStore.personDisplayName}
         />
-      )}
+      )} */}
       <Drawer
         className={classes.drawer}
         variant={isMdUp ? 'permanent' : 'temporary'}
@@ -189,11 +189,11 @@ export default function NavigationAdmin() {
       >
         <nav className={classes.nav}>
           <div className={classes.profileSection}>
-            <Title>
+            {/* <Title>
               <NextLink href="/" passHref>
                 <Link>{settingsStore.personDisplayName}</Link>
               </NextLink>
-            </Title>
+            </Title> */}
           </div>
 
           <Divider />

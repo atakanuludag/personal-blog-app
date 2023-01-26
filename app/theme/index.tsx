@@ -1,44 +1,19 @@
-import React, { ReactNode, useEffect } from 'react'
+import { ReactNode, useMemo, useState, useEffect } from 'react'
 import { Theme } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { common, grey } from '@mui/material/colors'
 import { trTR } from '@mui/material/locale'
-import useStoreSettings from '@/hooks/useStoreSettings'
-import useInitialDarkMode from '@/hooks/useInitialDarkMode'
-import ISettings from '@/models/ISettings'
-
+import useSettingsContext, { PaletteMode } from '@/hooks/useSettingsContext'
 import componentsOverride from '@/theme/overrides'
 
 interface ITheme {
   children: ReactNode
-  settings: ISettings
-  userIpAdress: string
 }
 
-const AppTheme = ({ children, settings, userIpAdress }: ITheme) => {
-  //Todo: settings setleme burada yapılmayacak
-  const { settingsStore, setSettingsStore } = useStoreSettings()
+const AppTheme = ({ children }: ITheme) => {
+  const { themeMode } = useSettingsContext()
   const darkColor = '#202020'
-  const darkMode = settingsStore.darkMode
-
-  useEffect(() => {
-    let data = {
-      ...settingsStore,
-      ...settings,
-    }
-
-    if (settingsStore.darkMode === null) {
-      const initialDarkMode = useInitialDarkMode()
-      data.darkMode = initialDarkMode()
-    }
-
-    data.userIpAddress = userIpAdress
-
-    setSettingsStore({
-      ...data,
-    })
-  }, [])
 
   const defaultThemeSettings: any = {
     typography: {
@@ -51,75 +26,89 @@ const AppTheme = ({ children, settings, userIpAdress }: ITheme) => {
     },
   }
 
-  const darkTheme = createTheme({
-    ...defaultThemeSettings,
-    components: {
-      MuiListItemButton: {
-        styleOverrides: {
-          root: {
-            '&.Mui-selected': {
-              backgroundColor: grey[700],
-              '&:hover': {
-                backgroundColor: grey[600],
+  const darkTheme = useMemo(
+    () =>
+      createTheme({
+        ...defaultThemeSettings,
+        components: {
+          MuiListItemButton: {
+            styleOverrides: {
+              root: {
+                '&.Mui-selected': {
+                  backgroundColor: grey[700],
+                  '&:hover': {
+                    backgroundColor: grey[600],
+                  },
+                },
               },
             },
           },
         },
-      },
-    },
-    palette: {
-      mode: darkMode ? 'dark' : 'light',
-      primary: {
-        main: darkColor,
-        contrastText: common.white,
-      },
-      secondary: {
-        main: common.white,
-        contrastText: grey[600],
-      },
-      text: {
-        primary: common.white,
-        secondary: common.white,
-      },
-    },
-    trTR,
-  })
+        palette: {
+          mode: 'dark',
+          primary: {
+            main: darkColor,
+            contrastText: common.white,
+          },
+          secondary: {
+            main: common.white,
+            contrastText: grey[600],
+          },
+          text: {
+            primary: common.white,
+            secondary: common.white,
+          },
+        },
+        trTR,
+      }),
+    [themeMode],
+  )
 
-  const lightTheme = createTheme({
-    ...defaultThemeSettings,
-    components: {
-      MuiListItemButton: {
-        styleOverrides: {
-          root: {
-            '&.Mui-selected': {
-              backgroundColor: grey[300],
-              '&:hover': {
-                backgroundColor: grey[200],
+  const lightTheme = useMemo(
+    () =>
+      createTheme({
+        ...defaultThemeSettings,
+        components: {
+          MuiListItemButton: {
+            styleOverrides: {
+              root: {
+                '&.Mui-selected': {
+                  backgroundColor: grey[300],
+                  '&:hover': {
+                    backgroundColor: grey[200],
+                  },
+                },
               },
             },
           },
         },
-      },
-    },
-    palette: {
-      mode: darkMode ? 'dark' : 'light',
-      primary: {
-        main: grey[50],
-        contrastText: grey[900],
-      },
-      secondary: {
-        main: grey[900],
-        contrastText: grey[600],
-      },
-      text: {
-        primary: grey[900],
-        secondary: grey[900],
-      },
-    },
-    trTR,
-  })
+        palette: {
+          mode: 'light',
+          primary: {
+            main: grey[50],
+            contrastText: grey[900],
+          },
+          secondary: {
+            main: grey[900],
+            contrastText: grey[600],
+          },
+          text: {
+            primary: grey[900],
+            secondary: grey[900],
+          },
+        },
+        trTR,
+      }),
+    [themeMode],
+  )
 
-  const theme: Theme = darkMode ? darkTheme : lightTheme
+  const [theme, setTheme] = useState<Theme>(darkTheme)
+
+  useEffect(() => {
+    setTheme(themeMode === PaletteMode.DARK ? darkTheme : lightTheme)
+  }, [themeMode])
+
+  // const theme: Theme = themeMode === PaletteMode.DARK ? darkTheme : lightTheme
   theme.components = componentsOverride(theme)
 
   return (

@@ -7,7 +7,6 @@ import { NextSeo } from 'next-seo'
 import IPageProps from '@/models/IPageProps'
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
 import usePageQuery from '@/hooks/queries/usePageQuery'
-import useStoreArticle from '@/hooks/useStoreArticle'
 import PageDetail from '@/components/PageDetail'
 import Breadcrumb, { IBreadCrumb } from '@/components/Breadcrumb'
 

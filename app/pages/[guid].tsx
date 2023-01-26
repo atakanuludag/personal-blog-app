@@ -6,7 +6,6 @@ import { NextSeo } from 'next-seo'
 import ArticleService from '@/services/ArticleService'
 import IPageProps from '@/models/IPageProps'
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
-import useStoreArticle from '@/hooks/useStoreArticle'
 import ArticleDetail from '@/components/ArticleDetail'
 import Breadcrumb, { IBreadCrumb } from '@/components/Breadcrumb'
 import GlobalStore from '@/utils/GlobalStore'
@@ -23,8 +22,7 @@ const Guid: NextPage<IGuid> = ({
   const { query } = useRouter()
   const guid = !query.guid ? '' : query.guid
 
-  const { articleParamsStore } = useStoreArticle()
-  const { articleGetByGuidQuery } = useArticleQuery(articleParamsStore)
+  const { articleGetByGuidQuery } = useArticleQuery()
   const { data, isSuccess } = articleGetByGuidQuery(guid as string)
   const url = `${settings.siteUrl}/${data?.guid}`
 

@@ -46,7 +46,6 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
   //   : LayoutBlogPage
 
   const settings: ISettings = pageProps.settings
-  console.log('pageProps', pageProps)
   const auth: IToken | undefined = pageProps.auth
   if (auth) axiosSetTokenInterceptor(auth.accessToken)
 

@@ -98,6 +98,7 @@ function EditorToolbar({ editorState, setEditorState }: IEditorToolbar) {
     <ToolbarWrapper>
       {buttons.map((b, i) => (
         <IconButton
+          key={i}
           color="secondary"
           aria-label={b.label}
           component="span"

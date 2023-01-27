@@ -5,7 +5,6 @@ import { dehydrate, QueryClient } from 'react-query'
 import { NextSeo } from 'next-seo'
 //import Box from '@mui/material/Box'
 import IPageProps from '@/models/IPageProps'
-import useArticleQuery from '@/hooks/queries/useArticleQuery'
 import usePageQuery from '@/hooks/queries/usePageQuery'
 import PageDetail from '@/components/PageDetail'
 import Breadcrumb, { IBreadCrumb } from '@/components/Breadcrumb'
@@ -15,8 +14,6 @@ const PageGuid: NextPage<IPageProps> = ({ settings }: IPageProps) => {
   const guid = !query.guid ? '' : query.guid
 
   const { pageGetByGuidQuery } = usePageQuery()
-  // const { articleParamsStore } = useStoreArticle()
-  // const { articleGetByGuidQuery } = useArticleQuery(articleParamsStore)
   const { data, isSuccess } = pageGetByGuidQuery(guid as string)
   const url = `${settings.siteUrl}/${data?.guid}`
 

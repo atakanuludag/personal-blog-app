@@ -201,12 +201,15 @@ export default function NavigationAdmin() {
           <List className={classes.menu}>
             {adminMenu.map((m, i) =>
               !m.onClick ? (
-                <NextLink key={i} href={m.path} passHref>
-                  <ListItemButton component="a" selected={routerActive(m.path)}>
-                    <ListItemIcon>{m.icon}</ListItemIcon>
-                    <ListItemText primary={m.title} />
-                  </ListItemButton>
-                </NextLink>
+                <ListItemButton
+                  key={i}
+                  component={NextLink}
+                  href={m.path}
+                  selected={routerActive(m.path)}
+                >
+                  <ListItemIcon>{m.icon}</ListItemIcon>
+                  <ListItemText primary={m.title} />
+                </ListItemButton>
               ) : (
                 <ListItemButton key={i} onClick={m.onClick}>
                   <ListItemIcon>{m.icon}</ListItemIcon>

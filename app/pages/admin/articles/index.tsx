@@ -4,81 +4,68 @@ import moment from 'moment'
 import IPageProps from '@/models/IPageProps'
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
 import getServerSideProps from '@/utils/AdminServerSideProps'
-import { ITableCell } from '@/models/ITable'
 import ICategory from '@/models/ICategory'
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
-
-import Table from '@/components/table/Table'
-//import useStoreArticle from '@/hooks/useStoreArticle'
-import { IArticleResponse } from '@/models/IArticle'
+import DataGrid from '@/components/datagrid'
+import IArticle, { IArticleResponse } from '@/models/IArticle'
+import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid/models'
+import IListQuery from '@/models/IListQuery'
 
 type AdminComponent = NextPage<IPageProps> & {
   layout: typeof LayoutAdminPage
 }
 
 const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
-  //const { articleParamsStore, setArticleParamsStore } = useStoreArticle()
-  // const { articleQuery } = useArticleQuery({
-  //   ...articleParamsStore,
-  //   pageSize: settings.pageSize,
-  // })
-  // const { data, isSuccess, hasNextPage, isLoading, isFetching, fetchNextPage } =
-  //   articleQuery()
+  const [params, setParams] = useState<IListQuery>({
+    page: 1,
+    pageSize: settings.pageSize,
+  })
+  const { articleQuery } = useArticleQuery(params)
+  const { data, isSuccess, isLoading, isFetching } = articleQuery()
+  const loading = isLoading || isFetching
 
-  const [currentPageData, setCurrentPageData] = useState<IArticleResponse>(
-    {} as any,
-  )
-
-  // useEffect(() => {
-  //   if (data && isSuccess && !isFetching && !isLoading) {
-  //     setCurrentPageData(data?.pages[articleParamsStore.page - 1])
-  //   }
-  // }, [isLoading, isFetching])
-
-  const cells: ITableCell[] = [
+  const columns: GridColDef[] = [
+    { field: 'title', headerName: 'Başlık', width: 250 },
     {
-      id: 'title',
-      numeric: false,
-      label: 'Başlık',
+      field: 'publishingDate',
+      headerName: 'Tarih',
+      width: 150,
+      renderCell: ({ row }: GridRenderCellParams<any, IArticle, any>) =>
+        moment(new Date(row.publishingDate)).format('DD/MM/YYYY - HH:mm'),
     },
     {
-      id: 'publishingDate',
-      numeric: false,
-      label: 'Tarih',
-      formatter: (value) =>
-        moment(new Date(value)).format('DD/MM/YYYY - HH:mm'),
-    },
-    {
-      id: 'categories',
-      numeric: false,
-      label: 'Kategoriler',
-      formatter: (values: ICategory[]) => values.map((v) => v.title).join(', '),
+      field: 'categories',
+      headerName: 'Kategoriler',
+      renderCell: ({ row }: GridRenderCellParams<any, IArticle, any>) =>
+        row.categories.map((v) => v.title).join(', '),
     },
   ]
 
-  const handleChangePage = (event: any, newPage: number) => {
-    // fetchNextPage({
-    //   pageParam: newPage,
-    // })
-    // setArticleParamsStore({
-    //   ...articleParamsStore,
-    //   page: newPage,
-    // })
+  const handlePageChange = (page: number) => {
+    setParams({
+      ...params,
+      page,
+    })
   }
 
-  console.log('currentPageData', currentPageData)
+  const handlePageSizeChange = (pageSize: number) => {
+    setParams({
+      ...params,
+      pageSize,
+    })
+  }
+
   return (
-    <>
-      {/* <Table
-        loading={isLoading || isFetching}
-        cells={cells}
-        rows={currentPageData.results}
-        pageSize={articleParamsStore.pageSize}
-        page={articleParamsStore.page}
-        totalPages={currentPageData.totalResults}
-        handleChangePage={handleChangePage}
-      /> */}
-    </>
+    <DataGrid
+      loading={loading}
+      columns={columns}
+      data={data?.results as any}
+      pageSize={params.pageSize}
+      page={params.page}
+      totalResults={data?.totalResults as any}
+      handlePageChange={handlePageChange}
+      handlePageSizeChange={handlePageSizeChange}
+    />
   )
 
   return <></>

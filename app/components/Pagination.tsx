@@ -10,8 +10,8 @@ interface IPaginationProps {
 }
 
 export default function Pagination({ params, setParams }: IPaginationProps) {
-  const { articleQuery } = useArticleQuery(params)
-  const article = articleQuery()
+  const { articleInfiniteQuery } = useArticleQuery(params)
+  const article = articleInfiniteQuery()
 
   const handleNextPage = () => {
     const nextPageNumber = params.page + 1

@@ -19,8 +19,8 @@ const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
     page: 1,
     pageSize: settings.pageSize,
   })
-  const { articleQuery } = useArticleQuery(params)
-  const { data, isSuccess, hasNextPage } = articleQuery()
+  const { articleInfiniteQuery } = useArticleQuery(params)
+  const { data, isSuccess, hasNextPage } = articleInfiniteQuery()
   const articleRef = useRef<HTMLDivElement>(null)
   const refScroll = useRefScroll(articleRef)
 
@@ -52,11 +52,11 @@ const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   const queryClient = new QueryClient()
   const settings: ISettings = GlobalStore.get('settings')
-  const { articlePreFetchQuery } = useArticleQuery({
+  const { articlePrefetchInfiniteQuery } = useArticleQuery({
     page: 1,
     pageSize: settings.pageSize,
   })
-  await articlePreFetchQuery(queryClient)
+  await articlePrefetchInfiniteQuery(queryClient)
 
   return {
     props: {

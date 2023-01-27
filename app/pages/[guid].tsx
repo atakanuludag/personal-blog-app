@@ -1,85 +1,94 @@
-import React from 'react'
-import { GetServerSideProps, NextPage } from 'next/types'
+import { Fragment } from 'react'
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next/types'
 import { useRouter } from 'next/router'
-import { dehydrate, QueryClient } from 'react-query'
 import { NextSeo } from 'next-seo'
 import ArticleService from '@/services/ArticleService'
 import IPageProps from '@/models/IPageProps'
-import useArticleQuery from '@/hooks/queries/useArticleQuery'
+import IArticle from '@/models/IArticle'
 import ArticleDetail from '@/components/ArticleDetail'
 import Breadcrumb, { IBreadCrumb } from '@/components/Breadcrumb'
-import GlobalStore from '@/utils/GlobalStore'
-
+import { ParsedUrlQuery } from 'querystring'
 interface IGuid extends IPageProps {
   currentIpAdressIsLiked: boolean
+  article: IArticle
 }
 
 const Guid: NextPage<IGuid> = ({
   settings,
   userIpAdress,
   currentIpAdressIsLiked,
+  article,
 }: IGuid) => {
   const { query } = useRouter()
   const guid = !query.guid ? '' : query.guid
 
-  const { articleGetByGuidQuery } = useArticleQuery()
-  const { data, isSuccess } = articleGetByGuidQuery(guid as string)
-  const url = `${settings.siteUrl}/${data?.guid}`
+  const url = `${settings.siteUrl}/${article.guid}`
 
   const breadcrumb: IBreadCrumb[] = [
     {
-      title: isSuccess && data ? data.title : '',
+      title: article.title,
       link: null,
     },
   ]
 
-  if (isSuccess && data) {
-    return (
-      <>
-        <NextSeo
-          title={data.title}
-          description={data.shortDescription}
-          canonical={url}
-          openGraph={{
-            type: 'article',
-            locale: 'tr_TR',
-            title: data.title,
-            url: url,
-            site_name: settings.siteTitle,
-          }}
-        />
-        <Breadcrumb data={breadcrumb} />
-        <ArticleDetail
-          data={data}
-          currentIpAdressIsLiked={currentIpAdressIsLiked}
-        />
-      </>
-    )
-  }
-
-  return <></>
+  return (
+    <Fragment>
+      <NextSeo
+        title={article.title}
+        description={article.shortDescription}
+        canonical={url}
+        openGraph={{
+          type: 'article',
+          locale: 'tr_TR',
+          title: article.title,
+          url: url,
+          site_name: settings.siteTitle,
+        }}
+      />
+      <Breadcrumb data={breadcrumb} />
+      <ArticleDetail
+        data={article}
+        currentIpAdressIsLiked={currentIpAdressIsLiked}
+      />
+    </Fragment>
+  )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const guid = !query.guid ? '' : query.guid
-  const userIpAdress: string = GlobalStore.get('userIpAdress')
+interface Params extends ParsedUrlQuery {
+  guid?: string
+}
 
-  const queryClient = new QueryClient()
+export const getStaticProps: GetStaticProps<any, Params> = async ({
+  params,
+}) => {
+  const guid = params?.guid
 
-  const { articleByGuidPreFetchQuery } = useArticleQuery()
-  await articleByGuidPreFetchQuery(queryClient, guid as string)
+  if (!guid) {
+    return {
+      notFound: true,
+    }
+  }
 
-  const currentIpAdressIsLiked = await ArticleService.getLikeIPCheck(
-    guid as string,
-    userIpAdress,
-  )
-
+  const article = await ArticleService.getItemByGuid(guid)
+  if (!article) {
+    return {
+      notFound: true,
+    }
+  }
   return {
     props: {
-      dehydratedState: dehydrate(queryClient),
-      currentIpAdressIsLiked,
+      article,
+      guid,
     },
   }
+}
+
+export const getStaticPaths: GetStaticPaths<Params> = async () => {
+  const articles = await ArticleService.getItems()
+  const paths = articles.results.map((article) => ({
+    params: { guid: article.guid },
+  }))
+  return { paths, fallback: 'blocking' }
 }
 
 export default Guid

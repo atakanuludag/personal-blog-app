@@ -13,6 +13,9 @@ export default function useArticleQuery(params?: IListQuery) {
   const queryName = QUERY_NAMES.ARTICLE
 
   const articleQuery = () =>
+    useQuery([queryName, params], () => service.getItems(params))
+
+  const articleInfiniteQuery = () =>
     useInfiniteQuery(
       [queryName],
       ({ pageParam }) =>
@@ -29,16 +32,10 @@ export default function useArticleQuery(params?: IListQuery) {
       },
     )
 
-  const articlePreFetchQuery = (queryClient: QueryClient) =>
+  const articlePrefetchInfiniteQuery = (queryClient: QueryClient) =>
     queryClient.prefetchInfiniteQuery([queryName], () =>
       service.getItems(params),
     )
-
-  const articleGetByGuidQuery = (guid: string) =>
-    useQuery([queryName], () => service.getItemByGuid(guid))
-
-  const articleByGuidPreFetchQuery = (queryClient: QueryClient, guid: string) =>
-    queryClient.prefetchQuery([queryName], () => service.getItemByGuid(guid))
 
   const invalidateArticleQuery = () => {
     const queryClientHook = useQueryClient()
@@ -47,9 +44,8 @@ export default function useArticleQuery(params?: IListQuery) {
 
   return {
     articleQuery,
-    articlePreFetchQuery,
-    articleGetByGuidQuery,
-    articleByGuidPreFetchQuery,
+    articleInfiniteQuery,
+    articlePrefetchInfiniteQuery,
     invalidateArticleQuery,
   }
 }

@@ -33,7 +33,7 @@ type AdminComponent = NextPage<IPageProps> & {
 const LoginBox = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(5),
-  width: '30vw',
+  width: '20vw',
   display: 'flex',
   justifyContent: 'center',
 }))
@@ -85,16 +85,22 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
     e.preventDefault()
 
   return (
-    <Box display="flex" justifyContent="center">
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      height={'100%'}
+    >
       <LoginBox elevation={5}>
         <Form method="post" onSubmit={handleSubmit} noValidate>
           <Stack spacing={2}>
-            <Typography variant="h4">Giriş Yap</Typography>
             <Typography
-              variant="subtitle1"
-              sx={{ margin: '5px 0px 10px 0px !important' }}
+              variant="h4"
+              textAlign="center"
+              fontWeight="100"
+              gutterBottom
             >
-              Admin panele buradan giriş yapabilirsiniz.
+              Giriş Yap
             </Typography>
             <TextField
               type="text"

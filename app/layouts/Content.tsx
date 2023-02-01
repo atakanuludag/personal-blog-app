@@ -2,6 +2,7 @@ import React from 'react'
 import { Theme } from '@mui/material'
 import makeStyles from '@mui/styles/makeStyles'
 import Container from '@mui/material/Container'
+import Typography from '@mui/material/Typography'
 import Footer from '@/layouts/Footer'
 import { LayoutPageType } from '@/models/enums'
 
@@ -38,9 +39,10 @@ const useAdminPageStyle = makeStyles((theme: Theme) => ({
 interface IContent {
   children: React.ReactNode
   layoutPageType: LayoutPageType
+  title?: string
 }
 
-export default function Content({ children, layoutPageType }: IContent) {
+export default function Content({ children, layoutPageType, title }: IContent) {
   const blogPageClasses = useBlogPageStyle()
   const adminPageClasses = useAdminPageStyle()
 
@@ -55,6 +57,11 @@ export default function Content({ children, layoutPageType }: IContent) {
           : adminPageClasses.content
       }
     >
+      {title && (
+        <Typography variant="h5" fontWeight={500} mb={3}>
+          {title}
+        </Typography>
+      )}
       {children}
       <Footer />
     </Container>

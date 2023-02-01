@@ -20,7 +20,7 @@ export const axiosSetTokenInterceptor = (token: string) => {
         `Expected 'config' and 'config.headers' not to be undefined`,
       )
     }
-    console.log('trigger axiosSetTokenInterceptor()')
+    //console.log('trigger axiosSetTokenInterceptor()')
     config.headers['Authorization'] = token ? `Bearer ${token}` : ''
     return config
   })

@@ -29,6 +29,7 @@ import {
   GridRowsProp,
   SortGridMenuItems,
   useGridApiRef,
+  trTR,
 } from '@mui/x-data-grid'
 
 import { getComparator, stableSort } from './utils'
@@ -144,6 +145,7 @@ export default function MuiDataGrid({
           rowCount={totalResults || 0}
           onPageChange={(page) => handlePageChange(page + 1)}
           onPageSizeChange={handlePageSizeChange}
+          localeText={trTR.components.MuiDataGrid.defaultProps.localeText}
 
           // componentsProps={tableComponentsProps}
           // components={{

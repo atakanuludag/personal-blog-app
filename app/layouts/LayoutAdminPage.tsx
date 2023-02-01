@@ -6,6 +6,7 @@ import { LayoutPageType } from '@/models/enums'
 
 interface IMain {
   children: ReactNode
+  title?: string
 }
 //Todo: scroolbar light ve dark temada farklı renklerde olacak...
 const useStyles = makeStyles({
@@ -24,12 +25,16 @@ const useStyles = makeStyles({
   },
 })
 
-export default function LayoutAdminPage({ children }: IMain) {
+export default function LayoutAdminPage({ children, title }: IMain) {
   const classes = useStyles()
   return (
     <div className={classes.root}>
       <NavigationAdmin />
-      <Content children={children} layoutPageType={LayoutPageType.AdminPage} />
+      <Content
+        children={children}
+        layoutPageType={LayoutPageType.AdminPage}
+        title={title}
+      />
     </div>
   )
 }

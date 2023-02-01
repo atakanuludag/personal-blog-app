@@ -25,7 +25,9 @@ import { THEME_SETTINGS } from '@/core/Constants'
 import ISettings from '@/models/ISettings'
 
 const useStyles = makeStyles((theme: Theme) => ({
-  root: {},
+  root: {
+    boxShadow: '3px 1px 6px 0px rgba(0,0,0,0.75)',
+  },
   nav: {
     '& p': {
       textAlign: 'center',

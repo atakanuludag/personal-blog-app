@@ -41,6 +41,7 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
   const Layout = Component.layout
     ? Component.layout || ((children: any) => children)
     : LayoutBlogPage
+
   // const Layout = Component.layout
   //   ? Component.layout || ((page: any) => page)
   //   : LayoutBlogPage
@@ -89,7 +90,7 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
         <SettingsProvider>
           <Theme>
             <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
-              <Layout {...pageProps}>
+              <Layout {...pageProps} title={Component.title}>
                 <Component {...pageProps} />
               </Layout>
             </SnackbarProvider>

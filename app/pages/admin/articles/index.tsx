@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { NextPage } from 'next/types'
+import { default as NextLink } from 'next/link'
 import moment from 'moment'
 import IPageProps from '@/models/IPageProps'
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
@@ -9,10 +10,12 @@ import useArticleQuery from '@/hooks/queries/useArticleQuery'
 import DataGrid from '@/components/datagrid'
 import IArticle, { IArticleResponse } from '@/models/IArticle'
 import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid/models'
+import Link from '@mui/material/Link'
 import IListQuery from '@/models/IListQuery'
 
 type AdminComponent = NextPage<IPageProps> & {
   layout: typeof LayoutAdminPage
+  title: string
 }
 
 const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
@@ -25,7 +28,16 @@ const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
   const loading = isLoading || isFetching
 
   const columns: GridColDef[] = [
-    { field: 'title', headerName: 'Başlık', width: 250 },
+    {
+      field: 'title',
+      headerName: 'Başlık',
+      width: 250,
+      renderCell: ({ row }: GridRenderCellParams<any, IArticle, any>) => (
+        <Link component={NextLink} href="/">
+          {row.title}
+        </Link>
+      ),
+    },
     {
       field: 'publishingDate',
       headerName: 'Tarih',
@@ -67,11 +79,10 @@ const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
       handlePageSizeChange={handlePageSizeChange}
     />
   )
-
-  return <></>
 }
 
 AdminArticleIndex.layout = LayoutAdminPage
+AdminArticleIndex.title = 'Makaleler'
 export default AdminArticleIndex
 
 export { getServerSideProps }

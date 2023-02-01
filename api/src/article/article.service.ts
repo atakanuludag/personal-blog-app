@@ -43,36 +43,46 @@ export class ArticleService {
     }
   }
 
-  async getItems(query: IQuery): Promise<IArticleList> {
+  async getItems(query: IQuery): Promise<IArticleList | IArticle[]> {
     try {
-      const { pagination, searchQuery, order } = query
-      const { page, pageSize, skip } = pagination
+      const { pagination, searchQuery, order, paging } = query
+      if (paging) {
+        const { page, pageSize, skip } = pagination
+        const items = await this.serviceModel
+          .find(searchQuery)
+          .limit(pageSize)
+          .sort(order)
+          .skip(skip)
+          .populate('categories')
+          .populate('tags')
+          .populate('coverImage')
+          .exec()
 
-      const items = await this.serviceModel
+        const count = await this.serviceModel.find(searchQuery).countDocuments()
+
+        const totalPages = Math.ceil(count / pageSize)
+
+        const data: IArticleList = {
+          results: items,
+          currentPage: page,
+          currentPageSize: items.length,
+          pageSize: pageSize,
+          totalPages,
+          totalResults: count,
+          hasNextPage: page < totalPages ? true : false,
+        }
+        return data
+      }
+
+      return await this.serviceModel
         .find(searchQuery)
-        .limit(pageSize)
         .sort(order)
-        .skip(skip)
         .populate('categories')
         .populate('tags')
         .populate('coverImage')
         .exec()
-
-      const count = await this.serviceModel.find(searchQuery).countDocuments()
-
-      const totalPages = Math.ceil(count / pageSize)
-
-      const data: IArticleList = {
-        results: items,
-        currentPage: page,
-        currentPageSize: items.length,
-        pageSize: pageSize,
-        totalPages,
-        totalResults: count,
-        hasNextPage: page < totalPages ? true : false,
-      }
-      return data
     } catch (err) {
+      console.log('err', err)
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
         HttpStatus.BAD_REQUEST,

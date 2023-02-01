@@ -44,7 +44,14 @@ async function bootstrap() {
   SwaggerModule.setup(swaggerUrl, app, document)
 
   app.setGlobalPrefix(apiPrefix)
-  app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      // transformOptions: {
+      //   enableImplicitConversion: true,
+      // },
+    }),
+  )
   app.enableCors()
   await app.listen(apiPort)
   const appUrl = await app.getUrl()

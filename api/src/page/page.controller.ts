@@ -70,7 +70,7 @@ export class PageController {
     description: 'Success',
     type: PageDto,
   })
-  @ApiParam({ name: 'id', type: String })
+  @ApiParam({ name: 'id', type: String, required: true })
   @Get('getById/:id')
   async getItemById(@Param() params: IdParamsDto) {
     const data = await this.service.getItemById(params.id)

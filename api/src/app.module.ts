@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose'
 import { IEnv } from './common/interfaces/env.interface'
 
 //Modules
+import { GlobalModule } from './global.module'
 import { CategoryModule } from './category/category.module'
 import { UserModule } from './user/user.module'
 import { TagModule } from './tag/tag.module'
@@ -13,7 +14,7 @@ import { ArticleModule } from './article/article.module'
 import { FileModule } from './file/file.module'
 import { SettingsModule } from './settings/settings.module'
 import { PageModule } from './page/page.module'
-import { ReportModule } from './report/report.module';
+import { ReportModule } from './report/report.module'
 
 import * as moment from 'moment'
 import 'moment/locale/tr'
@@ -36,6 +37,7 @@ moment.locale('tr')
       }),
       inject: [ConfigService],
     }),
+    GlobalModule,
     CategoryModule,
     UserModule,
     TagModule,

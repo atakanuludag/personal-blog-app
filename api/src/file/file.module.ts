@@ -12,7 +12,6 @@ import { File, FileSchema } from './schemas/file.schema'
 
 import { CoreMessage, FileMessage } from '../common/messages'
 import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { QueryHelper } from '../common/helpers/query.helper'
 import { editFileName } from '../common/utils/edit-file-name.util'
 
 @Module({
@@ -30,12 +29,6 @@ import { editFileName } from '../common/utils/edit-file-name.util'
     }),
   ],
   controllers: [FileController],
-  providers: [
-    FileService,
-    ExceptionHelper,
-    QueryHelper,
-    CoreMessage,
-    FileMessage,
-  ],
+  providers: [FileService, ExceptionHelper, CoreMessage, FileMessage],
 })
 export class FileModule {}

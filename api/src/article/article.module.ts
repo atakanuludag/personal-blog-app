@@ -8,19 +8,12 @@ import { Article, ArticleSchema } from './schemas/article.schema'
 
 import { CoreMessage, ArticleMessage } from '../common/messages'
 import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { QueryHelper } from '../common/helpers/query.helper'
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Article.name, schema: ArticleSchema }]),
   ],
   controllers: [ArticleController],
-  providers: [
-    CoreMessage,
-    ArticleMessage,
-    ExceptionHelper,
-    QueryHelper,
-    ArticleService,
-  ],
+  providers: [CoreMessage, ArticleMessage, ExceptionHelper, ArticleService],
 })
 export class ArticleModule {}

@@ -2,14 +2,17 @@ import { NestFactory } from '@nestjs/core'
 import { ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
+import * as morgan from 'morgan'
 import { AppModule } from './app.module'
 import { IEnv } from './common/interfaces/env.interface'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     //bodyParser: true,
-    logger: console,
+    //logger: console,
+    bufferLogs: true,
   })
+  app.use(morgan('tiny'))
 
   const configService = app.get<ConfigService<IEnv>>(ConfigService)
   const apiPrefix = configService.get<string>('API_PREFIX')

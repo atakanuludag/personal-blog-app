@@ -22,7 +22,6 @@ export class QueryHelper {
       searchQuery,
       order: order,
     }
-    console.log(query)
 
     if (
       (Number(query.paging) === 1 || typeof query.paging === 'undefined') &&

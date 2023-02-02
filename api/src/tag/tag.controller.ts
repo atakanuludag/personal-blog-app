@@ -8,6 +8,7 @@ import {
   UseGuards,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -17,6 +18,7 @@ import {
   ApiOperation,
   ApiParam,
   ApiTags,
+  ApiQuery,
 } from '@nestjs/swagger'
 import { TagDto } from './dto/tag.dto'
 import { UpdateTagDto } from './dto/update-tag.dto'
@@ -27,7 +29,8 @@ import { ArticleService } from '../article/article.service'
 import { ExceptionHelper } from '../common/helpers/exception.helper'
 import { CoreMessage, TagMessage } from '../common/messages'
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
-
+import { ListQueryDto } from '../common/dto/list-query.dto'
+import { QueryHelper } from '../common/helpers/query.helper'
 @ApiTags('Tag')
 @Controller('tag')
 export class TagController {
@@ -36,6 +39,7 @@ export class TagController {
     private readonly articleService: ArticleService,
     private readonly coreMessage: CoreMessage,
     private readonly tagMessage: TagMessage,
+    private readonly queryHelper: QueryHelper,
   ) {}
 
   @ApiOperation({
@@ -50,8 +54,9 @@ export class TagController {
     type: [TagDto],
   })
   @Get()
-  async list() {
-    return await this.service.getItems()
+  async list(@Query() query: ListQueryDto) {
+    const q = this.queryHelper.instance(query)
+    return await this.service.getItems(q)
   }
 
   @ApiOperation({

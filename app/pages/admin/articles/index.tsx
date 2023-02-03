@@ -72,8 +72,8 @@ const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
       loading={loading}
       columns={columns}
       data={data?.results as any}
-      pageSize={params.pageSize}
-      page={params.page}
+      pageSize={params.pageSize as any}
+      page={params.page as any}
       totalResults={data?.totalResults as any}
       handlePageChange={handlePageChange}
       handlePageSizeChange={handlePageSizeChange}

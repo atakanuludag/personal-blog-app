@@ -71,8 +71,7 @@ export class TagService {
         }
         return data
       }
-      const items = await this.serviceModel.find(searchQuery).sort(order).exec()
-      return items
+      return await this.serviceModel.find(searchQuery).sort(order).exec()
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

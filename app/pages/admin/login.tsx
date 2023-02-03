@@ -123,6 +123,7 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
                 type={showPassword ? 'text' : 'password'}
                 {...getFieldProps('password')}
                 error={errors.password ? touched.password : false}
+                disabled={isSubmitting}
                 fullWidth
                 endAdornment={
                   <InputAdornment position="end">
@@ -131,6 +132,7 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
                       onClick={handleClickShowPassword}
                       onMouseDown={handleMouseDownPassword}
                       edge="end"
+                      disabled={isSubmitting}
                     >
                       {showPassword ? (
                         <VisibilityOffIcon />

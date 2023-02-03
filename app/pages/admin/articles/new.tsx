@@ -13,14 +13,27 @@ import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import TextField from '@mui/material/TextField'
 import Stack from '@mui/material/Stack'
+import MenuItem from '@mui/material/MenuItem'
 import Drawer from '@mui/material/Drawer'
 import Switch from '@mui/material/Switch'
-import Autocomplete from '@mui/material/Autocomplete'
+import Autocomplete, {
+  AutocompleteChangeDetails,
+  AutocompleteChangeReason,
+} from '@mui/material/Autocomplete'
+import Chip from '@mui/material/Chip'
 
 import IPageProps from '@/models/IPageProps'
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
 import getServerSideProps from '@/utils/AdminServerSideProps'
 import { INewArticle } from '@/models/IArticle'
+
+import TagService from '@/services/TagService'
+import useTagQuery from '@/hooks/queries/useTagQuery'
+import IListQuery from '@/models/IListQuery'
+
+import TagModel from '@/models/Tag'
+
+import TagAutocomplete from '@/components/admin/TagAutocomplete'
 
 const Editor = dynamic((): Promise<any> => import('@/components/editor'), {
   //besure to import dynamically
@@ -38,6 +51,16 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
 }))
 
 const AdminArticleNew: AdminComponent = ({ settings }: IPageProps) => {
+  const [params, setParams] = useState<IListQuery>({
+    s: '',
+    sType: 'title',
+  })
+  const { tagQuery } = useTagQuery(params)
+  const { data, isSuccess, isLoading, isFetching } = tagQuery({
+    enabled: params.s === '' ? false : true,
+  })
+  const loading = isLoading || isFetching
+
   const initialValues: INewArticle = {
     title: '',
     shortDescription: '',
@@ -54,6 +77,8 @@ const AdminArticleNew: AdminComponent = ({ settings }: IPageProps) => {
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('test.'),
   })
+
+  const [tagSelect, setTagSelect] = useState<(string | TagModel)[]>([])
 
   const {
     errors,
@@ -83,6 +108,7 @@ const AdminArticleNew: AdminComponent = ({ settings }: IPageProps) => {
       // resetForm()
     },
   })
+
   //https://github.com/stjerdev/draft-js-next-js/blob/master/components/editor/TextEditor.tsx
   return (
     <Stack spacing={1}>
@@ -131,26 +157,7 @@ const AdminArticleNew: AdminComponent = ({ settings }: IPageProps) => {
         error={errors.shortDescription ? touched.shortDescription : false}
       />
 
-      {/* <Autocomplete
-        multiple
-        id="tags-filled"
-        options={top100Films.map((option) => option.title)}
-        defaultValue={[top100Films[13].title]}
-        freeSolo
-        renderTags={(value: readonly string[], getTagProps) =>
-          value.map((option: string, index: number) => (
-            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
-          ))
-        }
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="filled"
-            label="freeSolo"
-            placeholder="Favorites"
-          />
-        )}
-      /> */}
+      <TagAutocomplete select={tagSelect} setSelect={setTagSelect} />
 
       <FormGroup>
         <FormControlLabel

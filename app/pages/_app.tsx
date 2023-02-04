@@ -90,7 +90,7 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
         <SettingsProvider>
           <Theme>
             <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
-              <Layout {...pageProps} title={Component.title}>
+              <Layout {...pageProps}>
                 <Component {...pageProps} />
               </Layout>
             </SnackbarProvider>

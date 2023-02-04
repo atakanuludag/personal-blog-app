@@ -2,15 +2,8 @@
 import { Dispatch, SetStateAction, useState } from 'react'
 
 // ** mui
-import Box from '@mui/material/Box'
-import { styled } from '@mui/material/styles'
-import FormGroup from '@mui/material/FormGroup'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import TextField from '@mui/material/TextField'
-import Stack from '@mui/material/Stack'
 import MenuItem from '@mui/material/MenuItem'
-import Drawer from '@mui/material/Drawer'
-import Switch from '@mui/material/Switch'
 import Autocomplete, {
   AutocompleteChangeReason,
 } from '@mui/material/Autocomplete'
@@ -27,12 +20,6 @@ import TagModel from '@/models/Tag'
 interface TagAutocompleteProps {
   select: (string | TagModel)[]
   setSelect: Dispatch<SetStateAction<(string | TagModel)[]>>
-}
-
-interface AutoCompleteCustomType {
-  id: string
-  title: string
-  listSelected: boolean
 }
 
 function TagAutocomplete({

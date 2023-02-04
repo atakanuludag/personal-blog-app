@@ -30,11 +30,7 @@ export default function LayoutAdminPage({ children, title }: IMain) {
   return (
     <div className={classes.root}>
       <NavigationAdmin />
-      <Content
-        children={children}
-        layoutPageType={LayoutPageType.AdminPage}
-        title={title}
-      />
+      <Content children={children} layoutPageType={LayoutPageType.AdminPage} />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import { Module, Global } from '@nestjs/common'
 
-import { QueryHelper } from './common/helpers/query.helper'
+import { QueryHelper } from '@/common/helpers/query.helper'
 
 const globalSchema = []
 const globalService = []

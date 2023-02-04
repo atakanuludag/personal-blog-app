@@ -20,16 +20,16 @@ import {
   ApiConsumes,
 } from '@nestjs/swagger'
 import { FilesInterceptor } from '@nestjs/platform-express'
-import { FileService } from './file.service'
-import { CoreMessage, FileMessage } from '../common/messages'
-import { File } from './schemas/file.schema'
-import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
-import { ListQueryDto } from '../common/dto/list-query.dto'
-import { ListResultDto } from '../common/dto/list-result.dto'
-import { FileDto } from './dto/file.dto'
-import { DefaultException } from '../common/dto/default-exception.dto'
-import { QueryHelper } from '../common/helpers/query.helper'
+import { FileService } from '@/file/file.service'
+import { CoreMessage, FileMessage } from '@/common/messages'
+import { File } from '@/file/schemas/file.schema'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
+import { ListQueryDto } from '@/common/dto/list-query.dto'
+import { ListResultDto } from '@/common/dto/list-result.dto'
+import { FileDto } from '@/file/dto/file.dto'
+import { DefaultException } from '@/common/dto/default-exception.dto'
+import { QueryHelper } from '@/common/helpers/query.helper'
 
 @ApiTags('File')
 @Controller('file')

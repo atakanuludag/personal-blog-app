@@ -19,18 +19,18 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger'
-import { PageDto } from './dto/page.dto'
-import { UpdatePageDto } from './dto/update-page.dto'
-import { ListResultDto } from '../common/dto/list-result.dto'
-import { GuidParamsDto, IdParamsDto } from '../common/dto/params.dto'
-import { ListQueryDto } from '../common/dto/list-query.dto'
-import { DefaultException } from '../common/dto/default-exception.dto'
-import { PageService } from './page.service'
-import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { QueryHelper } from '../common/helpers/query.helper'
-import { CoreMessage, PageMessage } from '../common/messages'
-import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
-import { IpAddress } from '../common/decorators/ip.decorator'
+import { PageDto } from '@/page/dto/page.dto'
+import { UpdatePageDto } from '@/page/dto/update-page.dto'
+import { ListResultDto } from '@/common/dto/list-result.dto'
+import { GuidParamsDto, IdParamsDto } from '@/common/dto/params.dto'
+import { ListQueryDto } from '@/common/dto/list-query.dto'
+import { DefaultException } from '@/common/dto/default-exception.dto'
+import { PageService } from '@/page/page.service'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { QueryHelper } from '@/common/helpers/query.helper'
+import { CoreMessage, PageMessage } from '@/common/messages'
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
+import { IpAddress } from '@/common/decorators/ip.decorator'
 
 @ApiTags('Page')
 @Controller('page')

@@ -1,12 +1,12 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { Article, ArticleDocument } from '../article/schemas/article.schema'
-import { Page, PageDocument } from '../page/schemas/page.schema'
-import { File, FileDocument } from '../file/schemas/file.schema'
+import { Article, ArticleDocument } from '@/article/schemas/article.schema'
+import { Page, PageDocument } from '@/page/schemas/page.schema'
+import { File, FileDocument } from '@/file/schemas/file.schema'
 
-import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { CoreMessage } from '../common/messages'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { CoreMessage } from '@/common/messages'
 
 @Injectable()
 export class ReportService {

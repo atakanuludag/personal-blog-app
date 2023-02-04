@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import { IsEnum, IsNumber, IsOptional } from 'class-validator'
-import { OrderType } from '../interfaces/query.interface'
+import { OrderType } from '@/common/interfaces/query.interface'
 
 export class ListQueryDto {
   @ApiProperty({

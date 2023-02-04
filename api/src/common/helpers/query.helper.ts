@@ -1,6 +1,6 @@
 import { Query } from '@nestjs/common'
-import { ListQueryDto } from '../dto/list-query.dto'
-import { IQuery, OrderType } from '../interfaces/query.interface'
+import { ListQueryDto } from '@/common/dto/list-query.dto'
+import { IQuery, OrderType } from '@/common/interfaces/query.interface'
 
 export class QueryHelper {
   public constructor() {}

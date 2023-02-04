@@ -1,12 +1,12 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, ObjectId } from 'mongoose'
-import { ICategory } from './interfaces/category.interface'
-import { Category, CategoryDocument } from './schemas/category.schema'
-import { CategoryDto } from './dto/category.dto'
-import { UpdateCategoryDto } from './dto/update-category.dto'
-import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { CoreMessage } from '../common/messages'
+import { ICategory } from '@/category/interfaces/category.interface'
+import { Category, CategoryDocument } from '@/category/schemas/category.schema'
+import { CategoryDto } from '@/category/dto/category.dto'
+import { UpdateCategoryDto } from '@/category/dto/update-category.dto'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { CoreMessage } from '@/common/messages'
 
 @Injectable()
 export class CategoryService {

@@ -6,11 +6,11 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger'
-import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
-import { ReportService } from './report.service'
-import { IDashboardReport } from './interfaces/IDashboardReport'
-import { DashboardReportDto } from './dto/dashboard-report.dto'
-import { DefaultException } from '../common/dto/default-exception.dto'
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
+import { ReportService } from '@/report/report.service'
+import { IDashboardReport } from '@/report/interfaces/IDashboardReport'
+import { DashboardReportDto } from '@/report/dto/dashboard-report.dto'
+import { DefaultException } from '@/common/dto/default-exception.dto'
 
 @ApiTags('Report')
 @Controller('report')

@@ -1,14 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, ObjectId } from 'mongoose'
-import { IPage } from './interfaces/page.interface'
-import { IPageList } from './interfaces/page-list.interface'
-import { IQuery } from '../common/interfaces/query.interface'
-import { Page, PageDocument } from './schemas/page.schema'
-import { PageDto } from './dto/page.dto'
-import { UpdatePageDto } from './dto/update-page.dto'
-import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { CoreMessage } from '../common/messages'
+import { IPage } from '@/page/interfaces/page.interface'
+import { IPageList } from '@/page/interfaces/page-list.interface'
+import { IQuery } from '@/common/interfaces/query.interface'
+import { Page, PageDocument } from '@/page/schemas/page.schema'
+import { PageDto } from '@/page/dto/page.dto'
+import { UpdatePageDto } from '@/page/dto/update-page.dto'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { CoreMessage } from '@/common/messages'
 
 @Injectable()
 export class PageService {

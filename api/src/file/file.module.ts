@@ -4,15 +4,15 @@ import { MongooseModule } from '@nestjs/mongoose'
 import { MulterModule } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
 
-import { IEnv } from '../common/interfaces/env.interface'
+import { IEnv } from '@/common/interfaces/env.interface'
 
-import { FileController } from './file.controller'
-import { FileService } from './file.service'
-import { File, FileSchema } from './schemas/file.schema'
+import { FileController } from '@/file/file.controller'
+import { FileService } from '@/file/file.service'
+import { File, FileSchema } from '@/file/schemas/file.schema'
 
-import { CoreMessage, FileMessage } from '../common/messages'
-import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { editFileName } from '../common/utils/edit-file-name.util'
+import { CoreMessage, FileMessage } from '@/common/messages'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { editFileName } from '@/common/utils/edit-file-name.util'
 
 @Module({
   imports: [

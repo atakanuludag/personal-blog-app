@@ -20,17 +20,17 @@ import {
   ApiTags,
   ApiQuery,
 } from '@nestjs/swagger'
-import { TagDto } from './dto/tag.dto'
-import { UpdateTagDto } from './dto/update-tag.dto'
-import { GuidParamsDto, IdParamsDto } from '../common/dto/params.dto'
-import { DefaultException } from '../common/dto/default-exception.dto'
-import { TagService } from './tag.service'
-import { ArticleService } from '../article/article.service'
-import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { CoreMessage, TagMessage } from '../common/messages'
-import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
-import { ListQueryDto } from '../common/dto/list-query.dto'
-import { QueryHelper } from '../common/helpers/query.helper'
+import { TagDto } from '@/tag/dto/tag.dto'
+import { UpdateTagDto } from '@/tag/dto/update-tag.dto'
+import { GuidParamsDto, IdParamsDto } from '@/common/dto/params.dto'
+import { DefaultException } from '@/common/dto/default-exception.dto'
+import { TagService } from '@/tag/tag.service'
+import { ArticleService } from '@/article/article.service'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { CoreMessage, TagMessage } from '@/common/messages'
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
+import { ListQueryDto } from '@/common/dto/list-query.dto'
+import { QueryHelper } from '@/common/helpers/query.helper'
 @ApiTags('Tag')
 @Controller('tag')
 export class TagController {

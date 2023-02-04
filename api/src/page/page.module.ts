@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 
-import { PageController } from './page.controller'
-import { PageService } from './page.service'
+import { PageController } from '@/page/page.controller'
+import { PageService } from '@/page/page.service'
 
-import { Page, PageSchema } from './schemas/page.schema'
+import { Page, PageSchema } from '@/page/schemas/page.schema'
 
-import { CoreMessage, PageMessage } from '../common/messages'
-import { ExceptionHelper } from '../common/helpers/exception.helper'
+import { CoreMessage, PageMessage } from '@/common/messages'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
 
 @Module({
   imports: [

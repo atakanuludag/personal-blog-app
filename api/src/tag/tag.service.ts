@@ -1,14 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { FilterQuery, Model, ObjectId } from 'mongoose'
-import { ITag } from './interfaces/tag.interface'
-import { Tag, TagDocument } from './schemas/tag.schema'
-import { TagDto } from './dto/tag.dto'
-import { UpdateTagDto } from './dto/update-tag.dto'
-import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { CoreMessage } from '../common/messages'
-import { escapeRegExp } from 'src/common/helpers/string.helper'
-import { IQuery } from 'src/common/interfaces/query.interface'
+import { Model, ObjectId } from 'mongoose'
+import { ITag } from '@/tag//interfaces/tag.interface'
+import { Tag, TagDocument } from '@/tag//schemas/tag.schema'
+import { TagDto } from '@/tag/dto/tag.dto'
+import { UpdateTagDto } from '@/tag/dto/update-tag.dto'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { CoreMessage } from '@/common/messages'
+import { escapeRegExp } from '@/common/helpers/string.helper' //todo: kaldırılacak.
+import { IQuery } from '@/common/interfaces/query.interface'
 
 @Injectable()
 export class TagService {

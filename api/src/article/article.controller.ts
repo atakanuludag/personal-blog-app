@@ -21,18 +21,18 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger'
-import { ArticleDto } from './dto/article.dto'
-import { UpdateArticleDto } from './dto/update-article.dto'
-import { ListResultDto } from '../common/dto/list-result.dto'
-import { GuidParamsDto, IdParamsDto } from '../common/dto/params.dto'
-import { ListQueryDto } from '../common/dto/list-query.dto'
-import { DefaultException } from '../common/dto/default-exception.dto'
-import { ArticleService } from './article.service'
-import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { QueryHelper } from '../common/helpers/query.helper'
-import { CoreMessage, ArticleMessage } from '../common/messages'
-import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
-import { IpAddress } from '../common/decorators/ip.decorator'
+import { ArticleDto } from '@/article/dto/article.dto'
+import { UpdateArticleDto } from '@/article/dto/update-article.dto'
+import { ListResultDto } from '@/common/dto/list-result.dto'
+import { GuidParamsDto, IdParamsDto } from '@/common/dto/params.dto'
+import { ListQueryDto } from '@/common/dto/list-query.dto'
+import { DefaultException } from '@/common/dto/default-exception.dto'
+import { ArticleService } from '@/article/article.service'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { QueryHelper } from '@/common/helpers/query.helper'
+import { CoreMessage, ArticleMessage } from '@/common/messages'
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
+import { IpAddress } from '@/common/decorators/ip.decorator'
 
 @ApiTags('Article')
 @Controller('article')

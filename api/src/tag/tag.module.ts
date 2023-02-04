@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 
-import { TagController } from './tag.controller'
-import { TagService } from './tag.service'
-import { Tag, TagSchema } from './schemas/tag.schema'
+import { TagController } from '@/tag/tag.controller'
+import { TagService } from '@/tag/tag.service'
+import { Tag, TagSchema } from '@/tag/schemas/tag.schema'
 
-import { ArticleService } from '../article/article.service'
-import { Article, ArticleSchema } from '../article/schemas/article.schema'
+import { ArticleService } from '@/article/article.service'
+import { Article, ArticleSchema } from '@/article/schemas/article.schema'
 
-import { CoreMessage, TagMessage } from '../common/messages'
-import { ExceptionHelper } from '../common/helpers/exception.helper'
+import { CoreMessage, TagMessage } from '@/common/messages'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
 
 @Module({
   imports: [

@@ -14,7 +14,7 @@ export default function Pagination({ params, setParams }: IPaginationProps) {
   const article = articleInfiniteQuery()
 
   const handleNextPage = () => {
-    const nextPageNumber = params.page + 1
+    const nextPageNumber = params?.page ? params.page + 1 : 1
     setParams({
       ...params,
       page: nextPageNumber,

@@ -86,6 +86,7 @@ function TagAutocomplete({
             variant="outlined"
             label={typeof option === 'string' ? option : option.title}
             {...getTagProps({ index })}
+            key={index}
           />
         ))
       }

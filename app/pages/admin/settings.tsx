@@ -153,7 +153,8 @@ const AdminSettings: AdminComponent = ({}: IPageProps) => {
                     _values[i].value = val as any
                     setValues([..._values])
                   }}
-                  data={!page.data ? [] : page.data.results}
+                  data={[]}
+                  // data={!page.data ? [] : page.data.results}
                   objName="title"
                   loading={page.isLoading}
                   helperText={

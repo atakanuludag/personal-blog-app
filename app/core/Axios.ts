@@ -2,7 +2,6 @@ import axios from 'axios'
 export type { AxiosError } from 'axios'
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL
-console.log('Service URL: ', apiUrl)
 
 const defaultOptions = {
   baseURL: apiUrl,

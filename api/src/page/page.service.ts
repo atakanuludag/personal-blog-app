@@ -43,32 +43,37 @@ export class PageService {
     }
   }
 
-  async getItems(query: IQuery): Promise<IPageList> {
+  async getItems(query: IQuery): Promise<IPageList | IPage[]> {
     try {
-      const { pagination, searchQuery, order } = query
-      const { page, pageSize, skip } = pagination
+      const { pagination, searchQuery, order, paging } = query
 
-      const items = await this.serviceModel
-        .find(searchQuery)
-        .limit(pageSize)
-        .sort(order)
-        .skip(skip)
-        .exec()
+      if (paging) {
+        const { page, pageSize, skip } = pagination
 
-      const count = await this.serviceModel.find(searchQuery).countDocuments()
+        const items = await this.serviceModel
+          .find(searchQuery)
+          .limit(pageSize)
+          .sort(order)
+          .skip(skip)
+          .exec()
 
-      const totalPages = Math.ceil(count / pageSize)
+        const count = await this.serviceModel.find(searchQuery).countDocuments()
 
-      const data: IPageList = {
-        results: items,
-        currentPage: page,
-        currentPageSize: items.length,
-        pageSize: pageSize,
-        totalPages,
-        totalResults: count,
-        hasNextPage: page < totalPages ? true : false,
+        const totalPages = Math.ceil(count / pageSize)
+
+        const data: IPageList = {
+          results: items,
+          currentPage: page,
+          currentPageSize: items.length,
+          pageSize: pageSize,
+          totalPages,
+          totalResults: count,
+          hasNextPage: page < totalPages ? true : false,
+        }
+        return data
       }
-      return data
+
+      return await this.serviceModel.find(searchQuery).sort(order).exec()
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

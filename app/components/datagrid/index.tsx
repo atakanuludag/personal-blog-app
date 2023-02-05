@@ -60,7 +60,7 @@ export default function MuiDataGrid({
         orderBy: sortItem.sort,
       })
     },
-    [params],
+    [params, setParams],
   )
 
   const handlePageChange = (page: number) =>

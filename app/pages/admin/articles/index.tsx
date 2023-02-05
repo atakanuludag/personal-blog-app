@@ -19,7 +19,7 @@ import moment from 'moment'
 
 // ** models
 import IPageProps from '@/models/IPageProps'
-import IArticle from '@/models/IArticle'
+import IArticle, { IArticleResponse } from '@/models/IArticle'
 import IListQuery from '@/models/IListQuery'
 
 // ** layouts
@@ -46,7 +46,8 @@ const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
     pageSize: settings.pageSize,
   })
   const { articleQuery } = useArticleQuery(params)
-  const { data, isSuccess, isLoading, isFetching } = articleQuery()
+  const { data, isLoading, isFetching } = articleQuery()
+  const items = data as IArticleResponse
   const loading = isLoading || isFetching
 
   const columns: GridColDef[] = [
@@ -108,10 +109,10 @@ const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
       <DataGrid
         loading={loading}
         columns={columns}
-        data={data?.results as any}
+        data={items?.results as any}
         pageSize={params.pageSize as number}
         page={params.page as number}
-        totalResults={data?.totalResults as number}
+        totalResults={items?.totalResults as number}
         params={params}
         setParams={setParams}
       />

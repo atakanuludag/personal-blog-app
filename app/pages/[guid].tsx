@@ -1,24 +1,39 @@
+// ** react
 import { Fragment } from 'react'
+
+// ** next
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next/types'
 import { useRouter } from 'next/router'
+
+// ** third party
 import { NextSeo } from 'next-seo'
+
+// ** services
 import ArticleService from '@/services/ArticleService'
+
+// ** components
+import Breadcrumb, { IBreadCrumb } from '@/components/Breadcrumb'
+import ArticleDetail from '@/components/ArticleDetail'
+
+// ** models
 import IPageProps from '@/models/IPageProps'
 import IArticle from '@/models/IArticle'
-import ArticleDetail from '@/components/ArticleDetail'
-import Breadcrumb, { IBreadCrumb } from '@/components/Breadcrumb'
-import { ParsedUrlQuery } from 'querystring'
-interface IGuid extends IPageProps {
+
+type ArticleGuidProps = {
   currentIpAdressIsLiked: boolean
   article: IArticle
+} & IPageProps
+
+type StaticPathParams = {
+  guid?: string
 }
 
-const Guid: NextPage<IGuid> = ({
+const ArticleGuid: NextPage<ArticleGuidProps> = ({
   settings,
   userIpAdress,
   currentIpAdressIsLiked,
   article,
-}: IGuid) => {
+}: ArticleGuidProps) => {
   const { query } = useRouter()
   const guid = !query.guid ? '' : query.guid
 
@@ -54,11 +69,7 @@ const Guid: NextPage<IGuid> = ({
   )
 }
 
-interface Params extends ParsedUrlQuery {
-  guid?: string
-}
-
-export const getStaticProps: GetStaticProps<any, Params> = async ({
+export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
   params,
 }) => {
   const guid = params?.guid
@@ -70,7 +81,7 @@ export const getStaticProps: GetStaticProps<any, Params> = async ({
   }
 
   const article = await ArticleService.getItemByGuid(guid)
-  if (!article) {
+  if (!article || !article.guid) {
     return {
       notFound: true,
     }
@@ -83,12 +94,12 @@ export const getStaticProps: GetStaticProps<any, Params> = async ({
   }
 }
 
-export const getStaticPaths: GetStaticPaths<Params> = async () => {
+export const getStaticPaths: GetStaticPaths<StaticPathParams> = async () => {
   const articles = await ArticleService.getItems()
-  const paths = articles.results.map((article) => ({
+  const paths = (articles as IArticle[]).map((article) => ({
     params: { guid: article.guid },
   }))
   return { paths, fallback: 'blocking' }
 }
 
-export default Guid
+export default ArticleGuid

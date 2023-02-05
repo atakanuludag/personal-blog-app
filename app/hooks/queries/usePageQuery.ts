@@ -20,12 +20,8 @@ export default function usePageQuery() {
   const pageGetByGuidQuery = (guid: string) =>
     useQuery([queryName], () => service.getItemByGuid(guid))
 
-  const pageByGuidPreFetchQuery = (queryClient: QueryClient, guid: string) =>
-    queryClient.prefetchQuery([queryName], () => service.getItemByGuid(guid))
-
   return {
     pageQuery,
     pageGetByGuidQuery,
-    pageByGuidPreFetchQuery,
   }
 }

@@ -31,8 +31,8 @@ const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
           <TransitionGroup>
             {data.pages.map((p) =>
               p.results.map((item) => (
-                <Collapse key={item.id} addEndListener={refScroll}>
-                  <ArticleItem key={item.id} data={item} ref={articleRef} />
+                <Collapse key={item._id} addEndListener={refScroll}>
+                  <ArticleItem data={item} ref={articleRef} />
                 </Collapse>
               )),
             )}

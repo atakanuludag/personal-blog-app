@@ -3,65 +3,55 @@ import IArticle, { IArticleResponse } from '@/models/IArticle'
 import IListQuery from '@/models/IListQuery'
 import readingTime from 'reading-time'
 
-const itemToModel = (item: any): IArticle => {
-  const {
-    _id,
-    title,
-    shortDescription,
-    content,
-    guid,
-    publishingDate,
-    categories,
-    tags,
-    articleType,
-    isShow,
-    viewCount,
-    likedCount,
-    createdAt,
-    updatedAt,
-  } = item
+// const itemToModel = (item: any): IArticle => {
+//   const {
+//     _id,
+//     title,
+//     shortDescription,
+//     content,
+//     guid,
+//     publishingDate,
+//     categories,
+//     tags,
+//     articleType,
+//     isShow,
+//     viewCount,
+//     likedCount,
+//     createdAt,
+//     updatedAt,
+//   } = item
 
-  const stats = readingTime(content)
+//   const stats = readingTime(content)
 
-  return {
-    id: _id,
-    title,
-    shortDescription,
-    content,
-    guid,
-    publishingDate,
-    categories,
-    tags,
-    articleType,
-    coverImage: item.coverImage ? item.coverImage.path : '',
-    isShow,
-    viewCount,
-    likedCount,
-    createdAt,
-    updatedAt,
-    readingTimeMin: Math.round(stats.minutes),
-  }
-}
+//   return {
+//     id: _id,
+//     title,
+//     shortDescription,
+//     content,
+//     guid,
+//     publishingDate,
+//     categories,
+//     tags,
+//     articleType,
+//     coverImage: item.coverImage ? item.coverImage.path : '',
+//     isShow,
+//     viewCount,
+//     likedCount,
+//     createdAt,
+//     updatedAt,
+//     readingTimeMin: Math.round(stats.minutes),
+//   }
+// }
 
-const getItems = async (params?: IListQuery): Promise<IArticleResponse> => {
-  let items = new Array<IArticle>()
+const getItems = async (
+  params?: IListQuery,
+): Promise<IArticleResponse | IArticle[]> => {
   try {
     const ret = await axios.get(`/article`, {
       params,
     })
-
     const { data } = ret
-    items = data.results.map(itemToModel)
-
-    return {
-      totalResults: data.totalResults,
-      totalPages: data.totalPages,
-      pageSize: data.pageSize,
-      currentPage: data.currentPage,
-      currentPageSize: data.currentPageSize,
-      hasNextPage: data.hasNextPage,
-      results: items,
-    }
+    return data
   } catch (err) {
     //const error: AxiosError = err;
     console.log('[ArticleService] getItems() Error: ', err)
@@ -72,7 +62,8 @@ const getItems = async (params?: IListQuery): Promise<IArticleResponse> => {
 const getItemByGuid = async (guid: string): Promise<IArticle> => {
   try {
     const ret = await axios.get(`/article/getByGuid/${guid}`)
-    return itemToModel(ret.data)
+    return ret.data
+    //return itemToModel(ret.data)
   } catch (err) {
     //const error: AxiosError = err;
     console.log('[ArticleService] getItemByGuid() Error: ', err)

@@ -82,7 +82,6 @@ export class ArticleService {
         .populate('coverImage')
         .exec()
     } catch (err) {
-      console.log('err', err)
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
         HttpStatus.BAD_REQUEST,

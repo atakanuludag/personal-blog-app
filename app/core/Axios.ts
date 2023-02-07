@@ -1,10 +1,9 @@
 import axios from 'axios'
 export type { AxiosError } from 'axios'
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL
+import { API_URL } from '@/config'
 
 const defaultOptions = {
-  baseURL: apiUrl,
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },

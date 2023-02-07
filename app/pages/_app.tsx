@@ -1,7 +1,12 @@
-import { useState, ReactNode } from 'react'
+// ** react
+import { useState } from 'react'
+
+// ** next
 import App from 'next/app'
 import type { AppContext, AppProps } from 'next/app'
 import Head from 'next/head'
+
+// ** third party
 import {
   DehydratedState,
   Hydrate,
@@ -13,19 +18,36 @@ import { NextSeo } from 'next-seo'
 import { SnackbarProvider } from 'notistack'
 import moment from 'moment'
 import 'moment/locale/tr'
+
+// ** mui theme
 import Theme from '@/theme'
+
+// ** layouts
 import LayoutBlogPage from '@/layouts/LayoutBlogPage'
+
+// ** core
 import { axiosSetTokenInterceptor } from '@/core/Axios'
+
+// ** utils
 import GlobalStore from '@/utils/GlobalStore'
 import Cookie from '@/utils/Cookie'
+
+// ** services
 import SettingService from '@/services/SettingService'
+
+// ** models
 import ISettings from '@/models/ISettings'
 import IToken from '@/models/IToken'
 import PageWithLayoutType from '@/models/PageWithLayoutType'
-import '../styles/global.scss'
 
+// ** global styles
+import '@/styles/global.scss'
+
+// ** context
 import SettingsProvider from '@/context/SettingsContext'
 
+// ** components
+import ErrorBoundary from '@/components/ErrorBoundary'
 interface PersonalBlogPageProps {
   dehydratedState: DehydratedState
   settings: ISettings
@@ -89,11 +111,13 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
         />
         <SettingsProvider>
           <Theme>
-            <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
-              <Layout {...pageProps}>
-                <Component {...pageProps} />
-              </Layout>
-            </SnackbarProvider>
+            <ErrorBoundary>
+              <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
+                <Layout {...pageProps}>
+                  <Component {...pageProps} />
+                </Layout>
+              </SnackbarProvider>
+            </ErrorBoundary>
           </Theme>
         </SettingsProvider>
         <ReactQueryDevtools initialIsOpen={false} />

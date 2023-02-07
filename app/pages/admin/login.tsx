@@ -73,9 +73,9 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
           enqueueSnackbar('Giriş yapılırken bir sorun oluştu.', {
             variant: 'error',
           })
+          setSubmitting(false)
+          resetForm()
         }
-        setSubmitting(false)
-        resetForm()
       },
     })
 
@@ -103,6 +103,8 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
               Giriş Yap
             </Typography>
             <TextField
+              fullWidth
+              size="small"
               type="text"
               id="username"
               label="Kullanıcı Adı"
@@ -113,10 +115,9 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
                 errors.username && touched.username ? errors.username : null
               }
               error={errors.username ? touched.username : false}
-              fullWidth
             />
 
-            <FormControl variant="outlined">
+            <FormControl fullWidth size="small" variant="outlined">
               <InputLabel htmlFor="password">Şifre</InputLabel>
               <OutlinedInput
                 id="password"
@@ -124,7 +125,6 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
                 {...getFieldProps('password')}
                 error={errors.password ? touched.password : false}
                 disabled={isSubmitting}
-                fullWidth
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton

@@ -25,9 +25,7 @@ import { THEME_SETTINGS } from '@/core/Constants'
 import ISettings from '@/models/ISettings'
 
 const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    boxShadow: '3px 1px 6px 0px rgba(0,0,0,0.75)',
-  },
+  root: {},
   nav: {
     '& p': {
       textAlign: 'center',
@@ -41,15 +39,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: THEME_SETTINGS.DRAWER_WITDH,
   },
   drawerPaper: {
+    boxShadow:
+      theme.palette.mode === 'dark'
+        ? '3px 1px 6px 0px rgba(0,0,0,0.75)'
+        : '3px 1px 6px 0px rgb(203 203 203 / 75%)',
     backgroundColor: theme.palette.primary.main,
     backgroundImage: 'none',
     whiteSpace: 'break-spaces',
     width: THEME_SETTINGS.DRAWER_WITDH,
     overflowX: 'hidden',
-    padding: '10px 15px',
     '&>*': {
-      paddingTop: '10px',
-      paddingBottom: '10px',
+      padding: '5px',
     },
   },
   profileSection: {

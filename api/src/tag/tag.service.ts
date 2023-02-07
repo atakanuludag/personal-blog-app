@@ -1,12 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, ObjectId } from 'mongoose'
-import { ITag } from './interfaces/tag.interface'
-import { Tag, TagDocument } from './schemas/tag.schema'
-import { TagDto } from './dto/tag.dto'
-import { UpdateTagDto } from './dto/update-tag.dto'
-import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { CoreMessage } from '../common/messages'
+import { ITag } from '@/tag//interfaces/tag.interface'
+import { Tag, TagDocument } from '@/tag//schemas/tag.schema'
+import { TagDto } from '@/tag/dto/tag.dto'
+import { UpdateTagDto } from '@/tag/dto/update-tag.dto'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { CoreMessage } from '@/common/messages'
+import { escapeRegExp } from '@/common/helpers/string.helper' //todo: kaldırılacak.
+import { IQuery } from '@/common/interfaces/query.interface'
 
 @Injectable()
 export class TagService {
@@ -40,10 +42,36 @@ export class TagService {
     }
   }
 
-  async getItems(): Promise<ITag[]> {
+  async getItems(query: IQuery): Promise<ITag[]> {
     try {
-      const items = await this.serviceModel.find().sort('-title').exec()
-      return items
+      const { pagination, searchQuery, order, paging } = query
+      if (paging) {
+        const { page, pageSize, skip } = pagination
+        const items = await this.serviceModel
+          .find(searchQuery)
+          .limit(pageSize)
+          .sort(order)
+          .skip(skip)
+          .exec()
+
+        const count = await this.serviceModel.find(searchQuery).countDocuments()
+
+        const totalPages = Math.ceil(count / pageSize)
+
+        //Todo: paging için aynı kodu tekrar tekrar yazıyoruz. tip tanımlamasında <T> yöntemi ile tipleri verebiliriz.
+        //Todo: IArticleList
+        const data: any = {
+          results: items,
+          currentPage: page,
+          currentPageSize: items.length,
+          pageSize: pageSize,
+          totalPages,
+          totalResults: count,
+          hasNextPage: page < totalPages ? true : false,
+        }
+        return data
+      }
+      return await this.serviceModel.find(searchQuery).sort(order).exec()
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

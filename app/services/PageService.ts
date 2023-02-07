@@ -1,24 +1,17 @@
 import axios from '@/core/Axios'
 import IPage, { IPageResponse } from '@/models/IPage'
 import IListQuery from '@/models/IListQuery'
+import { AxiosResponse } from 'axios'
 
-const getItems = async (params?: IListQuery): Promise<IPageResponse> => {
-  let items = new Array<IPage>()
+const getItems = async (
+  params?: IListQuery,
+): Promise<IPageResponse | IPage[]> => {
   try {
     const ret = await axios.get(`/page`, {
       params,
     })
     const { data } = ret
-
-    return {
-      totalResults: data.totalResults,
-      totalPages: data.totalPages,
-      pageSize: data.pageSize,
-      currentPage: data.currentPage,
-      currentPageSize: data.currentPageSize,
-      hasNextPage: data.hasNextPage,
-      results: data.results,
-    }
+    return data
   } catch (err) {
     console.log('[PageService] getItems() Error: ', err)
     return {} as any

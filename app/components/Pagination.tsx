@@ -1,20 +1,22 @@
 import React from 'react'
 import LoadingButton from '@mui/lab/LoadingButton'
 import Box from '@mui/material/Box'
-import useStoreArticle from '@/hooks/useStoreArticle'
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
+import IListQuery from '@/models/IListQuery'
 
-interface IPaginationProps {}
+interface IPaginationProps {
+  params: IListQuery
+  setParams: React.Dispatch<React.SetStateAction<IListQuery>>
+}
 
-export default function Pagination({}: IPaginationProps) {
-  const { articleParamsStore, setArticleParamsStore } = useStoreArticle()
-  const { articleQuery } = useArticleQuery(articleParamsStore)
-  const article = articleQuery()
+export default function Pagination({ params, setParams }: IPaginationProps) {
+  const { articleInfiniteQuery } = useArticleQuery(params)
+  const article = articleInfiniteQuery()
 
   const handleNextPage = () => {
-    const nextPageNumber = articleParamsStore.page + 1
-    setArticleParamsStore({
-      ...articleParamsStore,
+    const nextPageNumber = params?.page ? params.page + 1 : 1
+    setParams({
+      ...params,
       page: nextPageNumber,
     })
     article.fetchNextPage({

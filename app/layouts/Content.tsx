@@ -8,7 +8,7 @@ import { LayoutPageType } from '@/models/enums'
 const useBlogPageStyle = makeStyles((theme: Theme) => ({
   content: {
     flexGrow: 1,
-    height: '100vh',
+    height: '92.6vh',
     [theme.breakpoints.down('md')]: {
       paddingTop: theme.spacing(9),
       paddingLeft: theme.spacing(5),
@@ -25,7 +25,7 @@ const useBlogPageStyle = makeStyles((theme: Theme) => ({
 const useAdminPageStyle = makeStyles((theme: Theme) => ({
   content: {
     flexGrow: 1,
-    height: '100vh',
+    height: '92.6vh',
     [theme.breakpoints.down('md')]: {
       paddingTop: theme.spacing(2),
     },

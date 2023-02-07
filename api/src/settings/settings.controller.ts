@@ -16,11 +16,11 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger'
-import { SettingsDto } from './dto/settings.dto'
-import { DefaultException } from '../common/dto/default-exception.dto'
-import { SettingsService } from './settings.service'
-import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
-import { ESettings } from './interfaces/Enum'
+import { SettingsDto } from '@/settings/dto/settings.dto'
+import { DefaultException } from '@/common/dto/default-exception.dto'
+import { SettingsService } from '@/settings/settings.service'
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
+import { ESettings } from '@/settings/interfaces/Enum'
 
 @ApiTags('Settings')
 @Controller('settings')

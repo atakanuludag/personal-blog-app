@@ -18,15 +18,15 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger'
-import { CategoryDto } from './dto/category.dto'
-import { UpdateCategoryDto } from './dto/update-category.dto'
-import { GuidParamsDto, IdParamsDto } from '../common/dto/params.dto'
-import { DefaultException } from '../common/dto/default-exception.dto'
-import { CategoryService } from './category.service'
-import { ArticleService } from '../article/article.service'
-import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { CoreMessage, CategoryMessage } from '../common/messages'
-import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
+import { CategoryDto } from '@/category/dto/category.dto'
+import { UpdateCategoryDto } from '@/category/dto/update-category.dto'
+import { GuidParamsDto, IdParamsDto } from '@/common/dto/params.dto'
+import { DefaultException } from '@/common/dto/default-exception.dto'
+import { CategoryService } from '@/category/category.service'
+import { ArticleService } from '@/article/article.service'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { CoreMessage, CategoryMessage } from '@/common/messages'
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
 
 @ApiTags('Category')
 @Controller('category')

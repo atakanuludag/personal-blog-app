@@ -1,5 +1,6 @@
-import React from 'react'
+import { APP_VERSION } from '@/config'
 import makeStyles from '@mui/styles/makeStyles'
+import Typography from '@mui/material/Typography'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -9,9 +10,6 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
     padding: '25px 0px',
   },
-  copyright: {
-    color: '#747474',
-  },
 }))
 
 export default function Footer() {
@@ -19,7 +17,9 @@ export default function Footer() {
 
   return (
     <footer className={classes.root}>
-      <small className={classes.copyright}>© Atakan Yasin Uludağ</small>
+      <Typography variant="caption" display="block" color="grey">
+        © Atakan Yasin Uludağ v{APP_VERSION}
+      </Typography>
     </footer>
   )
 }

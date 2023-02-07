@@ -32,7 +32,7 @@ const Title = styled('h3')(() => ({
   fontSize: '1.275rem',
 }))
 
-const Link = styled(MaterialLink)(({ theme }) => ({
+const Link: any = styled(MaterialLink)(({ theme }) => ({
   textDecoration: 'none',
   color: theme.palette.secondary.main,
   '&:hover': {
@@ -75,9 +75,9 @@ function ArticleItem({ data }: IArticleItemProps, ref: Ref<HTMLDivElement>) {
         <Grid item xs={12} sm>
           <div>
             <Title>
-              <NextLink href={`/${data.guid}`} passHref>
-                <Link>{data.title}</Link>
-              </NextLink>
+              <MaterialLink component={NextLink} href={`/${data.guid}`}>
+                {data.title}
+              </MaterialLink>
             </Title>
 
             <Stack
@@ -96,11 +96,13 @@ function ArticleItem({ data }: IArticleItemProps, ref: Ref<HTMLDivElement>) {
             </Stack>
 
             <Description>{textLimit(data.shortDescription, 330)}</Description>
-            <NextLink href={`/${data.guid}`} passHref>
-              <Button color="secondary">
-                Devamını oku <ArrowRightAltIcon />
-              </Button>
-            </NextLink>
+            <Button
+              LinkComponent={NextLink}
+              href={`/${data.guid}`}
+              color="secondary"
+            >
+              Devamını oku <ArrowRightAltIcon />
+            </Button>
           </div>
         </Grid>
       </Grid>

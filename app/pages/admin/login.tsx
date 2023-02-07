@@ -19,7 +19,6 @@ import InputAdornment from '@mui/material/InputAdornment'
 import IconButton from '@mui/material/IconButton'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-
 import LoadingButton from '@mui/lab/LoadingButton'
 import LayoutFullPage from '@/layouts/LayoutFullPage'
 import IPageProps from '@/models/IPageProps'
@@ -34,7 +33,7 @@ type AdminComponent = NextPage<IPageProps> & {
 const LoginBox = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(5),
-  width: '50vw',
+  width: '20vw',
   display: 'flex',
   justifyContent: 'center',
 }))
@@ -74,9 +73,9 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
           enqueueSnackbar('Giriş yapılırken bir sorun oluştu.', {
             variant: 'error',
           })
+          setSubmitting(false)
+          resetForm()
         }
-        setSubmitting(false)
-        resetForm()
       },
     })
 
@@ -86,18 +85,26 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
     e.preventDefault()
 
   return (
-    <Box display="flex" justifyContent="center">
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      height={'100%'}
+    >
       <LoginBox elevation={5}>
         <Form method="post" onSubmit={handleSubmit} noValidate>
           <Stack spacing={2}>
-            <Typography variant="h4">Giriş Yap</Typography>
             <Typography
-              variant="subtitle1"
-              sx={{ margin: '5px 0px 10px 0px !important' }}
+              variant="h4"
+              textAlign="center"
+              fontWeight="100"
+              gutterBottom
             >
-              Admin panele buradan giriş yapabilirsiniz.
+              Giriş Yap
             </Typography>
             <TextField
+              fullWidth
+              size="small"
               type="text"
               id="username"
               label="Kullanıcı Adı"
@@ -108,17 +115,16 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
                 errors.username && touched.username ? errors.username : null
               }
               error={errors.username ? touched.username : false}
-              fullWidth
             />
 
-            <FormControl variant="outlined">
+            <FormControl fullWidth size="small" variant="outlined">
               <InputLabel htmlFor="password">Şifre</InputLabel>
               <OutlinedInput
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 {...getFieldProps('password')}
                 error={errors.password ? touched.password : false}
-                fullWidth
+                disabled={isSubmitting}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -126,6 +132,7 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
                       onClick={handleClickShowPassword}
                       onMouseDown={handleMouseDownPassword}
                       edge="end"
+                      disabled={isSubmitting}
                     >
                       {showPassword ? (
                         <VisibilityOffIcon />

@@ -6,13 +6,14 @@ const THEME_SETTINGS = {
 
 const QUERY_NAMES = {
   ARTICLE: 'article',
+  TAG: 'tag',
   PAGE: 'page',
   SETTINGS: 'settings',
   ADMIN_DASHBOARD_REPORT: 'admin_dashboard_report',
 }
 
 const LS_DARK_MODE: ILocalStorage = {
-  key: 'DARK_MODE',
+  key: 'dark-mode',
 }
 
 const LOCAL_STORAGES = {

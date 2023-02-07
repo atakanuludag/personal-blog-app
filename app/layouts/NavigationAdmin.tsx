@@ -23,7 +23,7 @@ import DarkModeSwitch from '@/components/DarkModeSwitch'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { THEME_SETTINGS } from '@/core/Constants'
 import AppBar from '@/layouts/AppBar'
-import useStoreSettings from '@/hooks/useStoreSettings'
+// import useStoreSettings from '@/hooks/useStoreSettings'
 import useRouterActive from '@/hooks/useRouterActive'
 import { axiosRemoveTokenInterceptor } from '@/core/Axios'
 
@@ -98,7 +98,7 @@ const Title = styled('h1')(({ theme }) => ({
 }))
 
 export default function NavigationAdmin() {
-  const { settingsStore } = useStoreSettings()
+  // const { settingsStore } = useStoreSettings()
   const classes = useStyles()
   const theme = useTheme()
   const routerActive = useRouterActive()
@@ -168,13 +168,13 @@ export default function NavigationAdmin() {
 
   return (
     <div className={classes.root}>
-      {!isMdUp && (
+      {/* {!isMdUp && (
         <AppBar
           open={navOpen}
           toggleDrawer={toggleDrawer}
           personDisplayName={settingsStore.personDisplayName}
         />
-      )}
+      )} */}
       <Drawer
         className={classes.drawer}
         variant={isMdUp ? 'permanent' : 'temporary'}
@@ -189,11 +189,11 @@ export default function NavigationAdmin() {
       >
         <nav className={classes.nav}>
           <div className={classes.profileSection}>
-            <Title>
+            {/* <Title>
               <NextLink href="/" passHref>
                 <Link>{settingsStore.personDisplayName}</Link>
               </NextLink>
-            </Title>
+            </Title> */}
           </div>
 
           <Divider />
@@ -201,12 +201,15 @@ export default function NavigationAdmin() {
           <List className={classes.menu}>
             {adminMenu.map((m, i) =>
               !m.onClick ? (
-                <NextLink key={i} href={m.path} passHref>
-                  <ListItemButton component="a" selected={routerActive(m.path)}>
-                    <ListItemIcon>{m.icon}</ListItemIcon>
-                    <ListItemText primary={m.title} />
-                  </ListItemButton>
-                </NextLink>
+                <ListItemButton
+                  key={i}
+                  component={NextLink}
+                  href={m.path}
+                  selected={routerActive(m.path)}
+                >
+                  <ListItemIcon>{m.icon}</ListItemIcon>
+                  <ListItemText primary={m.title} />
+                </ListItemButton>
               ) : (
                 <ListItemButton key={i} onClick={m.onClick}>
                   <ListItemIcon>{m.icon}</ListItemIcon>

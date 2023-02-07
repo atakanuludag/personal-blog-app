@@ -5,8 +5,9 @@ interface IPagination {
 }
 
 export interface IQuery {
+  paging: boolean
   searchQuery: any
-  pagination: IPagination
+  pagination?: IPagination
   order: any
 }
 

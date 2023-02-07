@@ -1,39 +1,74 @@
-import React, { useState } from 'react'
+// ** react
+import { useState } from 'react'
+
+// ** next
 import App from 'next/app'
 import type { AppContext, AppProps } from 'next/app'
 import Head from 'next/head'
-import { Provider } from 'react-redux'
-import { Hydrate, QueryClient, QueryClientProvider } from 'react-query'
+
+// ** third party
+import {
+  DehydratedState,
+  Hydrate,
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { NextSeo } from 'next-seo'
 import { SnackbarProvider } from 'notistack'
 import moment from 'moment'
 import 'moment/locale/tr'
-import store from '@/store'
-import Theme from '@/layouts/Theme'
+
+// ** mui theme
+import Theme from '@/theme'
+
+// ** layouts
 import LayoutBlogPage from '@/layouts/LayoutBlogPage'
+
+// ** core
 import { axiosSetTokenInterceptor } from '@/core/Axios'
+
+// ** utils
 import GlobalStore from '@/utils/GlobalStore'
 import Cookie from '@/utils/Cookie'
+
+// ** services
 import SettingService from '@/services/SettingService'
+
+// ** models
 import ISettings from '@/models/ISettings'
 import IToken from '@/models/IToken'
 import PageWithLayoutType from '@/models/PageWithLayoutType'
-import '../styles/global.scss'
 
+// ** global styles
+import '@/styles/global.scss'
+
+// ** context
+import SettingsProvider from '@/context/SettingsContext'
+
+// ** components
+import ErrorBoundary from '@/components/ErrorBoundary'
+interface PersonalBlogPageProps {
+  dehydratedState: DehydratedState
+  settings: ISettings
+  userIpAdress: string
+  auth?: IToken
+}
 interface PersonalBlogAppProps extends AppProps {
-  Component: PageWithLayoutType
-  pageProps: any
+  Component: PageWithLayoutType<PersonalBlogPageProps>
+  pageProps: PersonalBlogPageProps
 }
 
 const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
   const Layout = Component.layout
-    ? Component.layout || ((children) => <>{children}</>)
+    ? Component.layout || ((children: any) => children)
     : LayoutBlogPage
 
-  const settings: ISettings = pageProps.settings
-  const userIpAdress: string = pageProps.userIpAdress
+  // const Layout = Component.layout
+  //   ? Component.layout || ((page: any) => page)
+  //   : LayoutBlogPage
 
+  const settings: ISettings = pageProps.settings
   const auth: IToken | undefined = pageProps.auth
   if (auth) axiosSetTokenInterceptor(auth.accessToken)
 
@@ -74,15 +109,17 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
             site_name: settings.siteTitle,
           }}
         />
-        <Provider store={store}>
-          <Theme settings={settings} userIpAdress={userIpAdress}>
-            <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </SnackbarProvider>
+        <SettingsProvider>
+          <Theme>
+            <ErrorBoundary>
+              <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
+                <Layout {...pageProps}>
+                  <Component {...pageProps} />
+                </Layout>
+              </SnackbarProvider>
+            </ErrorBoundary>
           </Theme>
-        </Provider>
+        </SettingsProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </Hydrate>
     </QueryClientProvider>

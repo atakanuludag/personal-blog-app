@@ -1,14 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, ObjectId } from 'mongoose'
-import { IFile } from './interfaces/file.interface'
-import { File, FileDocument } from './schemas/file.schema'
+import { IFile } from '@/file/interfaces/file.interface'
+import { File, FileDocument } from '@/file/schemas/file.schema'
 //import { CreateCategoryDto } from './dto/create-category.dto';
 //import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { CoreMessage } from '../common/messages'
-import { IQuery } from '../common/interfaces/query.interface'
-import { IFileList } from './interfaces/file-list.interface'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { CoreMessage } from '@/common/messages'
+import { IQuery } from '@/common/interfaces/query.interface'
+import { IFileList } from '@/file/interfaces/file-list.interface'
 
 @Injectable()
 export class FileService {

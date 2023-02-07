@@ -60,7 +60,7 @@ function ArticleDetail({ data, currentIpAdressIsLiked }: IArticleDetailProps) {
             justifyContent="flex-end"
           >
             <ArticleLikeButton
-              itemId={data.id}
+              itemId={data._id}
               likedCount={data.likedCount}
               currentIpAdressIsLiked={currentIpAdressIsLiked}
             />

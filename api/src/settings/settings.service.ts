@@ -1,13 +1,13 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { ISettings } from './interfaces/settings.interface'
-import { Settings, SettingsDocument } from './schemas/settings.schema'
-import { SettingsDto } from './dto/settings.dto'
-import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { CoreMessage } from '../common/messages'
-import { ESettings, ESettingsType } from './interfaces/Enum'
-import { SettingsInitialData } from './data/initial.data'
+import { ISettings } from '@/settings/interfaces/settings.interface'
+import { Settings, SettingsDocument } from '@/settings/schemas/settings.schema'
+import { SettingsDto } from '@/settings/dto/settings.dto'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { CoreMessage } from '@/common/messages'
+import { ESettings, ESettingsType } from '@/settings/interfaces/Enum'
+import { SettingsInitialData } from '@/settings/data/initial.data'
 
 @Injectable()
 export class SettingsService {

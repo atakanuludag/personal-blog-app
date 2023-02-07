@@ -4,7 +4,7 @@ import ITag from '@/models/ITag'
 import { ArticleType } from '@/models/enums'
 
 export default interface IArticle {
-  readonly id: string
+  readonly _id: string
   readonly title: string
   readonly shortDescription: string
   readonly content: string

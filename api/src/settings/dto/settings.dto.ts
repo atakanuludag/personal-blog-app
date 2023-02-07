@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator'
-import { ESettings } from '../interfaces/Enum'
-import { ValueType } from '../../common/interfaces/enums'
+import { ESettings } from '@/settings/interfaces/Enum'
+import { ValueType } from '@/common/interfaces/enums'
 
 export class SettingsDto {
   @ApiProperty({

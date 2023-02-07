@@ -1,26 +1,37 @@
-import React from 'react'
-import { GetServerSideProps, NextPage } from 'next/types'
-import { NextSeo } from 'next-seo'
+// ** react
+import { Fragment } from 'react'
+
+// ** next
+import { NextPage } from 'next/types'
 import { default as NextLink } from 'next/link'
+
+// ** third party
+import { NextSeo } from 'next-seo'
+
+// ** mui
 import { default as MaterialLink } from '@mui/material/Link'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
-
-import LayoutFullPage from '@/layouts/LayoutFullPage'
-import IPageProps from '@/models/IPageProps'
-
-import SearchIcon from '@mui/icons-material/Search'
 import InputLabel from '@mui/material/InputLabel'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormControl from '@mui/material/FormControl'
 import IconButton from '@mui/material/IconButton'
 import OutlinedInput from '@mui/material/OutlinedInput'
 
+// ** icons
+import SearchIcon from '@mui/icons-material/Search'
+
+// ** layouts
+import LayoutFullPage from '@/layouts/LayoutFullPage'
+
+// ** models
+import IPageProps from '@/models/IPageProps'
+
 const Title = styled(Typography)(({ theme }) => ({
   letterSpacing: theme.spacing(5),
 }))
-const SubTitle = styled(Typography)(({ theme }) => ({}))
+const SubTitle = styled(Typography)(({}) => ({}))
 
 type NotFoundPageComponent = NextPage<IPageProps> & {
   layout: typeof LayoutFullPage
@@ -28,7 +39,7 @@ type NotFoundPageComponent = NextPage<IPageProps> & {
 
 const NotFoundPage: NotFoundPageComponent = () => {
   return (
-    <>
+    <Fragment>
       <NextSeo title="404 Sayfa Bulunamadı" nofollow noindex />
 
       <Grid
@@ -52,9 +63,9 @@ const NotFoundPage: NotFoundPageComponent = () => {
 
         <Grid item>
           <Typography align="center" variant="body2" component="span">
-            <NextLink href="" passHref>
-              <MaterialLink color="secondary">Buraya</MaterialLink>
-            </NextLink>{' '}
+            <MaterialLink component={NextLink} href="/" color="secondary">
+              Buraya
+            </MaterialLink>{' '}
             tıklayarak ana sayfaya dönebilir veya aşağıdan arama yapabilirsiniz.
           </Typography>
         </Grid>
@@ -84,7 +95,7 @@ const NotFoundPage: NotFoundPageComponent = () => {
           </FormControl>
         </Grid>
       </Grid>
-    </>
+    </Fragment>
   )
 }
 

@@ -1,14 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, ObjectId } from 'mongoose'
-import { IArticle } from './interfaces/article.interface'
-import { IArticleList } from './interfaces/article-list.interface'
-import { IQuery } from '../common/interfaces/query.interface'
-import { Article, ArticleDocument } from './schemas/article.schema'
-import { ArticleDto } from './dto/article.dto'
-import { UpdateArticleDto } from './dto/update-article.dto'
-import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { CoreMessage } from '../common/messages'
+import { IArticle } from '@/article/interfaces/article.interface'
+import { IArticleList } from '@/article/interfaces/article-list.interface'
+import { IQuery } from '@/common/interfaces/query.interface'
+import { Article, ArticleDocument } from '@/article/schemas/article.schema'
+import { ArticleDto } from '@/article/dto/article.dto'
+import { UpdateArticleDto } from '@/article/dto/update-article.dto'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { CoreMessage } from '@/common/messages'
 
 @Injectable()
 export class ArticleService {
@@ -43,35 +43,44 @@ export class ArticleService {
     }
   }
 
-  async getItems(query: IQuery): Promise<IArticleList> {
+  async getItems(query: IQuery): Promise<IArticleList | IArticle[]> {
     try {
-      const { pagination, searchQuery, order } = query
-      const { page, pageSize, skip } = pagination
+      const { pagination, searchQuery, order, paging } = query
+      if (paging) {
+        const { page, pageSize, skip } = pagination
+        const items = await this.serviceModel
+          .find(searchQuery)
+          .limit(pageSize)
+          .sort(order)
+          .skip(skip)
+          .populate('categories')
+          .populate('tags')
+          .populate('coverImage')
+          .exec()
 
-      const items = await this.serviceModel
+        const count = await this.serviceModel.find(searchQuery).countDocuments()
+
+        const totalPages = Math.ceil(count / pageSize)
+
+        const data: IArticleList = {
+          results: items,
+          currentPage: page,
+          currentPageSize: items.length,
+          pageSize: pageSize,
+          totalPages,
+          totalResults: count,
+          hasNextPage: page < totalPages ? true : false,
+        }
+        return data
+      }
+
+      return await this.serviceModel
         .find(searchQuery)
-        .limit(pageSize)
         .sort(order)
-        .skip(skip)
         .populate('categories')
         .populate('tags')
         .populate('coverImage')
         .exec()
-
-      const count = await this.serviceModel.find(searchQuery).countDocuments()
-
-      const totalPages = Math.ceil(count / pageSize)
-
-      const data: IArticleList = {
-        results: items,
-        currentPage: page,
-        currentPageSize: items.length,
-        pageSize: pageSize,
-        totalPages,
-        totalResults: count,
-        hasNextPage: page < totalPages ? true : false,
-      }
-      return data
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

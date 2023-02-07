@@ -1,90 +1,127 @@
-import React, { useState, useEffect } from 'react'
+// ** react
+import React, { useState } from 'react'
+
+// ** next
 import { NextPage } from 'next/types'
+import { default as NextLink } from 'next/link'
+
+// ** mui
+import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid/models'
+import Link from '@mui/material/Link'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import Grid from '@mui/material/Grid'
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
+
+// ** third party
 import moment from 'moment'
+
+// ** models
 import IPageProps from '@/models/IPageProps'
+import IArticle, { IArticleResponse } from '@/models/IArticle'
+import IListQuery from '@/models/IListQuery'
+
+// ** layouts
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
+
+// ** utilis
 import getServerSideProps from '@/utils/AdminServerSideProps'
-import { ITableCell } from '@/models/ITable'
-import ICategory from '@/models/ICategory'
+
+// ** hooks
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
 
-import Table from '@/components/table/Table'
-import useStoreArticle from '@/hooks/useStoreArticle'
-import { IArticleResponse } from '@/models/IArticle'
+// ** components
+import DataGrid from '@/components/datagrid'
+import SearchInput from '@/components/admin/SearchInput'
 
 type AdminComponent = NextPage<IPageProps> & {
   layout: typeof LayoutAdminPage
+  title: string
 }
 
 const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
-  const { articleParamsStore, setArticleParamsStore } = useStoreArticle()
-  const { articleQuery } = useArticleQuery({
-    ...articleParamsStore,
+  const [params, setParams] = useState<IListQuery>({
+    page: 1,
     pageSize: settings.pageSize,
   })
-  const { data, isSuccess, hasNextPage, isLoading, isFetching, fetchNextPage } =
-    articleQuery()
+  const { articleQuery } = useArticleQuery(params)
+  const { data, isLoading, isFetching } = articleQuery()
+  const items = data as IArticleResponse
+  const loading = isLoading || isFetching
 
-  const [currentPageData, setCurrentPageData] = useState<IArticleResponse>(
-    {} as any,
-  )
-
-  useEffect(() => {
-    if (data && isSuccess && !isFetching && !isLoading) {
-      setCurrentPageData(data?.pages[articleParamsStore.page - 1])
-    }
-  }, [isLoading, isFetching])
-
-  const cells: ITableCell[] = [
+  const columns: GridColDef[] = [
     {
-      id: 'title',
-      numeric: false,
-      label: 'Başlık',
+      field: 'title',
+      headerName: 'Başlık',
+      width: 450,
+      renderCell: ({ row }: GridRenderCellParams<any, IArticle, any>) => (
+        <Link component={NextLink} href="/">
+          {row.title}
+        </Link>
+      ),
     },
     {
-      id: 'publishingDate',
-      numeric: false,
-      label: 'Tarih',
-      formatter: (value) =>
-        moment(new Date(value)).format('DD/MM/YYYY - HH:mm'),
+      field: 'publishingDate',
+      headerName: 'Tarih',
+      width: 200,
+      renderCell: ({ row }: GridRenderCellParams<any, IArticle, any>) =>
+        moment(new Date(row.publishingDate)).format('DD/MM/YYYY - HH:mm'),
     },
     {
-      id: 'categories',
-      numeric: false,
-      label: 'Kategoriler',
-      formatter: (values: ICategory[]) => values.map((v) => v.title).join(', '),
+      field: 'categories',
+      headerName: 'Kategoriler',
+      width: 410,
+      renderCell: ({ row }: GridRenderCellParams<any, IArticle, any>) =>
+        row.categories.map((v) => v.title).join(', '),
     },
   ]
 
-  const handleChangePage = (event: any, newPage: number) => {
-    fetchNextPage({
-      pageParam: newPage,
-    })
-    setArticleParamsStore({
-      ...articleParamsStore,
-      page: newPage,
-    })
-  }
-
-  console.log('currentPageData', currentPageData)
   return (
-    <>
-      <Table
-        loading={isLoading || isFetching}
-        cells={cells}
-        rows={currentPageData.results}
-        pageSize={articleParamsStore.pageSize}
-        page={articleParamsStore.page}
-        totalPages={currentPageData.totalResults}
-        handleChangePage={handleChangePage}
-      />
-    </>
-  )
+    <Box>
+      <Grid
+        container
+        spacing={1}
+        display="flex"
+        justifyContent="space-between"
+        pb={3}
+      >
+        <Grid item md={9} xs={12} display="flex" alignItems="center">
+          <Stack direction="row" spacing={1}>
+            <Typography variant="h5" fontWeight={500}>
+              Makaleler
+            </Typography>
+            <Button variant="contained" size="small">
+              Yeni ekle
+            </Button>
+          </Stack>
+        </Grid>
 
-  return <></>
+        <Grid item md={3} xs={12}>
+          <SearchInput
+            loading={loading}
+            params={params}
+            setParams={setParams}
+          />
+        </Grid>
+      </Grid>
+
+      <DataGrid
+        loading={loading}
+        columns={columns}
+        data={items?.results as any}
+        pageSize={params.pageSize as number}
+        page={params.page as number}
+        totalResults={items?.totalResults as number}
+        params={params}
+        setParams={setParams}
+      />
+    </Box>
+  )
 }
 
 AdminArticleIndex.layout = LayoutAdminPage
+AdminArticleIndex.title = 'Makaleler'
 export default AdminArticleIndex
 
 export { getServerSideProps }

@@ -1,14 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, ObjectId } from 'mongoose'
-import { IPage } from './interfaces/page.interface'
-import { IPageList } from './interfaces/page-list.interface'
-import { IQuery } from '../common/interfaces/query.interface'
-import { Page, PageDocument } from './schemas/page.schema'
-import { PageDto } from './dto/page.dto'
-import { UpdatePageDto } from './dto/update-page.dto'
-import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { CoreMessage } from '../common/messages'
+import { IPage } from '@/page/interfaces/page.interface'
+import { IPageList } from '@/page/interfaces/page-list.interface'
+import { IQuery } from '@/common/interfaces/query.interface'
+import { Page, PageDocument } from '@/page/schemas/page.schema'
+import { PageDto } from '@/page/dto/page.dto'
+import { UpdatePageDto } from '@/page/dto/update-page.dto'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { CoreMessage } from '@/common/messages'
 
 @Injectable()
 export class PageService {
@@ -43,32 +43,37 @@ export class PageService {
     }
   }
 
-  async getItems(query: IQuery): Promise<IPageList> {
+  async getItems(query: IQuery): Promise<IPageList | IPage[]> {
     try {
-      const { pagination, searchQuery, order } = query
-      const { page, pageSize, skip } = pagination
+      const { pagination, searchQuery, order, paging } = query
 
-      const items = await this.serviceModel
-        .find(searchQuery)
-        .limit(pageSize)
-        .sort(order)
-        .skip(skip)
-        .exec()
+      if (paging) {
+        const { page, pageSize, skip } = pagination
 
-      const count = await this.serviceModel.find(searchQuery).countDocuments()
+        const items = await this.serviceModel
+          .find(searchQuery)
+          .limit(pageSize)
+          .sort(order)
+          .skip(skip)
+          .exec()
 
-      const totalPages = Math.ceil(count / pageSize)
+        const count = await this.serviceModel.find(searchQuery).countDocuments()
 
-      const data: IPageList = {
-        results: items,
-        currentPage: page,
-        currentPageSize: items.length,
-        pageSize: pageSize,
-        totalPages,
-        totalResults: count,
-        hasNextPage: page < totalPages ? true : false,
+        const totalPages = Math.ceil(count / pageSize)
+
+        const data: IPageList = {
+          results: items,
+          currentPage: page,
+          currentPageSize: items.length,
+          pageSize: pageSize,
+          totalPages,
+          totalResults: count,
+          hasNextPage: page < totalPages ? true : false,
+        }
+        return data
       }
-      return data
+
+      return await this.serviceModel.find(searchQuery).sort(order).exec()
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

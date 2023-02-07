@@ -15,16 +15,16 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger'
-import { UserService } from './user.service'
-import { LocalAuthGuard } from '../common/guards/local-auth.guard'
-import { LoginUserDto } from './dto/login-user.dto'
-import { UserDto } from './dto/user.dto'
-import { TokenDto } from './dto/token.dto'
-import { PasswordHelper } from '../common/helpers/password.helper'
-import { ExceptionHelper } from '../common/helpers/exception.helper'
-import { CoreMessage } from '../common/messages/core.message'
-import { UserMessage } from '../common/messages'
-import { DefaultException } from '../common/dto/default-exception.dto'
+import { UserService } from '@/user/user.service'
+import { LocalAuthGuard } from '@/common/guards/local-auth.guard'
+import { LoginUserDto } from '@/user/dto/login-user.dto'
+import { UserDto } from '@/user/dto/user.dto'
+import { TokenDto } from '@/user/dto/token.dto'
+import { PasswordHelper } from '@/common/helpers/password.helper'
+import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { CoreMessage } from '@/common/messages/core.message'
+import { UserMessage } from '@/common/messages'
+import { DefaultException } from '@/common/dto/default-exception.dto'
 
 @ApiTags('User')
 @Controller('user')

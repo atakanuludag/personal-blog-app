@@ -2,20 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/layouts": ["layouts"],
-      "@/layouts/*": ["layouts/*"],
-      "@/core/*": ["core/*"],
-      "@/components": ["components"],
-      "@/components/*": ["components/*"],
-      "@/hooks": ["hooks"],
-      "@/hooks/*": ["hooks/*"],
-      "@/services": ["services"],
-      "@/services/*": ["services/*"],
-      "@/models": ["models"],
-      "@/models/*": ["models/*"],
-      "@/store": ["store"],
-      "@/store/*": ["store/*"],
-      "@/utils/*": ["utils/*"]
+      "@/*": ["*"]
     }
   }
 }

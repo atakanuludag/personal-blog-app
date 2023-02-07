@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document } from 'mongoose'
 import * as mongoose from 'mongoose'
-import { ESettings } from '../interfaces/Enum'
-import { ValueType } from '../../common/interfaces/enums'
+import { ESettings } from '@/settings/interfaces/Enum'
+import { ValueType } from '@/common/interfaces/enums'
 
 export type SettingsDocument = Settings & Document
 

@@ -7,6 +7,7 @@ export default class AppDocument extends Document {
     return (
       <Html lang="tr">
         <Head>
+          <meta charSet="utf-8" />
           {/*<meta name="theme-color" content={theme.palette.primary.main} /> */}
           <link rel="profile" href="https://gmpg.org/xfn/11" />
           <link rel="manifest" href="/manifest.json" />
@@ -16,6 +17,7 @@ export default class AppDocument extends Document {
           <link rel="icon" href="/favicon-300x300.png" sizes="300x300" />
           <link rel="apple-touch-icon" href="/favicon-300x300.png" />
           <meta name="msapplication-TileImage" content="/favicon-300x300.png" />
+
           {/*
             <script async src={`https://www.googletagmanager.com/gtag/js?id=${VARIABLES.GOOGLE_ANALYTICS_CODE}`}></script>
   

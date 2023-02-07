@@ -1,69 +1,94 @@
-import React from 'react'
-import { GetServerSideProps, NextPage } from 'next/types'
-import { useRouter } from 'next/router'
-import { dehydrate, QueryClient } from 'react-query'
+// ** react
+import React, { Fragment } from 'react'
+
+// ** next
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next/types'
+
+// ** third party
 import { NextSeo } from 'next-seo'
-//import Box from '@mui/material/Box'
+
+// ** models
 import IPageProps from '@/models/IPageProps'
-import useArticleQuery from '@/hooks/queries/useArticleQuery'
-import usePageQuery from '@/hooks/queries/usePageQuery'
-import useStoreArticle from '@/hooks/useStoreArticle'
+import IPage from '@/models/IPage'
+
+// ** components
 import PageDetail from '@/components/PageDetail'
 import Breadcrumb, { IBreadCrumb } from '@/components/Breadcrumb'
 
-const PageGuid: NextPage<IPageProps> = ({ settings }: IPageProps) => {
-  const { query } = useRouter()
-  const guid = !query.guid ? '' : query.guid
+// ** services
+import PageService from '@/services/PageService'
 
-  const { pageGetByGuidQuery } = usePageQuery()
-  // const { articleParamsStore } = useStoreArticle()
-  // const { articleGetByGuidQuery } = useArticleQuery(articleParamsStore)
-  const { data, isSuccess } = pageGetByGuidQuery(guid as string)
-  const url = `${settings.siteUrl}/${data?.guid}`
+type StaticPathParams = {
+  guid?: string
+}
+type PageGuidProps = {
+  page: IPage
+} & IPageProps
+
+const PageGuid: NextPage<PageGuidProps> = ({
+  settings,
+  page,
+}: PageGuidProps) => {
+  const url = `${settings.siteUrl}/${page.guid}`
 
   const breadcrumb: IBreadCrumb[] = [
     {
-      title: isSuccess && data ? data.title : '',
+      title: page.title,
       link: null,
     },
   ]
 
-  if (isSuccess && data) {
-    return (
-      <>
-        <NextSeo
-          title={data.title}
-          description={data.shortDescription}
-          canonical={url}
-          openGraph={{
-            type: 'article',
-            locale: 'tr_TR',
-            title: data.title,
-            url: url,
-            site_name: settings.siteTitle,
-          }}
-        />
-        <Breadcrumb data={breadcrumb} />
-        <PageDetail data={data} />
-      </>
-    )
-  }
-
-  return <></>
+  return (
+    <Fragment>
+      <NextSeo
+        title={page.title}
+        description={page.shortDescription}
+        canonical={url}
+        openGraph={{
+          type: 'article',
+          locale: 'tr_TR',
+          title: page.title,
+          url: url,
+          site_name: settings.siteTitle,
+        }}
+      />
+      <Breadcrumb data={breadcrumb} />
+      <PageDetail data={page} />
+    </Fragment>
+  )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const guid = !query.guid ? '' : query.guid
-  const queryClient = new QueryClient()
+export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
+  params,
+}) => {
+  const guid = params?.guid
 
-  const { pageByGuidPreFetchQuery } = usePageQuery()
-  await pageByGuidPreFetchQuery(queryClient, guid as string)
+  if (!guid) {
+    return {
+      notFound: true,
+    }
+  }
 
+  const page = await PageService.getItemByGuid(guid)
+  if (!page || !page.guid) {
+    return {
+      notFound: true,
+    }
+  }
   return {
     props: {
-      dehydratedState: dehydrate(queryClient),
+      page,
+      guid,
     },
   }
+}
+
+export const getStaticPaths: GetStaticPaths<StaticPathParams> = async () => {
+  const pages = await PageService.getItems()
+  const paths = (pages as IPage[]).map((page) => ({
+    params: { guid: page.guid },
+  }))
+  return { paths, fallback: 'blocking' }
 }
 
 export default PageGuid

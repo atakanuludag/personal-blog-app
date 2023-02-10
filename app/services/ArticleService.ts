@@ -53,8 +53,9 @@ const getItems = async (
     const { data } = ret
     return data
   } catch (err) {
+    //Todo: return olarak boş object göndermek yerine null gönderilip /[guid] sayfası test edilecek.
     //const error: AxiosError = err;
-    console.log('[ArticleService] getItems() Error: ', err)
+    //console.log('[ArticleService] getItems() Error: ', err)
     return {} as any
   }
 }
@@ -66,7 +67,7 @@ const getItemByGuid = async (guid: string): Promise<IArticle> => {
     //return itemToModel(ret.data)
   } catch (err) {
     //const error: AxiosError = err;
-    console.log('[ArticleService] getItemByGuid() Error: ', err)
+    //console.log('[ArticleService] getItemByGuid() Error: ', err)
     return {} as any
   }
 }

@@ -3,45 +3,50 @@ import { Fragment } from 'react'
 
 // ** next
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next/types'
-import { useRouter } from 'next/router'
+//import { useRouter } from 'next/router'
 
 // ** third party
 import { NextSeo } from 'next-seo'
 
 // ** services
 import ArticleService from '@/services/ArticleService'
+import PageService from '@/services/PageService'
 
 // ** components
 import Breadcrumb, { IBreadCrumb } from '@/components/Breadcrumb'
 import ArticleDetail from '@/components/ArticleDetail'
+import PageDetail from '@/components/PageDetail'
 
 // ** models
 import IPageProps from '@/models/IPageProps'
 import IArticle from '@/models/IArticle'
+import IPage from '@/models/IPage'
 
-type ArticleGuidProps = {
+type GuidProps = {
   currentIpAdressIsLiked: boolean
-  article: IArticle
+  data: IArticle | IPage
+  dataType: 'article' | 'page'
 } & IPageProps
 
 type StaticPathParams = {
   guid?: string
 }
 
-const ArticleGuid: NextPage<ArticleGuidProps> = ({
+const Guid: NextPage<GuidProps> = ({
   settings,
   userIpAdress,
   currentIpAdressIsLiked,
-  article,
-}: ArticleGuidProps) => {
-  const { query } = useRouter()
-  const guid = !query.guid ? '' : query.guid
+  data,
+  dataType,
+}: GuidProps) => {
+  //const { query } = useRouter()
+  // const guid = !query.guid ? '' : query.guid
 
-  const url = `${settings.siteUrl}/${article.guid}`
+  const url = `${settings.siteUrl}/${data.guid}`
 
   const breadcrumb: IBreadCrumb[] = [
     {
-      title: article.title,
+      title: data.title,
       link: null,
     },
   ]
@@ -49,22 +54,26 @@ const ArticleGuid: NextPage<ArticleGuidProps> = ({
   return (
     <Fragment>
       <NextSeo
-        title={article.title}
-        description={article.shortDescription}
+        title={data.title}
+        description={data.shortDescription}
         canonical={url}
         openGraph={{
           type: 'article',
           locale: 'tr_TR',
-          title: article.title,
+          title: data.title,
           url: url,
           site_name: settings.siteTitle,
         }}
       />
       <Breadcrumb data={breadcrumb} />
-      <ArticleDetail
-        data={article}
-        currentIpAdressIsLiked={currentIpAdressIsLiked}
-      />
+      {dataType === 'article' ? (
+        <ArticleDetail
+          data={data as IArticle}
+          currentIpAdressIsLiked={currentIpAdressIsLiked}
+        />
+      ) : (
+        <PageDetail data={data as IPage} />
+      )}
     </Fragment>
   )
 }
@@ -80,15 +89,37 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
     }
   }
 
+  let dataType: 'article' | 'page' | null = null
+  let data: IArticle | IPage | null = null
   const article = await ArticleService.getItemByGuid(guid)
-  if (!article || !article.guid) {
+  if (!article || !article?.guid) {
+    const page = await PageService.getItemByGuid(guid)
+    if (page && page?.guid) {
+      data = page
+      dataType = 'page'
+    }
+  } else {
+    data = article
+    dataType = 'article'
+  }
+
+  // const page = await PageService.getItemByGuid(guid)
+  // const data: IArticle | IPage | null = article?.guid
+  //   ? article
+  //   : page?.guid
+  //   ? page
+  //   : null
+  // const dataType: 'article' | 'page' = article?.guid ? 'article' : 'page'
+
+  if (!data) {
     return {
       notFound: true,
     }
   }
   return {
     props: {
-      article,
+      data,
+      dataType,
       guid,
     },
   }
@@ -96,10 +127,16 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
 
 export const getStaticPaths: GetStaticPaths<StaticPathParams> = async () => {
   const articles = await ArticleService.getItems()
-  const paths = (articles as IArticle[]).map((article) => ({
+  const pages = await PageService.getItems()
+
+  const articlePaths = (articles as IArticle[]).map((article) => ({
     params: { guid: article.guid },
   }))
+  const pagePaths = (pages as IPage[]).map((page) => ({
+    params: { guid: page.guid },
+  }))
+  const paths = [...articlePaths, ...pagePaths]
   return { paths, fallback: 'blocking' }
 }
 
-export default ArticleGuid
+export default Guid

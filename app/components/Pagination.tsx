@@ -1,5 +1,5 @@
 // ** react
-import { Dispatch, SetStateAction } from 'react'
+import { ChangeEvent, Dispatch, SetStateAction } from 'react'
 
 // ** next
 import { useRouter } from 'next/router'
@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 // ** mui
 import LoadingButton from '@mui/lab/LoadingButton'
 import Box from '@mui/material/Box'
+import Pagination from '@mui/material/Pagination'
 
 // ** hooks
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
@@ -14,17 +15,26 @@ import useArticleQuery from '@/hooks/queries/useArticleQuery'
 // ** models
 import IListQuery from '@/models/IListQuery'
 
-interface IPaginationProps {
+type PaginationComponentProps = {
   params: IListQuery
   setParams: Dispatch<SetStateAction<IListQuery>>
+  type?: 'moreButton' | 'pagination'
+  totalPages?: number
 }
 
-export default function Pagination({ params, setParams }: IPaginationProps) {
+export default function PaginationComponent({
+  params,
+  setParams,
+  type = 'moreButton',
+  totalPages = 1,
+}: PaginationComponentProps) {
   const router = useRouter()
   const { articleInfiniteQuery } = useArticleQuery(params)
   const article = articleInfiniteQuery()
+  const loading =
+    article.isLoading || article.isFetching || article.isFetchingNextPage
 
-  const handleNextPage = () => {
+  const handleMoreButtonNextPage = () => {
     const nextPageNumber = params?.page ? params.page + 1 : 1
     setParams({
       ...params,
@@ -33,27 +43,36 @@ export default function Pagination({ params, setParams }: IPaginationProps) {
     article.fetchNextPage({
       pageParam: nextPageNumber,
     })
-    //`/page/${nextPageNumber}`
-    //router.replace(`/page/${nextPageNumber}`, undefined)
   }
+
+  const handlePaginationClick = (e: ChangeEvent<unknown>, page: number) => {
+    setParams({
+      ...params,
+      page,
+    })
+    router.replace(`/page/${page}`, undefined)
+  }
+
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-    >
-      <LoadingButton
-        loading={
-          article.isLoading || article.isFetching || article.isFetchingNextPage
-        }
-        variant="contained"
-        size="large"
-        onClick={handleNextPage}
-        fullWidth
-      >
-        Daha fazla
-      </LoadingButton>
+    <Box display="flex" justifyContent="center" alignItems="center">
+      {type === 'moreButton' ? (
+        <LoadingButton
+          loading={loading}
+          variant="contained"
+          size="large"
+          onClick={handleMoreButtonNextPage}
+          fullWidth
+        >
+          Daha fazla
+        </LoadingButton>
+      ) : (
+        <Pagination
+          disabled={loading}
+          count={totalPages}
+          page={params?.page || 1}
+          onChange={handlePaginationClick}
+        />
+      )}
     </Box>
   )
 }

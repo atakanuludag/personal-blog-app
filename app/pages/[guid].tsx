@@ -3,7 +3,6 @@ import { Fragment } from 'react'
 
 // ** next
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next/types'
-//import { useRouter } from 'next/router'
 
 // ** third party
 import { NextSeo } from 'next-seo'
@@ -39,9 +38,6 @@ const Guid: NextPage<GuidProps> = ({
   data,
   dataType,
 }: GuidProps) => {
-  //const { query } = useRouter()
-  // const guid = !query.guid ? '' : query.guid
-
   const url = `${settings.siteUrl}/${data.guid}`
 
   const breadcrumb: IBreadCrumb[] = [
@@ -102,14 +98,6 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
     data = article
     dataType = 'article'
   }
-
-  // const page = await PageService.getItemByGuid(guid)
-  // const data: IArticle | IPage | null = article?.guid
-  //   ? article
-  //   : page?.guid
-  //   ? page
-  //   : null
-  // const dataType: 'article' | 'page' = article?.guid ? 'article' : 'page'
 
   if (!data) {
     return {

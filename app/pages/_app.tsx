@@ -48,6 +48,7 @@ import SettingsProvider from '@/context/SettingsContext'
 
 // ** components
 import ErrorBoundary from '@/components/ErrorBoundary'
+
 interface PersonalBlogPageProps {
   dehydratedState: DehydratedState
   settings: ISettings

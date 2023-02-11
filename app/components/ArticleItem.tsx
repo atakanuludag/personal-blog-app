@@ -1,17 +1,31 @@
-import React, { forwardRef, Ref } from 'react'
-import moment from 'moment'
+// ** react
+import { forwardRef, Ref } from 'react'
+
+// ** next
 import { default as NextLink } from 'next/link'
+import Image from 'next/image'
+
+// ** third party
+import moment from 'moment'
+
+// ** mui
 import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
+import { default as MaterialLink } from '@mui/material/Link'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Divider from '@mui/material/Divider'
+
+// ** icons
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
+
+// ** hooks
 import useText from '@/hooks/useText'
-import { default as MaterialLink } from '@mui/material/Link'
+
+// ** models
 import IArticle from '@/models/IArticle'
 
-interface IArticleItemProps {
+type ArticleItemProps = {
   data: IArticle
 }
 
@@ -19,7 +33,7 @@ const Item = styled('div')(({ theme }) => ({
   marginBottom: theme.spacing(6),
 }))
 
-const Image = styled('img')(({ theme }) => ({
+const StyledImage = styled(Image)(({ theme }) => ({
   maxWidth: '150px',
   [theme.breakpoints.down('md')]: {
     maxWidth: 'none',
@@ -52,10 +66,10 @@ const StackItem = styled('p')(({ theme }) => ({
   fontSize: '0.770rem',
 }))
 
-function ArticleItem({ data }: IArticleItemProps, ref: Ref<HTMLDivElement>) {
+function ArticleItem({ data }: ArticleItemProps, ref?: Ref<HTMLDivElement>) {
   const { textLimit } = useText()
 
-  const coverImage = `./example-thumb.jpeg`
+  const coverImage = `/example-thumb.jpeg`
   //data.coverImage
 
   return (
@@ -69,7 +83,12 @@ function ArticleItem({ data }: IArticleItemProps, ref: Ref<HTMLDivElement>) {
         spacing={1}
       >
         <Grid item>
-          <Image src={coverImage} alt={data.title} />
+          <StyledImage
+            src={coverImage}
+            alt={data.title}
+            width="150"
+            height="150"
+          />
         </Grid>
 
         <Grid item xs={12} sm>

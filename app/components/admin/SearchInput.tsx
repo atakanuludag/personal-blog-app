@@ -26,7 +26,11 @@ type SearchInputProps = {
   setParams: Dispatch<SetStateAction<IListQuery>>
 }
 
-function SearchInput({ loading, params, setParams }: SearchInputProps) {
+export default function SearchInput({
+  loading,
+  params,
+  setParams,
+}: SearchInputProps) {
   const [searchText, setSearchText] = useState('')
   const handleChange = (
     e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -73,5 +77,3 @@ function SearchInput({ loading, params, setParams }: SearchInputProps) {
     </FormControl>
   )
 }
-
-export default SearchInput

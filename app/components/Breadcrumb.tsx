@@ -1,22 +1,30 @@
-import { useRouter } from 'next/router'
+// ** next
+//import { useRouter } from 'next/router'
 import { default as NextLink } from 'next/link'
+
+// ** mui
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Link from '@mui/material/Link'
 
-export interface IBreadCrumb {
+export type BreadcrumbDataProps = {
   title: string
   link: string | null
 }
 
-interface IBreadcrumbProps {
+type BreadcrumbProps = {
   isShowHome?: boolean
-  data: IBreadCrumb[]
+  data: BreadcrumbDataProps[]
 }
 
-function Breadcrumb({ data, isShowHome = true, ...props }: IBreadcrumbProps) {
-  const router = useRouter()
+export default function Breadcrumb({
+  data,
+  isShowHome = true,
+  ...props
+}: BreadcrumbProps) {
+  //const router = useRouter()
+  //Todo: Auto generate breadcrumb function will be added
 
   return (
     <Box
@@ -57,5 +65,3 @@ function Breadcrumb({ data, isShowHome = true, ...props }: IBreadcrumbProps) {
     </Box>
   )
 }
-
-export default Breadcrumb

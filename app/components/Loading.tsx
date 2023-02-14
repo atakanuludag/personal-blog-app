@@ -1,3 +1,4 @@
+// ** mui
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 
@@ -6,11 +7,14 @@ export enum LoadingType {
   Linear,
 }
 
-interface ILoadingProps {
+type LoadingProps = {
   type?: LoadingType
 }
 
-function Loading({ type = LoadingType.Circular, ...props }: ILoadingProps) {
+export default function Loading({
+  type = LoadingType.Circular,
+  ...props
+}: LoadingProps) {
   if (type === LoadingType.Circular) {
     return (
       <Box
@@ -23,5 +27,3 @@ function Loading({ type = LoadingType.Circular, ...props }: ILoadingProps) {
     )
   } else return <>Linear Progress</>
 }
-
-export default Loading

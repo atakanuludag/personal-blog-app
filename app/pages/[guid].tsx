@@ -12,7 +12,7 @@ import ArticleService from '@/services/ArticleService'
 import PageService from '@/services/PageService'
 
 // ** components
-import Breadcrumb, { IBreadCrumb } from '@/components/Breadcrumb'
+import Breadcrumb, { BreadcrumbDataProps } from '@/components/Breadcrumb'
 import ArticleDetail from '@/components/ArticleDetail'
 import PageDetail from '@/components/PageDetail'
 
@@ -40,7 +40,7 @@ const Guid: NextPage<GuidProps> = ({
 }: GuidProps) => {
   const url = `${settings.siteUrl}/${data.guid}`
 
-  const breadcrumb: IBreadCrumb[] = [
+  const breadcrumb: BreadcrumbDataProps[] = [
     {
       title: data.title,
       link: null,

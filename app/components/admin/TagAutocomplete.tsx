@@ -17,12 +17,12 @@ import useDebounce from '@/hooks/useDebounce'
 import IListQuery from '@/models/IListQuery'
 import TagModel from '@/models/Tag'
 
-interface TagAutocompleteProps {
+type TagAutocompleteProps = {
   select: (string | TagModel)[]
   setSelect: Dispatch<SetStateAction<(string | TagModel)[]>>
 }
 
-function TagAutocomplete({
+export default function TagAutocomplete({
   select,
   setSelect,
   ...props
@@ -102,5 +102,3 @@ function TagAutocomplete({
     />
   )
 }
-
-export default TagAutocomplete

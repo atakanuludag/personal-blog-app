@@ -1,8 +1,10 @@
-import React from 'react'
+// ** mui
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { styled } from '@mui/material/styles'
 import Switch from '@mui/material/Switch'
 import Box from '@mui/material/Box'
+
+// ** hooks
 import useSettingsContext, { PaletteMode } from '@/hooks/useSettingsContext'
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({

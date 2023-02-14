@@ -1,13 +1,19 @@
-import React from 'react'
+// ** third party
 import moment from 'moment'
+
+// ** mui
 import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Divider from '@mui/material/Divider'
+
+// ** models
 import IArticle from '@/models/IArticle'
+
+// ** components
 import ArticleLikeButton from '@/components/ArticleLikeButton'
 
-interface IArticleDetailProps {
+type ArticleDetailProps = {
   data: IArticle
   currentIpAdressIsLiked: boolean
 }
@@ -35,7 +41,10 @@ const StackItem = styled('p')(({ theme }) => ({
   fontSize: '0.770rem',
 }))
 
-function ArticleDetail({ data, currentIpAdressIsLiked }: IArticleDetailProps) {
+export default function ArticleDetail({
+  data,
+  currentIpAdressIsLiked,
+}: ArticleDetailProps) {
   const coverImage = `./blog-post-banner.jpeg`
   //item.coverImage
 
@@ -95,5 +104,3 @@ function ArticleDetail({ data, currentIpAdressIsLiked }: IArticleDetailProps) {
     </Article>
   )
 }
-
-export default ArticleDetail

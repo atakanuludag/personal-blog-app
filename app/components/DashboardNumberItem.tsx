@@ -1,4 +1,4 @@
-import React from 'react'
+// ** mui
 import { Theme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import Card from '@mui/material/Card'
@@ -31,19 +31,19 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-interface IDashboardNumberItem {
+type DashboardNumberItemProps = {
   icon: JSX.Element
   title: string
   count: number
   loading: boolean
 }
 
-function DashboardNumberItem({
+export default function DashboardNumberItem({
   icon,
   title,
   count,
   loading,
-}: IDashboardNumberItem) {
+}: DashboardNumberItemProps) {
   const classes = useStyles()
 
   return (
@@ -64,5 +64,3 @@ function DashboardNumberItem({
     </Card>
   )
 }
-
-export default DashboardNumberItem

@@ -1,9 +1,12 @@
+// ** react
 import { SyntheticEvent, useState } from 'react'
+
+// ** mui
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import CircularProgress from '@mui/material/CircularProgress'
 
-interface IAsyncAutocompleteProps {
+type AsyncAutocompleteProps = {
   name: string
   value: any
   label: string
@@ -16,7 +19,9 @@ interface IAsyncAutocompleteProps {
   error?: boolean
 }
 
-function AsyncAutocomplete({
+//Todo: helpertext and error not working
+
+export default function AsyncAutocomplete({
   name,
   value,
   label,
@@ -28,7 +33,7 @@ function AsyncAutocomplete({
   helperText = null,
   error = false,
   ...props
-}: IAsyncAutocompleteProps) {
+}: AsyncAutocompleteProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -78,7 +83,3 @@ function AsyncAutocomplete({
     />
   )
 }
-
-//Todo: helpertext and error not working
-
-export default AsyncAutocomplete

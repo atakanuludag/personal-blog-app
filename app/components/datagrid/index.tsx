@@ -19,7 +19,7 @@ import Toolbar from '@/components/datagrid/Toolbar'
 // ** models
 import IListQuery from '@/models/IListQuery'
 
-type IMuiDataGridProps = {
+type MuiDataGridProps = {
   loading: boolean
   page: number
   pageSize: number
@@ -39,7 +39,7 @@ export default function MuiDataGrid({
   columns,
   params,
   setParams,
-}: IMuiDataGridProps) {
+}: MuiDataGridProps) {
   const [selected, setSelected] = useState(new Array<string>())
   const isSelected = selected.length > 0
 

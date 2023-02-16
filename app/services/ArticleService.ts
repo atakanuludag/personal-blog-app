@@ -96,11 +96,20 @@ const likePost = async (id: string): Promise<number> => {
   }
 }
 
+const deleteItem = async (id: string): Promise<void> => {
+  try {
+    await axios.delete(`/article/${id}`)
+  } catch (err) {
+    console.log('[ArticleService] deleteItem() Error: ', err)
+  }
+}
+
 const service = {
   getItems,
   getItemByGuid,
   getLikeIPCheck,
   likePost,
+  deleteItem,
 }
 
 export default service

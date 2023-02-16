@@ -10,18 +10,23 @@ import {
   trTR,
   GridSortModel,
   GridSelectionModel,
-  GridToolbarContainer,
+  GridSlotsComponentsProps,
 } from '@mui/x-data-grid'
 import type { GridSortDirection } from '@mui/x-data-grid'
 
 // ** components
-import Toolbar from '@/components/datagrid/Toolbar'
+import Toolbar, { MuiToolbarProps } from '@/components/datagrid/Toolbar'
 
 // ** models
 import IListQuery from '@/models/IListQuery'
 
+// ** api
+import ArticleService from '@/services/ArticleService'
+
 type MuiDataGridProps = {
+  queryName: string
   loading: boolean
+  setCustomLoading: Dispatch<SetStateAction<boolean>>
   page: number
   pageSize: number
   totalResults: number
@@ -31,8 +36,14 @@ type MuiDataGridProps = {
   setParams: Dispatch<SetStateAction<IListQuery>>
 }
 
+export type MuiGridComponentsProps = {
+  toolbar: MuiToolbarProps
+} & GridSlotsComponentsProps
+
 export default function MuiDataGrid({
+  queryName,
   loading,
+  setCustomLoading,
   page,
   pageSize,
   totalResults,
@@ -88,9 +99,13 @@ export default function MuiDataGrid({
   const onSelectionModelChange = (ids: GridSelectionModel) =>
     setSelected(ids as any)
 
-  const tableComponentsProps = {
+  const tableComponentsProps: MuiGridComponentsProps = {
     toolbar: {
+      queryName,
+      loading,
+      setLoading: setCustomLoading,
       selected,
+      deleteService: ArticleService.deleteItem,
     },
   }
 

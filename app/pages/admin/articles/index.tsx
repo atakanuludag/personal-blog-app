@@ -35,6 +35,9 @@ import useArticleQuery from '@/hooks/queries/useArticleQuery'
 import DataGrid from '@/components/datagrid'
 import SearchInput from '@/components/admin/SearchInput'
 
+// ** constants
+import { QUERY_NAMES } from '@/core/Constants'
+
 type AdminComponent = NextPage<IPageProps> & {
   layout: typeof LayoutAdminPage
   title: string
@@ -45,10 +48,11 @@ const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
     page: 1,
     pageSize: settings.pageSize,
   })
+  const [customLoading, setCustomLoading] = useState(false)
   const { articleQuery } = useArticleQuery(params)
   const { data, isLoading, isFetching } = articleQuery()
   const items = data as IArticleResponse
-  const loading = isLoading || isFetching
+  const loading = isLoading || isFetching || customLoading
 
   const columns: GridColDef[] = [
     {
@@ -107,7 +111,9 @@ const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
       </Grid>
 
       <DataGrid
+        queryName={QUERY_NAMES.ARTICLE}
         loading={loading}
+        setCustomLoading={setCustomLoading}
         columns={columns}
         data={items?.results as any}
         pageSize={params.pageSize as number}

@@ -6,3 +6,8 @@ export enum ValueType {
   Number = 'number',
   PageSelects = 'pageSelects',
 }
+
+export enum OrderType {
+  DESC = 1,
+  ASC = -1,
+}

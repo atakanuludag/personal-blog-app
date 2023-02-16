@@ -12,6 +12,7 @@ import {
   GridSelectionModel,
   GridToolbarContainer,
 } from '@mui/x-data-grid'
+import type { GridSortDirection } from '@mui/x-data-grid'
 
 // ** components
 import Toolbar from '@/components/datagrid/Toolbar'
@@ -43,6 +44,15 @@ export default function MuiDataGrid({
   const [selected, setSelected] = useState(new Array<string>())
   const isSelected = selected.length > 0
 
+  const orderTypeConvert = (type: GridSortDirection) => {
+    switch (type) {
+      case 'asc':
+        return -1
+      case 'desc':
+        return 1
+    }
+  }
+
   const handleSortModelChange = useCallback(
     (sortModel: GridSortModel) => {
       if (sortModel.length <= 0) {
@@ -57,7 +67,7 @@ export default function MuiDataGrid({
       setParams({
         ...params,
         order: sortItem.field,
-        orderBy: sortItem.sort,
+        orderBy: orderTypeConvert(sortItem.sort),
       })
     },
     [params, setParams],
@@ -98,7 +108,7 @@ export default function MuiDataGrid({
         sortingMode="server"
         onSortModelChange={handleSortModelChange}
         rowsPerPageOptions={[2, 10, 20, 30]}
-        getRowId={(data) => data.id}
+        getRowId={(data) => data._id}
         onSelectionModelChange={onSelectionModelChange}
         rows={data}
         columns={columns}

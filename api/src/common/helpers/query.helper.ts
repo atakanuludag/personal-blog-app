@@ -1,7 +1,7 @@
 import { Query } from '@nestjs/common'
 import { ListQueryDto } from '@/common/dto/list-query.dto'
-import { IQuery, OrderType } from '@/common/interfaces/query.interface'
-
+import { IQuery } from '@/common/interfaces/query.interface'
+import { OrderType } from '@/common/interfaces/enums'
 export class QueryHelper {
   public constructor() {}
 
@@ -12,9 +12,11 @@ export class QueryHelper {
     const searchType = query.sType ? query.sType : null
     if (search && searchType)
       searchQuery = { [searchType]: { $regex: `^${search}`, $options: '$i' } }
-
-    const orderName = query.order ? query.order : 'createdAt'
-    const orderType = query.orderBy ? query.orderBy : OrderType.DESC
+    const orderName = query.order || 'createdAt'
+    const orderType =
+      typeof query.orderBy !== 'undefined' && query.orderBy.toString() !== ''
+        ? Number(query.orderBy)
+        : OrderType.DESC
     const order = { [orderName]: orderType }
 
     let q: IQuery = {

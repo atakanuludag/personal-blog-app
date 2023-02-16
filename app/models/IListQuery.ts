@@ -5,7 +5,7 @@ export default interface IListQuery {
   pageSize?: number
   page?: number
   order?: string
-  orderBy?: OrderType | GridSortDirection | null
+  orderBy?: OrderType | null
   s?: string
   sType?: string
 }

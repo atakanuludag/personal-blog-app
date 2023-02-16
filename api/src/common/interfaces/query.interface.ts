@@ -20,8 +20,3 @@ export interface IListQueryResponse {
   hasNextPage: boolean
   results: any
 }
-
-export enum OrderType {
-  DESC = 'DESC',
-  ASC = 'ASC',
-}

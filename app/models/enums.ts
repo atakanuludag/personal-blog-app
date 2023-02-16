@@ -5,8 +5,8 @@ export enum LayoutPageType {
 }
 
 export enum OrderType {
-  ASC = 'asc',
-  DESC = 'desc',
+  ASC = -1,
+  DESC = 0,
 }
 
 export enum ArticleType {

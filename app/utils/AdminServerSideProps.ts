@@ -1,10 +1,10 @@
 import { GetServerSideProps } from 'next/types'
 import Cookie from '@/utils/Cookie'
-import IToken from '@/models/IToken'
+import TokenModel from '@/models/TokenModel'
 
 const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const { getCookie } = Cookie(req, res)
-  const auth: IToken | null = getCookie('auth', true)
+  const auth: TokenModel | null = getCookie('auth', true)
   //const auth = true
   //console.log('req.cookies', req.cookies)
 

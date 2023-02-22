@@ -1,11 +1,11 @@
 import axios from '@/core/Axios'
-import IPage, { IPageResponse } from '@/models/IPage'
-import IListQuery from '@/models/IListQuery'
+import IPage, { PageListResponseModel } from '@/models/PageModel'
+import ListQueryModel from '@/models/ListQueryModel'
 import { AxiosResponse } from 'axios'
 
 const getItems = async (
-  params?: IListQuery,
-): Promise<IPageResponse | IPage[]> => {
+  params?: ListQueryModel,
+): Promise<PageListResponseModel | IPage[]> => {
   try {
     const ret = await axios.get(`/page`, {
       params,

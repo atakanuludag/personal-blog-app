@@ -1,9 +1,9 @@
 import { QueryKey, useQuery, UseQueryOptions } from 'react-query'
 import { QUERY_NAMES } from '@/core/Constants'
 import TagService from '@/services/TagService'
-import IListQuery from '@/models/IListQuery'
+import ListQueryModel from '@/models/ListQueryModel'
 
-export default function useTagQuery(params?: IListQuery) {
+export default function useTagQuery(params?: ListQueryModel) {
   const service = TagService
   const queryName = QUERY_NAMES.TAG
 

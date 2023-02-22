@@ -1,7 +1,7 @@
 import { ValueType } from '@/models/enums'
-import IPage from '@/models/IPage'
+import IPage from '@/models/PageModel'
 
-export interface ISettingItem {
+export interface SettingItemModel {
   id: string
   name: string
   title: string
@@ -9,7 +9,7 @@ export interface ISettingItem {
   type: ValueType
 }
 
-export default interface ISettings {
+export default interface SettingsModel {
   readonly siteUrl: string
   readonly siteTitle: string
   readonly siteDescription: string

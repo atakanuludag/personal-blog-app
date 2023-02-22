@@ -17,15 +17,15 @@ import ArticleDetail from '@/components/ArticleDetail'
 import PageDetail from '@/components/PageDetail'
 
 // ** models
-import IPageProps from '@/models/IPageProps'
-import IArticle from '@/models/IArticle'
-import IPage from '@/models/IPage'
+import PageProps from '@/models/AppPropsModel'
+import ArticleModel from '@/models/ArticleModel'
+import IPage from '@/models/PageModel'
 
 type GuidProps = {
   currentIpAdressIsLiked: boolean
-  data: IArticle | IPage
+  data: ArticleModel | IPage
   dataType: 'article' | 'page'
-} & IPageProps
+} & PageProps
 
 type StaticPathParams = {
   guid?: string
@@ -64,7 +64,7 @@ const Guid: NextPage<GuidProps> = ({
       <Breadcrumb data={breadcrumb} />
       {dataType === 'article' ? (
         <ArticleDetail
-          data={data as IArticle}
+          data={data as ArticleModel}
           currentIpAdressIsLiked={currentIpAdressIsLiked}
         />
       ) : (
@@ -86,7 +86,7 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
   }
 
   let dataType: 'article' | 'page' | null = null
-  let data: IArticle | IPage | null = null
+  let data: ArticleModel | IPage | null = null
   const article = await ArticleService.getItemByGuid(guid)
   if (!article || !article?.guid) {
     const page = await PageService.getItemByGuid(guid)
@@ -117,7 +117,7 @@ export const getStaticPaths: GetStaticPaths<StaticPathParams> = async () => {
   const articles = await ArticleService.getItems()
   const pages = await PageService.getItems()
 
-  const articlePaths = (articles as IArticle[]).map((article) => ({
+  const articlePaths = (articles as ArticleModel[]).map((article) => ({
     params: { guid: article.guid },
   }))
   const pagePaths = (pages as IPage[]).map((page) => ({

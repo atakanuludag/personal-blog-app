@@ -23,10 +23,10 @@ import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 import useText from '@/hooks/useText'
 
 // ** models
-import IArticle from '@/models/IArticle'
+import ArticleModel from '@/models/ArticleModel'
 
 type ArticleItemProps = {
-  data: IArticle
+  data: ArticleModel
 }
 
 const Item = styled('div')(({ theme }) => ({

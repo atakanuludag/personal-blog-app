@@ -21,12 +21,12 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import LoadingButton from '@mui/lab/LoadingButton'
 import LayoutFullPage from '@/layouts/LayoutFullPage'
-import IPageProps from '@/models/IPageProps'
-import ILoginForm from '@/models/ILoginForm'
-import IToken from '@/models/IToken'
+import PageProps from '@/models/AppPropsModel'
+import LoginFormModel from '@/models/LoginFormModel'
+import TokenModel from '@/models/TokenModel'
 import Cookie from '@/utils/Cookie'
 
-type AdminComponent = NextPage<IPageProps> & {
+type AdminComponent = NextPage<PageProps> & {
   layout: typeof LayoutFullPage
 }
 
@@ -42,11 +42,11 @@ const Form = styled('form')(() => ({
   width: '100%',
 }))
 
-const AdminLogin: AdminComponent = ({}: IPageProps) => {
+const AdminLogin: AdminComponent = ({}: PageProps) => {
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
   const [showPassword, setShowPassword] = useState(false)
-  const initialValues: ILoginForm = {
+  const initialValues: LoginFormModel = {
     username: 'atakanuludag',
     password: '123456',
   }
@@ -58,7 +58,7 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
   })
 
   const { errors, touched, isSubmitting, handleSubmit, getFieldProps } =
-    useFormik<ILoginForm>({
+    useFormik<LoginFormModel>({
       initialValues,
       validationSchema,
       onSubmit: async (values, { setSubmitting, resetForm }) => {
@@ -165,7 +165,7 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const { getCookie } = Cookie(req, res)
-  const auth: IToken | null = getCookie('auth', true)
+  const auth: TokenModel | null = getCookie('auth', true)
 
   if (!auth) {
     return {

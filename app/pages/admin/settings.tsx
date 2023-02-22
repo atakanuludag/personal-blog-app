@@ -10,8 +10,8 @@ import Box from '@mui/material/Box'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { QUERY_NAMES } from '@/core/Constants'
 import SettingService from '@/services/SettingService'
-import { ISettingItem } from '@/models/ISettings'
-import IPageProps from '@/models/IPageProps'
+import { SettingItemModel } from '@/models/SettingsModel'
+import PageProps from '@/models/AppPropsModel'
 import { ValueType } from '@/models/enums'
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
 import getServerSideProps from '@/utils/AdminServerSideProps'
@@ -21,11 +21,11 @@ import Loading from '@/components/Loading'
 import NoFoundData from '@/components/NoFoundData'
 import AsyncAutocomplete from '@/components/AsyncAutocomplete'
 
-type AdminComponent = NextPage<IPageProps> & {
+type AdminComponent = NextPage<PageProps> & {
   layout: typeof LayoutAdminPage
 }
 
-const AdminSettings: AdminComponent = ({}: IPageProps) => {
+const AdminSettings: AdminComponent = ({}: PageProps) => {
   const [pageSearchText, setPageSearchText] = useState('')
   const [pageQueryEnable, setPageQueryEnable] = useState(false)
 
@@ -49,7 +49,7 @@ const AdminSettings: AdminComponent = ({}: IPageProps) => {
   )
 
   const { errors, touched, isSubmitting, handleSubmit, setValues, values } =
-    useFormik<ISettingItem[]>({
+    useFormik<SettingItemModel[]>({
       initialValues: !data ? [] : data,
       enableReinitialize: true,
       validationSchema,

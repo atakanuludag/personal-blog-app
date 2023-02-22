@@ -1,4 +1,4 @@
-import ILocalStorage from '@/models/ILocalStroge'
+import LocalStorageModel from '@/models/LocalStorageModel'
 
 const THEME_SETTINGS = {
   DRAWER_WITDH: 280,
@@ -12,7 +12,7 @@ const QUERY_NAMES = {
   ADMIN_DASHBOARD_REPORT: 'admin_dashboard_report',
 }
 
-const LS_DARK_MODE: ILocalStorage = {
+const LS_DARK_MODE: LocalStorageModel = {
   key: 'dark-mode',
 }
 

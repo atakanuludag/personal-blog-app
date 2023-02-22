@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack'
 import Divider from '@mui/material/Divider'
 
 // ** models
-import IPage from '@/models/IPage'
+import IPage from '@/models/PageModel'
 
 type PageDetailProps = {
   data: IPage

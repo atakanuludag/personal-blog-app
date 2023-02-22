@@ -1,13 +1,21 @@
-import React, { ReactNode } from 'react'
+// ** react
+import { ReactNode } from 'react'
+
+// ** styles
 import { makeStyles } from '@mui/styles'
+
+// ** layouts
 import Content from '@/layouts/Content'
 import NavigationAdmin from '@/layouts/NavigationAdmin'
-import { LayoutPageType } from '@/models/enums'
 
-interface IMain {
+// ** models
+import { LayoutPageType } from '@/models/enums'
+import AppPropsModel from '@/models/AppPropsModel'
+
+type LayoutAdminPageProps = {
   children: ReactNode
-  title?: string
-}
+} & AppPropsModel
+
 //Todo: scroolbar light ve dark temada farklı renklerde olacak...
 const useStyles = makeStyles({
   '@global': {
@@ -25,7 +33,7 @@ const useStyles = makeStyles({
   },
 })
 
-export default function LayoutAdminPage({ children, title }: IMain) {
+export default function LayoutAdminPage({ children }: LayoutAdminPageProps) {
   const classes = useStyles()
   return (
     <div className={classes.root}>

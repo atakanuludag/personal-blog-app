@@ -21,15 +21,15 @@ import useArticleQuery from '@/hooks/queries/useArticleQuery'
 import useRefScroll from '@/hooks/useRefScroll'
 
 // ** models
-import IPageProps from '@/models/IPageProps'
-import ISettings from '@/models/ISettings'
-import IListQuery from '@/models/IListQuery'
+import PageProps from '@/models/AppPropsModel'
+import SettingsModel from '@/models/SettingsModel'
+import ListQueryModel from '@/models/ListQueryModel'
 
 // ** utils
 import GlobalStore from '@/utils/GlobalStore'
 
-const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
-  const [params, setParams] = useState<IListQuery>({
+const Home: NextPage<PageProps> = ({ settings }: PageProps) => {
+  const [params, setParams] = useState<ListQueryModel>({
     page: 1,
     pageSize: settings.pageSize,
   })
@@ -65,7 +65,7 @@ const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const queryClient = new QueryClient()
-  const settings: ISettings = GlobalStore.get('settings')
+  const settings: SettingsModel = GlobalStore.get('settings')
   const { articlePrefetchInfiniteQuery } = useArticleQuery({
     page: 1,
     pageSize: settings.pageSize,

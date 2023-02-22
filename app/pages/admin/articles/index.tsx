@@ -18,9 +18,9 @@ import Button from '@mui/material/Button'
 import moment from 'moment'
 
 // ** models
-import IPageProps from '@/models/IPageProps'
-import IArticle, { IArticleResponse } from '@/models/IArticle'
-import IListQuery from '@/models/IListQuery'
+import PageProps from '@/models/AppPropsModel'
+import ArticleModel, { ArticleListResponseModel } from '@/models/ArticleModel'
+import ListQueryModel from '@/models/ListQueryModel'
 
 // ** layouts
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
@@ -38,20 +38,20 @@ import SearchInput from '@/components/admin/SearchInput'
 // ** constants
 import { QUERY_NAMES } from '@/core/Constants'
 
-type AdminComponent = NextPage<IPageProps> & {
+type AdminComponent = NextPage<PageProps> & {
   layout: typeof LayoutAdminPage
   title: string
 }
 
-const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
-  const [params, setParams] = useState<IListQuery>({
+const AdminArticleIndex: AdminComponent = ({ settings }: PageProps) => {
+  const [params, setParams] = useState<ListQueryModel>({
     page: 1,
     pageSize: settings.pageSize,
   })
   const [customLoading, setCustomLoading] = useState(false)
   const { articleQuery } = useArticleQuery(params)
   const { data, isLoading, isFetching } = articleQuery()
-  const items = data as IArticleResponse
+  const items = data as ArticleListResponseModel
   const loading = isLoading || isFetching || customLoading
 
   const columns: GridColDef[] = [
@@ -59,7 +59,7 @@ const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
       field: 'title',
       headerName: 'Başlık',
       width: 450,
-      renderCell: ({ row }: GridRenderCellParams<any, IArticle, any>) => (
+      renderCell: ({ row }: GridRenderCellParams<any, ArticleModel, any>) => (
         <Link component={NextLink} href="/">
           {row.title}
         </Link>
@@ -69,14 +69,14 @@ const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
       field: 'publishingDate',
       headerName: 'Tarih',
       width: 200,
-      renderCell: ({ row }: GridRenderCellParams<any, IArticle, any>) =>
+      renderCell: ({ row }: GridRenderCellParams<any, ArticleModel, any>) =>
         moment(new Date(row.publishingDate)).format('DD/MM/YYYY - HH:mm'),
     },
     {
       field: 'categories',
       headerName: 'Kategoriler',
       width: 410,
-      renderCell: ({ row }: GridRenderCellParams<any, IArticle, any>) =>
+      renderCell: ({ row }: GridRenderCellParams<any, ArticleModel, any>) =>
         row.categories.map((v) => v.title).join(', '),
     },
   ]

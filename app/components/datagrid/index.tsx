@@ -18,7 +18,7 @@ import type { GridSortDirection } from '@mui/x-data-grid'
 import Toolbar, { MuiToolbarProps } from '@/components/datagrid/Toolbar'
 
 // ** models
-import IListQuery from '@/models/IListQuery'
+import ListQueryModel from '@/models/ListQueryModel'
 
 // ** api
 import ArticleService from '@/services/ArticleService'
@@ -32,8 +32,8 @@ type MuiDataGridProps = {
   totalResults: number
   data: GridRowsProp[]
   columns: GridColDef[]
-  params: IListQuery
-  setParams: Dispatch<SetStateAction<IListQuery>>
+  params: ListQueryModel
+  setParams: Dispatch<SetStateAction<ListQueryModel>>
 }
 
 export type MuiGridComponentsProps = {

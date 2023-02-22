@@ -8,13 +8,13 @@ import Stack from '@mui/material/Stack'
 import Divider from '@mui/material/Divider'
 
 // ** models
-import IArticle from '@/models/IArticle'
+import ArticleModel from '@/models/ArticleModel'
 
 // ** components
 import ArticleLikeButton from '@/components/ArticleLikeButton'
 
 type ArticleDetailProps = {
-  data: IArticle
+  data: ArticleModel
   currentIpAdressIsLiked: boolean
 }
 

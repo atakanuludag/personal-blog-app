@@ -1,17 +1,17 @@
-import IListResponse from '@/models/IListResponse'
-import ICategory from '@/models/ICategory'
-import ITag from '@/models/ITag'
+import ListResponseModel from '@/models/ListResponseModel'
+import CategoryModel from '@/models/CategoryModel'
+import TagModel from '@/models/TagModel'
 import { ArticleType } from '@/models/enums'
 
-export default interface IArticle {
+export default interface ArticleModel {
   readonly _id: string
   readonly title: string
   readonly shortDescription: string
   readonly content: string
   readonly guid: string
   readonly publishingDate: Date
-  readonly categories: ICategory[]
-  readonly tags: ITag[]
+  readonly categories: CategoryModel[]
+  readonly tags: TagModel[]
   readonly articleType: ArticleType
   readonly coverImage: string
   readonly isShow: boolean
@@ -22,11 +22,11 @@ export default interface IArticle {
   readonly readingTimeMin: number
 }
 
-export interface IArticleResponse extends IListResponse {
-  results: IArticle[]
+export interface ArticleListResponseModel extends ListResponseModel {
+  results: ArticleModel[]
 }
 
-export interface INewArticle {
+export type NewArticleModel = {
   readonly title: string
   readonly shortDescription: string
   readonly content: string

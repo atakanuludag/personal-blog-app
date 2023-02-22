@@ -1,11 +1,10 @@
 import axios from '@/core/Axios'
-import IArticle, { IArticleResponse } from '@/models/IArticle'
-import IListQuery from '@/models/IListQuery'
+import ListQueryModel from '@/models/ListQueryModel'
 
 const serviceBaseUrl = `tag`
 
 const TagService = {
-  getItems: async (params?: IListQuery) =>
+  getItems: async (params?: ListQueryModel) =>
     axios
       .get(`/${serviceBaseUrl}`, {
         params,
@@ -17,7 +16,7 @@ Object.freeze(TagService)
 
 export default TagService
 
-// const itemToModel = (item: any): IArticle => {
+// const itemToModel = (item: any): ArticleModel => {
 //   const {
 //     _id,
 //     title,
@@ -57,8 +56,8 @@ export default TagService
 //   }
 // }
 
-// const getItems = async (params?: IListQuery): Promise<IArticleResponse> => {
-//   let items = new Array<IArticle>()
+// const getItems = async (params?: ListQueryModel): Promise<ArticleModelResponse> => {
+//   let items = new Array<ArticleModel>()
 //   try {
 //     const ret = await axios.get(`/article`, {
 //       params,
@@ -83,7 +82,7 @@ export default TagService
 //   }
 // }
 
-// const getItemByGuid = async (guid: string): Promise<IArticle> => {
+// const getItemByGuid = async (guid: string): Promise<ArticleModel> => {
 //   try {
 //     const ret = await axios.get(`/article/getByGuid/${guid}`)
 //     return itemToModel(ret.data)

@@ -1,9 +1,9 @@
 import axios from '@/core/Axios'
-import IArticle, { IArticleResponse } from '@/models/IArticle'
-import IListQuery from '@/models/IListQuery'
+import ArticleModel, { ArticleListResponseModel } from '@/models/ArticleModel'
+import ListQueryModel from '@/models/ListQueryModel'
 import readingTime from 'reading-time'
 
-// const itemToModel = (item: any): IArticle => {
+// const itemToModel = (item: any): ArticleModel => {
 //   const {
 //     _id,
 //     title,
@@ -44,8 +44,8 @@ import readingTime from 'reading-time'
 // }
 
 const getItems = async (
-  params?: IListQuery,
-): Promise<IArticleResponse | IArticle[]> => {
+  params?: ListQueryModel,
+): Promise<ArticleListResponseModel | ArticleModel[]> => {
   try {
     const ret = await axios.get(`/article`, {
       params,
@@ -60,7 +60,7 @@ const getItems = async (
   }
 }
 
-const getItemByGuid = async (guid: string): Promise<IArticle> => {
+const getItemByGuid = async (guid: string): Promise<ArticleModel> => {
   try {
     const ret = await axios.get(`/article/getByGuid/${guid}`)
     return ret.data

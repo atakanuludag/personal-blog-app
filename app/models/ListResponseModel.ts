@@ -1,4 +1,4 @@
-export default interface IListResponse {
+export default interface ListResponseModel {
   readonly totalResults: number
   readonly totalPages: number
   readonly pageSize: number

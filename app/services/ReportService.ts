@@ -1,7 +1,7 @@
 import axios from '@/core/Axios'
-import IAdminDashboard from '@/models/IAdminDashboard'
+import AdminDashboardModel from '@/models/AdminDashboardModel'
 
-const getAdminDashboardReport = async (): Promise<IAdminDashboard> => {
+const getAdminDashboardReport = async (): Promise<AdminDashboardModel> => {
   try {
     const ret = await axios.get(`/report/dashboard`)
 

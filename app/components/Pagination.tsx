@@ -13,11 +13,11 @@ import Pagination from '@mui/material/Pagination'
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
 
 // ** models
-import IListQuery from '@/models/IListQuery'
+import ListQueryModel from '@/models/ListQueryModel'
 
 type PaginationComponentProps = {
-  params: IListQuery
-  setParams: Dispatch<SetStateAction<IListQuery>>
+  params: ListQueryModel
+  setParams: Dispatch<SetStateAction<ListQueryModel>>
   type?: 'moreButton' | 'pagination'
   totalPages?: number
 }

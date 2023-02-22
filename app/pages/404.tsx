@@ -26,14 +26,14 @@ import SearchIcon from '@mui/icons-material/Search'
 import LayoutFullPage from '@/layouts/LayoutFullPage'
 
 // ** models
-import IPageProps from '@/models/IPageProps'
+import PageProps from '@/models/AppPropsModel'
 
 const Title = styled(Typography)(({ theme }) => ({
   letterSpacing: theme.spacing(5),
 }))
 const SubTitle = styled(Typography)(({}) => ({}))
 
-type NotFoundPageComponent = NextPage<IPageProps> & {
+type NotFoundPageComponent = NextPage<PageProps> & {
   layout: typeof LayoutFullPage
 }
 

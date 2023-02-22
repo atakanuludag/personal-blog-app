@@ -22,16 +22,16 @@ import Autocomplete, {
 } from '@mui/material/Autocomplete'
 import Chip from '@mui/material/Chip'
 
-import IPageProps from '@/models/IPageProps'
+import PageProps from '@/models/AppPropsModel'
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
 import getServerSideProps from '@/utils/AdminServerSideProps'
-import { INewArticle } from '@/models/IArticle'
+import { NewArticleModel } from '@/models/ArticleModel'
 
 import TagService from '@/services/TagService'
 import useTagQuery from '@/hooks/queries/useTagQuery'
-import IListQuery from '@/models/IListQuery'
+import ListQueryModel from '@/models/ListQueryModel'
 
-import TagModel from '@/models/Tag'
+import TagModel from '@/models/TagModel'
 
 import TagAutocomplete from '@/components/admin/TagAutocomplete'
 
@@ -40,7 +40,7 @@ const Editor = dynamic((): Promise<any> => import('@/components/editor'), {
   ssr: false,
 })
 
-type AdminComponent = NextPage<IPageProps> & {
+type AdminComponent = NextPage<PageProps> & {
   layout: typeof LayoutAdminPage
 }
 
@@ -50,8 +50,8 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
   },
 }))
 
-const AdminArticleNew: AdminComponent = ({ settings }: IPageProps) => {
-  const [params, setParams] = useState<IListQuery>({
+const AdminArticleNew: AdminComponent = ({ settings }: PageProps) => {
+  const [params, setParams] = useState<ListQueryModel>({
     s: '',
     sType: 'title',
   })
@@ -61,7 +61,7 @@ const AdminArticleNew: AdminComponent = ({ settings }: IPageProps) => {
   })
   const loading = isLoading || isFetching
 
-  const initialValues: INewArticle = {
+  const initialValues: NewArticleModel = {
     title: '',
     shortDescription: '',
     content: '',
@@ -88,7 +88,7 @@ const AdminArticleNew: AdminComponent = ({ settings }: IPageProps) => {
     getFieldProps,
     setFieldValue,
     values,
-  } = useFormik<INewArticle>({
+  } = useFormik<NewArticleModel>({
     initialValues,
     validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {

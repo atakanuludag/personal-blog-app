@@ -4,17 +4,17 @@ import Grid from '@mui/material/Grid'
 import ArticleIcon from '@mui/icons-material/Article'
 import AutoStoriesIcon from '@mui/icons-material/AutoStories'
 import FilePresentIcon from '@mui/icons-material/FilePresent'
-import IPageProps from '@/models/IPageProps'
+import PageProps from '@/models/AppPropsModel'
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
 import getServerSideProps from '@/utils/AdminServerSideProps'
 import DashboardNumberItem from '@/components/DashboardNumberItem'
 import useAdminDashboardReport from '@/hooks/queries/useAdminDashboardReport'
 
-type AdminComponent = NextPage<IPageProps> & {
+type AdminComponent = NextPage<PageProps> & {
   layout: typeof LayoutAdminPage
 }
 
-const AdminHome: AdminComponent = ({}: IPageProps) => {
+const AdminHome: AdminComponent = ({}: PageProps) => {
   const { adminDashboardReportQuery } = useAdminDashboardReport()
   const { data, isLoading } = adminDashboardReportQuery()
 

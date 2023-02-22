@@ -1,7 +1,7 @@
 import axios from '@/core/Axios'
-import ISettings, { ISettingItem } from '@/models/ISettings'
+import SettingsModel, { SettingItemModel } from '@/models/SettingsModel'
 
-const getItems = async (): Promise<ISettingItem[]> => {
+const getItems = async (): Promise<SettingItemModel[]> => {
   try {
     const ret = await axios.get(`/settings`)
     return ret.data ? ret.data : []
@@ -11,7 +11,9 @@ const getItems = async (): Promise<ISettingItem[]> => {
   }
 }
 
-const postItems = async (data: ISettingItem[]): Promise<ISettingItem[]> => {
+const postItems = async (
+  data: SettingItemModel[],
+): Promise<SettingItemModel[]> => {
   try {
     const ret = await axios.post(`/settings`, data)
     return ret.data ? ret.data : []
@@ -21,11 +23,11 @@ const postItems = async (data: ISettingItem[]): Promise<ISettingItem[]> => {
   }
 }
 
-const getItemsAsObject = async (): Promise<ISettings> => {
+const getItemsAsObject = async (): Promise<SettingsModel> => {
   try {
     const ret = await getItems()
-    let data = {} as ISettings
-    ret.forEach((s: ISettingItem) => {
+    let data = {} as SettingsModel
+    ret.forEach((s: SettingItemModel) => {
       data = {
         ...data,
         [s.name]: isNaN(Number(s.value)) ? s.value : Number(s.value),

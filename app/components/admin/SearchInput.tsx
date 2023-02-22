@@ -18,12 +18,12 @@ import IconButton from '@mui/material/IconButton'
 import SearchIcon from '@mui/icons-material/Search'
 
 // ** model
-import IListQuery from '@/models/IListQuery'
+import ListQueryModel from '@/models/ListQueryModel'
 
 type SearchInputProps = {
   loading: boolean
-  params: IListQuery
-  setParams: Dispatch<SetStateAction<IListQuery>>
+  params: ListQueryModel
+  setParams: Dispatch<SetStateAction<ListQueryModel>>
 }
 
 export default function SearchInput({

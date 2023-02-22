@@ -3,7 +3,8 @@ import { default as NextLink } from 'next/link'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import { useSnackbar } from 'notistack'
-import { Theme, useMediaQuery } from '@mui/material'
+import { Theme } from '@mui/material'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { makeStyles } from '@mui/styles'
 import { styled, useTheme } from '@mui/material/styles'
 import Drawer from '@mui/material/Drawer'
@@ -27,7 +28,7 @@ import AppBar from '@/layouts/AppBar'
 import useRouterActive from '@/hooks/useRouterActive'
 import { axiosRemoveTokenInterceptor } from '@/core/Axios'
 
-import IListItemMenu from '@/models/IListItemMenu'
+import ListItemMenuProps from '@/models/ListItemMenuProps'
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {},
@@ -109,7 +110,7 @@ export default function NavigationAdmin() {
   const [navOpen, setNavOpen] = useState(false)
   const [logoutLoading, setLogoutLoading] = useState(false)
 
-  const adminMenu: IListItemMenu[] = [
+  const adminMenu: ListItemMenuProps[] = [
     {
       title: 'Dashboard',
       path: '/admin',

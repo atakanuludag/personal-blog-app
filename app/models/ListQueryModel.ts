@@ -1,6 +1,6 @@
-import { GridSortDirection } from '@mui/x-data-grid/models/gridSortModel'
 import { OrderType } from './enums'
-export default interface IListQuery {
+
+type ListQueryModel = {
   paging?: number
   pageSize?: number
   page?: number
@@ -9,3 +9,5 @@ export default interface IListQuery {
   s?: string
   sType?: string
 }
+
+export default ListQueryModel

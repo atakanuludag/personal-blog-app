@@ -8,12 +8,12 @@ export enum PaletteMode {
   LIGHT = 'light',
 }
 
-export interface ISettingsContextProps {
+export interface SettingsModelContextProps {
   themeMode: PaletteMode
   handleChangeThemeMode: (mode: PaletteMode) => void
 }
 
-export const SettingsContext = createContext<ISettingsContextProps>({
+export const SettingsContext = createContext<SettingsModelContextProps>({
   themeMode: PaletteMode.DARK,
   handleChangeThemeMode: () => {},
 })

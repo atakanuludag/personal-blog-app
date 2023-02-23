@@ -30,20 +30,6 @@ const AppTheme = ({ children }: ITheme) => {
     () =>
       createTheme({
         ...defaultThemeSettings,
-        components: {
-          MuiListItemButton: {
-            styleOverrides: {
-              root: {
-                '&.Mui-selected': {
-                  backgroundColor: grey[700],
-                  '&:hover': {
-                    backgroundColor: grey[600],
-                  },
-                },
-              },
-            },
-          },
-        },
         palette: {
           mode: 'dark',
           primary: {
@@ -68,20 +54,6 @@ const AppTheme = ({ children }: ITheme) => {
     () =>
       createTheme({
         ...defaultThemeSettings,
-        components: {
-          MuiListItemButton: {
-            styleOverrides: {
-              root: {
-                '&.Mui-selected': {
-                  backgroundColor: grey[300],
-                  '&:hover': {
-                    backgroundColor: grey[200],
-                  },
-                },
-              },
-            },
-          },
-        },
         palette: {
           mode: 'light',
           primary: {

@@ -1,8 +1,8 @@
 // ** react
 import { ReactNode } from 'react'
 
-// ** styles
-import { makeStyles } from '@mui/styles'
+// ** mui
+import Box from '@mui/material/Box'
 
 // ** layouts
 import Content from '@/layouts/Content'
@@ -16,29 +16,11 @@ type LayoutAdminPageProps = {
   children: ReactNode
 } & AppPropsModel
 
-//Todo: scroolbar light ve dark temada farklı renklerde olacak...
-const useStyles = makeStyles({
-  '@global': {
-    '*::-webkit-scrollbar': {
-      width: '6px',
-      backgroundColor: '#2a2a2a',
-    },
-    '*::-webkit-scrollbar-thumb': {
-      backgroundColor: 'rgb(100 100 100)',
-      borderRadius: '.5rem',
-    },
-  },
-  root: {
-    display: 'flex',
-  },
-})
-
 export default function LayoutAdminPage({ children }: LayoutAdminPageProps) {
-  const classes = useStyles()
   return (
-    <div className={classes.root}>
+    <Box display="flex">
       <NavigationAdmin />
       <Content children={children} layoutPageType={LayoutPageType.AdminPage} />
-    </div>
+    </Box>
   )
 }

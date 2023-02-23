@@ -5,7 +5,7 @@ import { Fragment, useState, KeyboardEvent, MouseEvent } from 'react'
 import { default as NextLink } from 'next/link'
 
 // ** third party
-import { css, ClassNames } from '@emotion/react'
+import { css } from '@emotion/css'
 
 // ** mui
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -134,127 +134,123 @@ export default function Navigation({ settings, categories }: AppPropsModel) {
   }
 
   return (
-    <ClassNames>
-      {({ css, cx }) => (
-        <DrawerWrapper>
-          {!isMdUp && (
-            <AppBar
-              open={navOpen}
-              toggleDrawer={toggleDrawer}
-              personDisplayName={settings.personDisplayName}
+    <DrawerWrapper>
+      {!isMdUp && (
+        <AppBar
+          open={navOpen}
+          toggleDrawer={toggleDrawer}
+          personDisplayName={settings.personDisplayName}
+        />
+      )}
+      <StyledDrawer
+        variant={isMdUp ? 'permanent' : 'temporary'}
+        classes={{
+          paper: drawerPaperCSS,
+          docked: drawerPaperCSS,
+        }}
+        anchor="left"
+        open={isMdUp ? true : navOpen}
+        hideBackdrop={isMdUp}
+        onClose={toggleDrawer}
+      >
+        <StyledNav>
+          <ProfileSection>
+            <Title>
+              <Link component={NextLink} href="/">
+                {settings.personDisplayName}
+              </Link>
+            </Title>
+
+            <Avatar
+              src="https://www.atakanuludag.com/wp-content/uploads/2019/09/avatar.jpg"
+              alt={settings.personDisplayName}
             />
-          )}
-          <StyledDrawer
-            variant={isMdUp ? 'permanent' : 'temporary'}
-            classes={{
-              paper: css(drawerPaperCSS.styles),
-              docked: css(drawerPaperCSS.styles),
-            }}
-            anchor="left"
-            open={isMdUp ? true : navOpen}
-            hideBackdrop={isMdUp}
-            onClose={toggleDrawer}
-          >
-            <StyledNav>
-              <ProfileSection>
-                <Title>
-                  <Link component={NextLink} href="/">
-                    {settings.personDisplayName}
-                  </Link>
-                </Title>
+            <Typography variant="caption" component="p">
+              {settings.personDescription}
+            </Typography>
 
-                <Avatar
-                  src="https://www.atakanuludag.com/wp-content/uploads/2019/09/avatar.jpg"
-                  alt={settings.personDisplayName}
-                />
-                <Typography variant="caption" component="p">
-                  {settings.personDescription}
-                </Typography>
+            <SocialMedia>
+              <li>
+                <Link href={settings.personTwitterUrl}>
+                  <Tooltip title="Twitter">
+                    <TwitterIcon color="action" />
+                  </Tooltip>
+                </Link>
+              </li>
+              <li>
+                <Link href={settings.personInstagramUrl}>
+                  <Tooltip title="Instagram">
+                    <InstagramIcon color="action" />
+                  </Tooltip>
+                </Link>
+              </li>
+              <li>
+                <Link href={settings.personGithubUrl}>
+                  <Tooltip title="Github">
+                    <GitHubIcon color="action" />
+                  </Tooltip>
+                </Link>
+              </li>
+              <li>
+                <Link href={settings.personLinkedinUrl}>
+                  <Tooltip title="Linkedin">
+                    <LinkedInIcon color="action" />
+                  </Tooltip>
+                </Link>
+              </li>
+            </SocialMedia>
+          </ProfileSection>
 
-                <SocialMedia>
-                  <li>
-                    <Link href={settings.personTwitterUrl}>
-                      <Tooltip title="Twitter">
-                        <TwitterIcon color="action" />
-                      </Tooltip>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href={settings.personInstagramUrl}>
-                      <Tooltip title="Instagram">
-                        <InstagramIcon color="action" />
-                      </Tooltip>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href={settings.personGithubUrl}>
-                      <Tooltip title="Github">
-                        <GitHubIcon color="action" />
-                      </Tooltip>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href={settings.personLinkedinUrl}>
-                      <Tooltip title="Linkedin">
-                        <LinkedInIcon color="action" />
-                      </Tooltip>
-                    </Link>
-                  </li>
-                </SocialMedia>
-              </ProfileSection>
+          <Divider />
+
+          {settings.navbarPages && (
+            <Fragment>
+              <List>
+                {settings.navbarPages.map((page) => (
+                  <ListItemButton
+                    key={page._id}
+                    LinkComponent={NextLink}
+                    href={`/page/${page.guid}`}
+                  >
+                    <ListItemText primary={page.title} />
+                  </ListItemButton>
+                ))}
+              </List>
 
               <Divider />
+            </Fragment>
+          )}
+          {categories.length > 0 && (
+            <CategoriesWrapper>
+              <Padding>
+                <Typography
+                  component="span"
+                  fontSize="16px"
+                  textTransform="uppercase"
+                  fontWeight="bold"
+                >
+                  Kategoriler
+                </Typography>
+              </Padding>
 
-              {settings.navbarPages && (
-                <Fragment>
-                  <List>
-                    {settings.navbarPages.map((page) => (
-                      <ListItemButton
-                        key={page._id}
-                        LinkComponent={NextLink}
-                        href={`/page/${page.guid}`}
-                      >
-                        <ListItemText primary={page.title} />
-                      </ListItemButton>
-                    ))}
-                  </List>
+              <List>
+                {categories.map((category) => (
+                  <ListItemButton
+                    key={category._id}
+                    LinkComponent={NextLink}
+                    href={`/category/${category.guid}`}
+                  >
+                    <ListItemText primary={category.title} />
+                  </ListItemButton>
+                ))}
+              </List>
+              <Divider />
+            </CategoriesWrapper>
+          )}
 
-                  <Divider />
-                </Fragment>
-              )}
-              {categories.length > 0 && (
-                <CategoriesWrapper>
-                  <Padding>
-                    <Typography
-                      component="span"
-                      fontSize="16px"
-                      textTransform="uppercase"
-                      fontWeight="bold"
-                    >
-                      Kategoriler
-                    </Typography>
-                  </Padding>
-
-                  <List>
-                    {categories.map((category) => (
-                      <ListItemButton
-                        key={category._id}
-                        LinkComponent={NextLink}
-                        href={`/category/${category.guid}`}
-                      >
-                        <ListItemText primary={category.title} />
-                      </ListItemButton>
-                    ))}
-                  </List>
-                  <Divider />
-                </CategoriesWrapper>
-              )}
-
-              <DarkModeSwitch />
-            </StyledNav>
-          </StyledDrawer>
-        </DrawerWrapper>
-      )}
-    </ClassNames>
+          <DarkModeSwitch />
+        </StyledNav>
+      </StyledDrawer>
+    </DrawerWrapper>
   )
 }

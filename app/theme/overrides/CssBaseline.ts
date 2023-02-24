@@ -1,7 +1,9 @@
-import { Theme } from '@mui/material'
+import { Components, Theme } from '@mui/material'
 import darkScrollbar from '@mui/material/darkScrollbar'
 
-export default function CssBaseline(theme: Theme) {
+export default function CssBaseline(
+  theme: Theme,
+): Components<Omit<Theme, 'components'>> {
   return {
     MuiCssBaseline: {
       styleOverrides: {

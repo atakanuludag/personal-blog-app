@@ -1,13 +1,15 @@
 import { Components, Theme } from '@mui/material'
 
-export default function Button(
+export default function FormLabel(
   theme: Theme,
 ): Components<Omit<Theme, 'components'>> {
   return {
-    MuiButton: {
+    MuiFormLabel: {
       styleOverrides: {
         root: {
-          color: theme.palette.secondary.main,
+          '&.Mui-focused': {
+            color: theme.palette.grey[500],
+          },
         },
       },
     },

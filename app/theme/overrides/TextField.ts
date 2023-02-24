@@ -1,14 +1,12 @@
 import { Components, Theme } from '@mui/material'
 
-export default function Button(
+export default function TextField(
   theme: Theme,
 ): Components<Omit<Theme, 'components'>> {
   return {
-    MuiButton: {
+    MuiTextField: {
       styleOverrides: {
-        root: {
-          color: theme.palette.secondary.main,
-        },
+        root: {},
       },
     },
   }

@@ -1,7 +1,8 @@
-import { Theme } from '@mui/material'
+import { Components, Theme } from '@mui/material'
 
-export default function Link(theme: Theme) {
-  //const isDark = theme.palette.mode === 'dark'
+export default function Link(
+  theme: Theme,
+): Components<Omit<Theme, 'components'>> {
   return {
     MuiLink: {
       styleOverrides: {

@@ -9,6 +9,8 @@ export default interface PageModel {
   readonly publishingDate: Date
   readonly isShow: boolean
   readonly viewCount: number
+  readonly createdAt: Date
+  readonly updatedAt: Date
 }
 export interface PageListResponseModel extends ListResponseModel {
   results: PageModel[]

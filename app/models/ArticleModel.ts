@@ -26,7 +26,7 @@ export interface ArticleListResponseModel extends ListResponseModel {
   results: ArticleModel[]
 }
 
-export type NewArticleModel = {
+export type ArticleFormModel = {
   readonly title: string
   readonly shortDescription: string
   readonly content: string

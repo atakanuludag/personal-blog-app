@@ -19,12 +19,18 @@ import Divider from '@mui/material/Divider'
 import Link from '@mui/material/Link'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
+import IconButton from '@mui/material/IconButton'
+import OutlinedInput from '@mui/material/OutlinedInput'
+import InputLabel from '@mui/material/InputLabel'
+import InputAdornment from '@mui/material/InputAdornment'
+import FormControl from '@mui/material/FormControl'
 
 // ** icons
 import TwitterIcon from '@mui/icons-material/Twitter'
 import InstagramIcon from '@mui/icons-material/Instagram'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import GitHubIcon from '@mui/icons-material/GitHub'
+import SearchIcon from '@mui/icons-material/Search'
 
 // ** layouts
 import AppBar from '@/layouts/AppBar'
@@ -200,6 +206,29 @@ export default function Navigation({ settings, categories }: AppPropsModel) {
               </li>
             </SocialMedia>
           </ProfileSection>
+
+          <Box padding={1}>
+            <FormControl variant="outlined" size="small" fullWidth>
+              <InputLabel htmlFor="search-input">Ara...</InputLabel>
+              <OutlinedInput
+                id="search-input"
+                size="small"
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      size="small"
+                      // onClick={handleClickShowPassword}
+                      // onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      <SearchIcon sx={{ fontSize: '20px' }} />
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Ara..."
+              />
+            </FormControl>
+          </Box>
 
           <Divider />
 

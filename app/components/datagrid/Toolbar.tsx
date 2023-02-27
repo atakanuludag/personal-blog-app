@@ -13,6 +13,9 @@ import { useQueryClient } from 'react-query'
 // ** icons
 import DeleteIcon from '@mui/icons-material/Delete'
 
+// **h ooks
+import useComponentContext from '@/hooks/useComponentContext'
+
 const StyledGridToolbarContainer = styled(GridToolbarContainer)(
   ({ theme }) => ({
     borderBottomWidth: 1,
@@ -42,7 +45,11 @@ export default function MuiToolbar({
   const queryClient = useQueryClient()
   const { enqueueSnackbar } = useSnackbar()
 
-  const handleSelectedDeleteButton = async () => {
+  const { setConfirmDialogData, handleConfirmDialogClose } =
+    useComponentContext()
+
+  const handleSelectedConfirmDelete = async () => {
+    handleConfirmDialogClose()
     setLoading(true)
     for await (const id of selected) {
       await deleteService(id)
@@ -52,6 +59,15 @@ export default function MuiToolbar({
       variant: 'success',
     })
     setLoading(false)
+  }
+
+  const handleSelectedDeleteButton = async () => {
+    setConfirmDialogData({
+      open: true,
+      title: 'Emin misiniz ?',
+      content: 'Seçilenleri silmek için lütfen onaylayın.',
+      handleConfirmFunction: handleSelectedConfirmDelete,
+    })
   }
 
   return (

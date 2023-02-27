@@ -17,6 +17,9 @@ import Button from '@mui/material/Button'
 // ** third party
 import moment from 'moment'
 
+// ** services
+import ArticleService from '@/services/ArticleService'
+
 // ** models
 import PageProps from '@/models/AppPropsModel'
 import ArticleModel, { ArticleListResponseModel } from '@/models/ArticleModel'
@@ -25,7 +28,7 @@ import ListQueryModel from '@/models/ListQueryModel'
 // ** layouts
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
 
-// ** utilis
+// ** utils
 import getServerSideProps from '@/utils/AdminServerSideProps'
 
 // ** hooks
@@ -40,7 +43,6 @@ import { QUERY_NAMES } from '@/core/Constants'
 
 type AdminComponent = NextPage<PageProps> & {
   layout: typeof LayoutAdminPage
-  title: string
 }
 
 const AdminArticleIndex: AdminComponent = ({ settings }: PageProps) => {
@@ -114,8 +116,9 @@ const AdminArticleIndex: AdminComponent = ({ settings }: PageProps) => {
         queryName={QUERY_NAMES.ARTICLE}
         loading={loading}
         setCustomLoading={setCustomLoading}
+        deleteService={ArticleService.deleteItem}
         columns={columns}
-        data={items?.results as any}
+        rows={items?.results || []}
         pageSize={params.pageSize as number}
         page={params.page as number}
         totalResults={items?.totalResults as number}
@@ -127,7 +130,6 @@ const AdminArticleIndex: AdminComponent = ({ settings }: PageProps) => {
 }
 
 AdminArticleIndex.layout = LayoutAdminPage
-AdminArticleIndex.title = 'Makaleler'
 export default AdminArticleIndex
 
 export { getServerSideProps }

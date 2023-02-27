@@ -77,6 +77,7 @@ const AppTheme = ({ children }: ITheme) => {
   const [theme, setTheme] = useState<Theme>(darkTheme)
 
   useEffect(() => {
+    console.log('themeMode', themeMode)
     setTheme(themeMode === PaletteMode.DARK ? darkTheme : lightTheme)
   }, [themeMode])
 

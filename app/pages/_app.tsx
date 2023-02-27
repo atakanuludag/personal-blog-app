@@ -47,9 +47,12 @@ import '@/styles/global.scss'
 
 // ** context
 import SettingsProvider from '@/context/SettingsContext'
+import ComponentProvider from '@/context/ComponentContext'
 
 // ** components
 import ErrorBoundary from '@/components/ErrorBoundary'
+import FormDrawer from '@/components/FormDrawer'
+import ConfirmDialog from '@/components/ConfirmDialog'
 
 type PersonalBlogAppProps = {
   Component: PageWithLayoutType<AppPropsModel>
@@ -107,15 +110,19 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
           }}
         />
         <SettingsProvider>
-          <Theme>
-            <ErrorBoundary>
-              <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
-                <Layout {...pageProps}>
-                  <Component {...pageProps} />
-                </Layout>
-              </SnackbarProvider>
-            </ErrorBoundary>
-          </Theme>
+          <ComponentProvider>
+            <Theme>
+              <ErrorBoundary>
+                <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
+                  <Layout {...pageProps}>
+                    <Component {...pageProps} />
+                    <FormDrawer />
+                    <ConfirmDialog />
+                  </Layout>
+                </SnackbarProvider>
+              </ErrorBoundary>
+            </Theme>
+          </ComponentProvider>
         </SettingsProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </Hydrate>

@@ -5,8 +5,8 @@ import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import Paper from '@mui/material/Paper'
 import {
   DataGrid,
+  DataGridProps,
   GridColDef,
-  GridRowsProp,
   trTR,
   GridSortModel,
   GridSelectionModel,
@@ -20,21 +20,19 @@ import Toolbar, { MuiToolbarProps } from '@/components/datagrid/Toolbar'
 // ** models
 import ListQueryModel from '@/models/ListQueryModel'
 
-// ** api
-import ArticleService from '@/services/ArticleService'
-
 type MuiDataGridProps = {
   queryName: string
   loading: boolean
   setCustomLoading: Dispatch<SetStateAction<boolean>>
-  page: number
-  pageSize: number
-  totalResults: number
-  data: GridRowsProp[]
+  deleteService: (id: string) => Promise<void>
+  page?: number
+  pageSize?: number
+  totalResults?: number
+  rows: any[]
   columns: GridColDef[]
-  params: ListQueryModel
-  setParams: Dispatch<SetStateAction<ListQueryModel>>
-}
+  params?: ListQueryModel
+  setParams?: Dispatch<SetStateAction<ListQueryModel>>
+} & DataGridProps
 
 export type MuiGridComponentsProps = {
   toolbar: MuiToolbarProps
@@ -44,16 +42,17 @@ export default function MuiDataGrid({
   queryName,
   loading,
   setCustomLoading,
+  deleteService,
   page,
   pageSize,
   totalResults,
-  data = [],
+  rows = [],
   columns,
   params,
   setParams,
+  ...props
 }: MuiDataGridProps) {
   const [selected, setSelected] = useState(new Array<string>())
-  const isSelected = selected.length > 0
 
   const orderTypeConvert = (type: GridSortDirection) => {
     switch (type) {
@@ -66,6 +65,7 @@ export default function MuiDataGrid({
 
   const handleSortModelChange = useCallback(
     (sortModel: GridSortModel) => {
+      if (!setParams) return
       if (sortModel.length <= 0) {
         setParams({
           ...params,
@@ -84,17 +84,21 @@ export default function MuiDataGrid({
     [params, setParams],
   )
 
-  const handlePageChange = (page: number) =>
+  const handlePageChange = (page: number) => {
+    if (!setParams) return
     setParams({
       ...params,
       page: page + 1,
     })
+  }
 
-  const handlePageSizeChange = (pageSize: number) =>
+  const handlePageSizeChange = (pageSize: number) => {
+    if (!setParams) return
     setParams({
       ...params,
       pageSize,
     })
+  }
 
   const onSelectionModelChange = (ids: GridSelectionModel) =>
     setSelected(ids as any)
@@ -105,27 +109,28 @@ export default function MuiDataGrid({
       loading,
       setLoading: setCustomLoading,
       selected,
-      deleteService: ArticleService.deleteItem,
+      deleteService,
     },
   }
 
   return (
     <Paper sx={{ width: '100%', height: '80vh', p: 2 }} elevation={3}>
       <DataGrid
+        {...props}
         checkboxSelection
         pagination
         disableColumnFilter
         disableSelectionOnClick
         loading={loading}
         pageSize={pageSize}
-        page={page - 1}
+        page={page ? page - 1 : undefined}
         paginationMode="server"
         sortingMode="server"
         onSortModelChange={handleSortModelChange}
         rowsPerPageOptions={[2, 10, 20, 30]}
         getRowId={(data) => data._id}
         onSelectionModelChange={onSelectionModelChange}
-        rows={data}
+        rows={rows}
         columns={columns}
         rowCount={totalResults || 0}
         onPageChange={handlePageChange}

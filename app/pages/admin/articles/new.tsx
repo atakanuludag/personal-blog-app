@@ -25,7 +25,7 @@ import Chip from '@mui/material/Chip'
 import PageProps from '@/models/AppPropsModel'
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
 import getServerSideProps from '@/utils/AdminServerSideProps'
-import { NewArticleModel } from '@/models/ArticleModel'
+import { ArticleFormModel } from '@/models/ArticleModel'
 
 import TagService from '@/services/TagService'
 import useTagQuery from '@/hooks/queries/useTagQuery'
@@ -61,7 +61,7 @@ const AdminArticleNew: AdminComponent = ({ settings }: PageProps) => {
   })
   const loading = isLoading || isFetching
 
-  const initialValues: NewArticleModel = {
+  const initialValues: ArticleFormModel = {
     title: '',
     shortDescription: '',
     content: '',
@@ -88,7 +88,7 @@ const AdminArticleNew: AdminComponent = ({ settings }: PageProps) => {
     getFieldProps,
     setFieldValue,
     values,
-  } = useFormik<NewArticleModel>({
+  } = useFormik<ArticleFormModel>({
     initialValues,
     validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {

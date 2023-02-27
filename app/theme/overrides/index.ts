@@ -13,6 +13,7 @@ import Button from '@/theme/overrides/Button'
 import Link from '@/theme/overrides/Link'
 import ListItemButton from '@/theme/overrides/ListItemButton'
 import Checkbox from '@/theme/overrides/Checkbox'
+import CircularProgress from '@/theme/overrides/CircularProgress'
 
 // ----------------------------------------------------------------------
 
@@ -26,5 +27,6 @@ export default function ComponentsOverrides(theme: Theme) {
     Link(theme),
     ListItemButton(theme),
     Checkbox(theme),
+    CircularProgress(theme),
   )
 }

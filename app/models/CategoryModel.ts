@@ -7,3 +7,10 @@ export default interface CategoryModel {
   readonly updatedAt: Date
   readonly parent: CategoryModel | null
 }
+
+export type CategoryFormModel = {
+  readonly title: string
+  readonly description: string
+  readonly guid: string
+  readonly parent: string | null
+}

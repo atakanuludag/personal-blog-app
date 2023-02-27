@@ -104,6 +104,7 @@ const AdminLogin: AdminComponent = ({}: PageProps) => {
             </Typography>
             <TextField
               fullWidth
+              required
               size="small"
               type="text"
               id="username"
@@ -117,13 +118,19 @@ const AdminLogin: AdminComponent = ({}: PageProps) => {
               error={errors.username ? touched.username : false}
             />
 
-            <FormControl fullWidth size="small" variant="outlined">
+            <FormControl
+              required
+              fullWidth
+              size="small"
+              error={errors.password ? touched.password : false}
+              variant="outlined"
+            >
               <InputLabel htmlFor="password">Şifre</InputLabel>
               <OutlinedInput
                 id="password"
+                required
                 type={showPassword ? 'text' : 'password'}
                 {...getFieldProps('password')}
-                error={errors.password ? touched.password : false}
                 disabled={isSubmitting}
                 endAdornment={
                   <InputAdornment position="end">
@@ -183,10 +190,3 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
 AdminLogin.layout = LayoutFullPage
 export default AdminLogin
-
-/*
-loginde sayfanın ortalanması için main elementine bunu vermek gerekiyor;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-*/

@@ -7,6 +7,7 @@ const THEME_SETTINGS = {
 const QUERY_NAMES = {
   ARTICLE: 'article',
   TAG: 'tag',
+  CATEGORY: 'category',
   PAGE: 'page',
   SETTINGS: 'settings',
   ADMIN_DASHBOARD_REPORT: 'admin_dashboard_report',

@@ -1,13 +1,14 @@
 import axios from '@/core/Axios'
-import PageModel, { PageListResponseModel } from '@/models/PageModel'
+import PageModel from '@/models/PageModel'
 import ListQueryModel from '@/models/ListQueryModel'
+import ListResponseModel from '@/models/ListResponseModel'
 
 const serviceBaseUrl = `/page`
 
 const PageService = {
   getItems: async (
     params?: ListQueryModel,
-  ): Promise<PageListResponseModel | PageModel[] | null> => {
+  ): Promise<ListResponseModel<PageModel[]> | PageModel[] | null> => {
     try {
       const ret = await axios.get(`${serviceBaseUrl}`, {
         params,

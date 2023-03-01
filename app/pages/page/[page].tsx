@@ -15,7 +15,8 @@ import Pagination from '@/components/Pagination'
 import AppPropsModel from '@/models/AppPropsModel'
 import SettingsModel from '@/models/SettingsModel'
 import ListQueryModel from '@/models/ListQueryModel'
-import { ArticleListResponseModel } from '@/models/ArticleModel'
+import ListResponseModel from '@/models/ListResponseModel'
+import ArticleModel from '@/models/ArticleModel'
 
 // ** utils
 import GlobalStore from '@/utils/GlobalStore'
@@ -30,7 +31,7 @@ type StaticPathParams = {
 
 type PageProps = {
   page: number
-  articles: ArticleListResponseModel
+  articles: ListResponseModel<ArticleModel[]>
 } & AppPropsModel
 
 const Page: NextPage<PageProps> = ({ page, articles, settings }: PageProps) => {
@@ -71,7 +72,7 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
   const articles = (await ArticleService.getItems({
     page: page,
     pageSize: settings.pageSize,
-  })) as ArticleListResponseModel
+  })) as ListResponseModel<ArticleModel[]>
 
   return {
     props: {
@@ -86,7 +87,7 @@ export const getStaticPaths: GetStaticPaths<StaticPathParams> = async () => {
   const article = (await ArticleService.getItems({
     page: 1,
     pageSize: settings.pageSize,
-  })) as ArticleListResponseModel
+  })) as ListResponseModel<ArticleModel[]>
 
   const paths = [...Array(article.totalPages)].map((_, page: number) => ({
     params: { page: (page + 1).toString() },

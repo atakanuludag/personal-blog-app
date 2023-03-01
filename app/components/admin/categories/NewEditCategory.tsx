@@ -30,6 +30,8 @@ import CategoryService from '@/services/CategoryService'
 // ** hooks
 import useComponentContext from '@/hooks/useComponentContext'
 
+import AsyncAutocomplete from 'components/AsyncAutocomplete'
+
 type NewEditCategoryProps = {}
 
 export default function NewEditCategory({}: NewEditCategoryProps) {
@@ -158,7 +160,7 @@ export default function NewEditCategory({}: NewEditCategoryProps) {
           id="guid"
           required
           {...getFieldProps('guid')}
-          disabled={isSubmitting}
+          disabled={isSubmitting || guidExistsLoading}
           endAdornment={
             <InputAdornment position="end">
               {guidExistsLoading ? (
@@ -184,6 +186,24 @@ export default function NewEditCategory({}: NewEditCategoryProps) {
           {errors.guid && touched.guid ? errors.guid : null}
         </FormHelperText>
       </FormControl>
+
+      {/* <AsyncAutocomplete
+        name="parent"
+        value={!values[i] ? '' : values[i].value}
+        label={title}
+        handleInputChange={handlePageAutoCompleteInputChange}
+        handleChange={(e, val) => {
+          let _values = values
+          _values[i].value = val as any
+          setValues([..._values])
+        }}
+        data={[]}
+        // data={!page.data ? [] : page.data.results}
+        objName="title"
+        loading={page.isLoading}
+        helperText={errors.parent && touched.parent ? errors.parent : null}
+        error={errors.parent ? touched.parent : false}
+      /> */}
     </Stack>
   )
 }

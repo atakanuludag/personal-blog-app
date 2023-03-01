@@ -22,8 +22,9 @@ import ArticleService from '@/services/ArticleService'
 
 // ** models
 import PageProps from '@/models/AppPropsModel'
-import ArticleModel, { ArticleListResponseModel } from '@/models/ArticleModel'
+import ArticleModel from '@/models/ArticleModel'
 import ListQueryModel from '@/models/ListQueryModel'
+import ListResponseModel from '@/models/ListResponseModel'
 
 // ** layouts
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
@@ -53,7 +54,7 @@ const AdminArticleIndex: AdminComponent = ({ settings }: PageProps) => {
   const [customLoading, setCustomLoading] = useState(false)
   const { articleQuery } = useArticleQuery(params)
   const { data, isLoading, isFetching } = articleQuery()
-  const items = data as ArticleListResponseModel
+  const items = data as ListResponseModel<ArticleModel[]>
   const loading = isLoading || isFetching || customLoading
 
   const columns: GridColDef[] = [

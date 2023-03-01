@@ -7,8 +7,7 @@ import { File, FileDocument } from '@/file/schemas/file.schema'
 //import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { CoreMessage } from '@/common/messages'
-import { IQuery } from '@/common/interfaces/query.interface'
-import { IFileList } from '@/file/interfaces/file-list.interface'
+import { IListQueryResponse, IQuery } from '@/common/interfaces/query.interface'
 
 @Injectable()
 export class FileService {
@@ -17,7 +16,7 @@ export class FileService {
     private readonly coreMessage: CoreMessage,
   ) {}
 
-  async getItems(query: IQuery): Promise<IFileList> {
+  async getItems(query: IQuery): Promise<IListQueryResponse<IFile[]>> {
     try {
       const { pagination, searchQuery, order } = query
       const { page, pageSize, skip } = pagination
@@ -35,7 +34,7 @@ export class FileService {
 
       const totalPages = Math.ceil(count / pageSize)
 
-      const data: IFileList = {
+      const data: IListQueryResponse<IFile[]> = {
         results: items,
         currentPage: page,
         currentPageSize: items.length,

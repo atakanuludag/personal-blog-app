@@ -1,5 +1,3 @@
-import ListResponseModel from '@/models/ListResponseModel'
-
 export default interface PageModel {
   readonly _id: string
   readonly title: string
@@ -11,7 +9,4 @@ export default interface PageModel {
   readonly viewCount: number
   readonly createdAt: Date
   readonly updatedAt: Date
-}
-export interface PageListResponseModel extends ListResponseModel {
-  results: PageModel[]
 }

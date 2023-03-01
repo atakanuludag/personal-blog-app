@@ -8,6 +8,7 @@ import {
   UseGuards,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -27,6 +28,8 @@ import { ArticleService } from '@/article/article.service'
 import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { CoreMessage, CategoryMessage } from '@/common/messages'
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
+import { ListQueryDto } from '@/common/dto/list-query.dto'
+import { QueryHelper } from '@/common/helpers/query.helper'
 
 @ApiTags('Category')
 @Controller('category')
@@ -36,6 +39,7 @@ export class CategoryController {
     private readonly articleService: ArticleService,
     private readonly coreMessage: CoreMessage,
     private readonly categoryMessage: CategoryMessage,
+    private readonly queryHelper: QueryHelper,
   ) {}
 
   @ApiOperation({
@@ -50,8 +54,9 @@ export class CategoryController {
     type: [CategoryDto],
   })
   @Get()
-  async list() {
-    return await this.service.getItems()
+  async list(@Query() query: ListQueryDto) {
+    const q = this.queryHelper.instance(query)
+    return await this.service.getItems(q)
   }
 
   @ApiOperation({

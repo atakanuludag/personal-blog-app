@@ -7,7 +7,6 @@ import { TagDto } from '@/tag/dto/tag.dto'
 import { UpdateTagDto } from '@/tag/dto/update-tag.dto'
 import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { CoreMessage } from '@/common/messages'
-import { escapeRegExp } from '@/common/helpers/string.helper' //todo: kaldırılacak.
 import { IQuery } from '@/common/interfaces/query.interface'
 
 @Injectable()

@@ -1,4 +1,3 @@
-import ListResponseModel from '@/models/ListResponseModel'
 import CategoryModel from '@/models/CategoryModel'
 import TagModel from '@/models/TagModel'
 import { ArticleType } from '@/models/enums'
@@ -20,10 +19,6 @@ export default interface ArticleModel {
   readonly createdAt: Date
   readonly updatedAt: Date
   readonly readingTimeMin: number
-}
-
-export interface ArticleListResponseModel extends ListResponseModel {
-  results: ArticleModel[]
 }
 
 export type ArticleFormModel = {

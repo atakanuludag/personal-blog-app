@@ -11,12 +11,12 @@ export interface IQuery {
   order: any
 }
 
-export interface IListQueryResponse {
+export interface IListQueryResponse<T> {
   totalResults: number
   totalPages: number
   pageSize: number
   currentPage: number
   currentPageSize: number
   hasNextPage: boolean
-  results: any
+  results: T
 }

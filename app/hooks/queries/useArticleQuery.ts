@@ -7,7 +7,8 @@ import {
 import { QUERY_NAMES } from '@/core/Constants'
 import ArticleService from '@/services/ArticleService'
 import ListQueryModel from '@/models/ListQueryModel'
-import { ArticleListResponseModel } from '@/models/ArticleModel'
+import ListResponseModel from '@/models/ListResponseModel'
+import ArticleModel from '@/models/ArticleModel'
 
 export default function useArticleQuery(params?: ListQueryModel) {
   const service = ArticleService
@@ -25,7 +26,7 @@ export default function useArticleQuery(params?: ListQueryModel) {
           page: pageParam,
         }) as any,
       {
-        getNextPageParam: (lastPage: ArticleListResponseModel) => {
+        getNextPageParam: (lastPage: ListResponseModel<ArticleModel[]>) => {
           return lastPage.hasNextPage
         },
       },

@@ -23,6 +23,8 @@ import CategoryService from '@/services/CategoryService'
 // ** models
 import PageProps from '@/models/AppPropsModel'
 import CategoryModel from '@/models/CategoryModel'
+import ListQueryModel from '@/models/ListQueryModel'
+import ListResponseModel from '@/models/ListResponseModel'
 
 // ** layouts
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
@@ -48,19 +50,25 @@ type AdminComponent = NextPage<PageProps> & {
 }
 
 const Categories: AdminComponent = ({ settings }: PageProps) => {
+  const [params, setParams] = useState<ListQueryModel>({
+    page: 1,
+    pageSize: settings.pageSize,
+  })
+
   const [customLoading, setCustomLoading] = useState(false)
 
-  const { categoriesQuery } = useCategoryQuery()
+  const { categoriesQuery } = useCategoryQuery(params)
   const { setFormDrawerData } = useComponentContext()
 
   const { data, isLoading, isFetching } = categoriesQuery()
+  const items = data as ListResponseModel<CategoryModel[]>
   const loading = isLoading || isFetching || customLoading
 
   const columns: GridColDef[] = [
     {
       field: 'title',
       headerName: 'Başlık',
-      width: 450,
+      width: 250,
       renderCell: ({ row }: GridRenderCellParams<any, CategoryModel, any>) => (
         <Link component={NextLink} href="/">
           {row.title}
@@ -127,30 +135,27 @@ const Categories: AdminComponent = ({ settings }: PageProps) => {
           </Stack>
         </Grid>
 
-        {/* <Grid item md={3} xs={12}>
+        <Grid item md={3} xs={12}>
           <SearchInput
             loading={loading}
             params={params}
             setParams={setParams}
           />
-        </Grid> */}
+        </Grid>
       </Grid>
 
       <DataGrid
-        paginationMode="client"
-        sortingMode="client"
         queryName={QUERY_NAMES.CATEGORY}
         loading={loading}
         setCustomLoading={setCustomLoading}
-        deleteService={async () => {}}
+        deleteService={CategoryService.deleteItem}
         columns={columns}
-        rows={data || []}
-
-        // pageSize={params.pageSize as number}
-        // page={params.page as number}
-        // totalResults={items?.totalResults as number}
-        // params={params}
-        // setParams={setParams}
+        rows={items?.results || []}
+        pageSize={params.pageSize as number}
+        page={params.page as number}
+        totalResults={items?.totalResults as number}
+        params={params}
+        setParams={setParams}
       />
     </Box>
   )

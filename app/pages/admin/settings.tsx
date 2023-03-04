@@ -144,9 +144,11 @@ const AdminSettings: AdminComponent = ({}: PageProps) => {
               return (
                 <AsyncAutocomplete
                   key={i}
+                  multiple
                   name={name}
                   value={!values[i] ? '' : values[i].value}
                   label={title}
+                  inputValue=""
                   handleInputChange={handlePageAutoCompleteInputChange}
                   handleChange={(e, val) => {
                     let _values = values

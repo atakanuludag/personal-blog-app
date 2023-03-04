@@ -1,5 +1,5 @@
 import axios from '@/core/Axios'
-import CategoryModel from '@/models/CategoryModel'
+import CategoryModel, { CategoryFormModel } from '@/models/CategoryModel'
 import ListQueryModel from '@/models/ListQueryModel'
 import ListResponseModel from '@/models/ListResponseModel'
 
@@ -20,6 +20,10 @@ const CategoryService = {
       .then((res) => res.data.exists),
   deleteItem: async (id: string): Promise<void> =>
     axios.delete(`${serviceBaseUrl}/${id}`),
+  postItem: async (data: CategoryFormModel): Promise<void> =>
+    axios.post(`${serviceBaseUrl}`, data),
+  patchItem: async (data: CategoryFormModel): Promise<void> =>
+    axios.patch(`${serviceBaseUrl}/${data._id}`, data),
 }
 
 Object.freeze(CategoryService)

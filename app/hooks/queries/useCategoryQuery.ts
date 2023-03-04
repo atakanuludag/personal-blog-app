@@ -7,8 +7,8 @@ export default function useCategoryQuery(params?: ListQueryModel) {
   const service = CategoryService
   const queryName = QUERY_NAMES.CATEGORY
 
-  const categoriesQuery = () =>
-    useQuery([queryName, params], () => service.getItems(params))
+  const categoriesQuery = (enabled: boolean = true) =>
+    useQuery([queryName, params], () => service.getItems(params), { enabled })
 
   return {
     categoriesQuery,

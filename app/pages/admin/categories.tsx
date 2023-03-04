@@ -1,5 +1,5 @@
 // ** react
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 
 // ** next
 import { NextPage } from 'next/types'
@@ -22,7 +22,7 @@ import CategoryService from '@/services/CategoryService'
 
 // ** models
 import PageProps from '@/models/AppPropsModel'
-import CategoryModel from '@/models/CategoryModel'
+import CategoryModel, { CategoryFormModel } from '@/models/CategoryModel'
 import ListQueryModel from '@/models/ListQueryModel'
 import ListResponseModel from '@/models/ListResponseModel'
 
@@ -70,15 +70,17 @@ const Categories: AdminComponent = ({ settings }: PageProps) => {
       headerName: 'Başlık',
       width: 250,
       renderCell: ({ row }: GridRenderCellParams<any, CategoryModel, any>) => (
-        <Link component={NextLink} href="/">
+        <Link onClick={() => handleEditButton(row)} component="button">
           {row.title}
         </Link>
       ),
     },
     {
-      field: 'description',
-      headerName: 'Açıklama',
-      width: 200,
+      field: 'parent',
+      headerName: 'Evebeyn',
+      width: 180,
+      renderCell: ({ row }: GridRenderCellParams<any, CategoryModel, any>) =>
+        row.parent?.title || '-',
     },
     {
       field: 'guid',
@@ -101,11 +103,22 @@ const Categories: AdminComponent = ({ settings }: PageProps) => {
     },
   ]
 
-  const handleCreateButton = () => {
+  const handleEditButton = (row: CategoryModel) => {
+    const { title, description, guid, parent, _id } = row
+    handleToggleNewEdittButton({
+      _id,
+      title,
+      description,
+      guid,
+      parent,
+    })
+  }
+
+  const handleToggleNewEdittButton = (data?: CategoryFormModel) => {
     setFormDrawerData({
       open: true,
       title: 'Yeni Kategori',
-      content: <NewEditCategory />,
+      content: <NewEditCategory data={data} />,
       submitButtonText: 'Kaydet',
       submit: false,
     })
@@ -128,7 +141,7 @@ const Categories: AdminComponent = ({ settings }: PageProps) => {
             <Button
               variant="contained"
               size="small"
-              onClick={handleCreateButton}
+              onClick={() => handleToggleNewEdittButton()}
             >
               Yeni ekle
             </Button>

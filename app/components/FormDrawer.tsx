@@ -3,7 +3,7 @@ import Drawer from '@mui/material/Drawer'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
-import Button from '@mui/material/Button'
+import LoadingButton from '@mui/lab/LoadingButton'
 import { styled } from '@mui/material/styles'
 
 // ** icons
@@ -18,20 +18,23 @@ const StyledActionButtons = styled(Box)(({ theme }) => ({
   left: 0,
   width: '100%',
   padding: 10,
-  backgroundColor: theme.palette.grey[800],
-  borderTopWidth: '1px',
-  borderTopStyle: 'solid',
-  borderTopColor: theme.palette.grey[800],
 }))
 
 export default function FormDrawer() {
   const { formDrawer, handleFormDrawerClose, setFormDrawerData } =
     useComponentContext()
 
-  const { open, content, title, loading, submitButtonText } = formDrawer
+  const {
+    open,
+    content,
+    title,
+    submitLoading,
+    submitDisabled,
+    submitButtonText,
+  } = formDrawer
 
   const handleClose = () => {
-    if (loading) return
+    if (submitLoading) return
     handleFormDrawerClose()
   }
 
@@ -49,14 +52,14 @@ export default function FormDrawer() {
       onClose={handleClose}
       sx={{ overflow: 'hidden' }}
     >
-      <Box minWidth="20vw" height="100%" position="relative">
+      <Box minWidth="20vw" maxWidth="20vw" height="100%" position="relative">
         <Box display="flex" justifyContent="flex-end">
-          <IconButton onClick={handleClose} disabled={loading}>
+          <IconButton onClick={handleClose} disabled={submitLoading}>
             <CloseIcon />
           </IconButton>
         </Box>
 
-        <Box paddingLeft={3} paddingRight={3} paddingBottom={1}>
+        <Box paddingLeft={3} paddingRight={3} paddingBottom={3}>
           <Typography variant="h5" fontWeight="600">
             {title}
           </Typography>
@@ -73,9 +76,16 @@ export default function FormDrawer() {
         </Box>
 
         <StyledActionButtons>
-          <Button size="large" onClick={handleSubmit} disabled={loading}>
+          <LoadingButton
+            size="large"
+            variant="contained"
+            onClick={handleSubmit}
+            loading={submitLoading}
+            disabled={submitDisabled}
+            fullWidth
+          >
             {submitButtonText?.toLocaleUpperCase()}
-          </Button>
+          </LoadingButton>
         </StyledActionButtons>
       </Box>
     </Drawer>

@@ -1,14 +1,14 @@
+// ** react
+import { SyntheticEvent, useEffect, useState } from 'react'
+
 // ** mui
-import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
-import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import FormHelperText from '@mui/material/FormHelperText'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import InputAdornment from '@mui/material/InputAdornment'
-import IconButton from '@mui/material/IconButton'
 import CircularProgress from '@mui/material/CircularProgress'
 import Tooltip from '@mui/material/Tooltip'
 
@@ -17,42 +17,66 @@ import WarningIcon from '@mui/icons-material/Warning'
 import DoneIcon from '@mui/icons-material/Done'
 
 // ** third party
+import { useSnackbar } from 'notistack'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import { useQueryClient } from 'react-query'
 
 // ** models
 import { CategoryFormModel } from '@/models/CategoryModel'
-import { useEffect, useState } from 'react'
+import CategoryModel from '@/models/CategoryModel'
+import ListQueryModel from '@/models/ListQueryModel'
 
 // ** services
 import CategoryService from '@/services/CategoryService'
 
 // ** hooks
 import useComponentContext from '@/hooks/useComponentContext'
+import useCategoryQuery from '@/hooks/queries/useCategoryQuery'
 
+// ** components
 import AsyncAutocomplete from 'components/AsyncAutocomplete'
+import { AutocompleteChangeReason } from '@mui/material/Autocomplete'
 
-type NewEditCategoryProps = {}
+// ** core
+import { QUERY_NAMES } from '@/core/Constants'
 
-export default function NewEditCategory({}: NewEditCategoryProps) {
-  const { formDrawer } = useComponentContext()
+type NewEditCategoryProps = {
+  data?: CategoryFormModel
+}
 
-  const [guidExistsLoading, setGuidExistsLoading] = useState(false)
-  const [guidExists, setGuidExists] = useState<boolean | null>(null)
+export default function NewEditCategory({ data }: NewEditCategoryProps) {
+  const { formDrawer, handleFormDrawerClose, setFormDrawerData } =
+    useComponentContext()
+  const { enqueueSnackbar } = useSnackbar()
+  const queryClientHook = useQueryClient()
 
-  const initialValues: CategoryFormModel = {
+  const [parentSearchText, setParentSearchText] = useState('')
+  const [parentValue, setParentValue] = useState<CategoryModel | null>(null)
+  const [initialValues, setInitialValues] = useState<CategoryFormModel>({
     title: '',
     description: '',
     guid: '',
     parent: null,
-  }
+  })
+
+  const [guidExistsLoading, setGuidExistsLoading] = useState(false)
+  const [guidExists, setGuidExists] = useState<boolean | null>(null)
+  const [parentAutocompleteParams, seParentAutocompleteParams] =
+    useState<ListQueryModel>({
+      s: '',
+      sType: 'title',
+    })
+
+  const { categoriesQuery } = useCategoryQuery(parentAutocompleteParams)
+  const categories = categoriesQuery(parentSearchText === '' ? false : true)
 
   // form validate
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('Zorunlu alan'),
     description: Yup.string().required('Zorunlu alan'),
     guid: Yup.string().required('Zorunlu alan'),
-    parent: Yup.string().optional(),
+    parent: Yup.string().optional().nullable(),
   })
 
   const {
@@ -62,47 +86,68 @@ export default function NewEditCategory({}: NewEditCategoryProps) {
     handleSubmit,
     getFieldProps,
     setFieldValue,
+    setValues,
+    isValid,
     values,
   } = useFormik<CategoryFormModel>({
     initialValues,
     validationSchema,
+    validateOnMount: true,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
-      // try {
-      //   await axios.post(`/api/login`, values)
-      //   enqueueSnackbar('Başarıyla giriş yapıldı.', {
-      //     variant: 'success',
-      //   })
-      //   router.push('/admin')
-      // } catch (err) {
-      //   console.error(`Admin login page onSubmit() Error: ${err}`)
-      //   enqueueSnackbar('Giriş yapılırken bir sorun oluştu.', {
-      //     variant: 'error',
-      //   })
-      // }
-      // setSubmitting(false)
-      // resetForm()
+      try {
+        let text = ''
+        if (values._id) {
+          await CategoryService.patchItem(values)
+          text = 'Kayıt başarıyla düzenlendi.'
+        } else {
+          await CategoryService.postItem(values)
+          text = 'Kayıt başarıyla eklendi.'
+        }
+        enqueueSnackbar(text, {
+          variant: 'success',
+        })
+        queryClientHook.invalidateQueries(QUERY_NAMES.CATEGORY)
+      } catch (err) {
+        enqueueSnackbar(
+          'Kayıt eklenirken veya güncellenirken bir hata oluştu.',
+          {
+            variant: 'error',
+          },
+        )
+      }
+      handleFormDrawerClose()
+      setSubmitting(false)
+      resetForm()
     },
   })
 
   useEffect(() => {
-    if (formDrawer.submit) {
-      console.log('submit oldu')
-    }
+    if (!data) return
+    if (data.parent) setParentValue(data.parent as CategoryModel)
+    setInitialValues(data)
+    setValues({
+      ...data,
+      parent: (data.parent as CategoryModel)?._id || null,
+    })
+  }, [data])
+
+  useEffect(() => {
+    setFormDrawerData({
+      ...formDrawer,
+      submitDisabled: !isValid || guidExistsLoading || guidExists === true,
+    })
+  }, [isValid, guidExistsLoading, guidExists])
+
+  useEffect(() => {
+    if (formDrawer.submit) handleSubmit()
   }, [formDrawer.submit])
 
   useEffect(() => {
-    // const guidExists = async () => {
-    //   const response = await CategoryService.guidExists(values.guid)
-    //   setGuidExistsLoading(false)
-    //   setGuidExists(response)
-    // }
-
-    // ** Güncelleme işlemide zaten yazmış olduğu guidi tekrar kontrol edip hataya düşmesini engellemek için;
-    // if (id && initialValues.guid === values.guid) {
-    //   setGuidExistsLoading(false)
-    //   setGuidExists(false)
-    //   return
-    // }
+    if (values._id && initialValues.guid === values.guid) {
+      setGuidExistsLoading(false)
+      setGuidExists(false)
+      return
+    }
 
     const delayDebounceFn = setTimeout(async () => {
       if (values.guid) {
@@ -117,6 +162,31 @@ export default function NewEditCategory({}: NewEditCategoryProps) {
 
     return () => clearTimeout(delayDebounceFn)
   }, [values.guid])
+
+  const handleParentAutoCompleteInputChange = (
+    e: any,
+    newInputValue: string,
+  ) => {
+    seParentAutocompleteParams({
+      ...parentAutocompleteParams,
+      s: newInputValue,
+    })
+    setParentSearchText(newInputValue)
+  }
+
+  const handleParentAutoCompleteChange = (
+    e: SyntheticEvent<Element, Event>,
+    val: CategoryModel,
+    reason: AutocompleteChangeReason,
+  ) => {
+    if (reason === 'clear') {
+      setFieldValue('parent', null)
+      setParentValue(null)
+      return
+    }
+    setFieldValue('parent', val._id)
+    setParentValue(val)
+  }
 
   return (
     <Stack spacing={2}>
@@ -168,13 +238,13 @@ export default function NewEditCategory({}: NewEditCategoryProps) {
               ) : (
                 guidExists !== null &&
                 (!guidExists ? (
-                  <DoneIcon color="success" />
+                  <DoneIcon />
                 ) : (
                   <Tooltip
                     title="Eklemeye çalıştığınız guid bilgisi zaten kullanılıyor."
                     placement="top"
                   >
-                    <WarningIcon color="error" />
+                    <WarningIcon />
                   </Tooltip>
                 ))
               )}
@@ -187,23 +257,20 @@ export default function NewEditCategory({}: NewEditCategoryProps) {
         </FormHelperText>
       </FormControl>
 
-      {/* <AsyncAutocomplete
+      <AsyncAutocomplete
         name="parent"
-        value={!values[i] ? '' : values[i].value}
-        label={title}
-        handleInputChange={handlePageAutoCompleteInputChange}
-        handleChange={(e, val) => {
-          let _values = values
-          _values[i].value = val as any
-          setValues([..._values])
-        }}
-        data={[]}
-        // data={!page.data ? [] : page.data.results}
+        value={parentValue}
+        inputValue={parentSearchText}
+        label="Evebeyn Kategori"
+        handleInputChange={handleParentAutoCompleteInputChange}
+        handleChange={handleParentAutoCompleteChange}
+        data={categories?.data || []}
         objName="title"
-        loading={page.isLoading}
+        // setTouched={setTouched}
+        loading={categories.isLoading}
         helperText={errors.parent && touched.parent ? errors.parent : null}
         error={errors.parent ? touched.parent : false}
-      /> */}
+      />
     </Stack>
   )
 }

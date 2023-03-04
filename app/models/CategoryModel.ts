@@ -9,8 +9,9 @@ export default interface CategoryModel {
 }
 
 export type CategoryFormModel = {
+  readonly _id?: string | null
   readonly title: string
   readonly description: string
   readonly guid: string
-  readonly parent: string | null
+  readonly parent: string | CategoryModel | null
 }

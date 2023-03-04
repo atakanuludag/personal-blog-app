@@ -12,7 +12,8 @@ type FormDrawerProps = {
   open: boolean
   title: string
   content: JSX.Element | null
-  loading?: boolean
+  submitLoading?: boolean
+  submitDisabled?: boolean
   submitButtonText?: string
   submit?: boolean
 }
@@ -37,7 +38,8 @@ const initialFormDrawerData: FormDrawerProps = {
   open: false,
   title: '',
   content: null,
-  loading: false,
+  submitLoading: false,
+  submitDisabled: false,
   submitButtonText: 'Kaydet',
   submit: false,
 }

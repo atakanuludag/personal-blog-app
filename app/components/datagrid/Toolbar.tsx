@@ -33,6 +33,7 @@ export type MuiToolbarProps = {
   setLoading: Dispatch<SetStateAction<boolean>>
   selected: string[]
   deleteService: (id: string) => Promise<void>
+  deleteDialogMessage?: string
 }
 
 export default function MuiToolbar({
@@ -41,6 +42,7 @@ export default function MuiToolbar({
   setLoading,
   selected,
   deleteService,
+  deleteDialogMessage,
 }: MuiToolbarProps) {
   const queryClient = useQueryClient()
   const { enqueueSnackbar } = useSnackbar()
@@ -65,7 +67,8 @@ export default function MuiToolbar({
     setConfirmDialogData({
       open: true,
       title: 'Emin misiniz ?',
-      content: 'Seçilenleri silmek için lütfen onaylayın.',
+      content:
+        deleteDialogMessage || 'Seçilenleri silmek için lütfen onaylayın.',
       handleConfirmFunction: handleSelectedConfirmDelete,
     })
   }

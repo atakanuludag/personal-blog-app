@@ -32,6 +32,7 @@ type MuiDataGridProps = {
   columns: GridColDef[]
   params?: ListQueryModel
   setParams?: Dispatch<SetStateAction<ListQueryModel>>
+  deleteDialogMessage?: string
 } & DataGridProps
 
 export type MuiGridComponentsProps = {
@@ -50,6 +51,7 @@ export default function MuiDataGrid({
   columns,
   params,
   setParams,
+  deleteDialogMessage,
   ...props
 }: MuiDataGridProps) {
   const [selected, setSelected] = useState(new Array<string>())
@@ -110,6 +112,7 @@ export default function MuiDataGrid({
       setLoading: setCustomLoading,
       selected,
       deleteService,
+      deleteDialogMessage,
     },
   }
 

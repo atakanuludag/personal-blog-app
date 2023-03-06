@@ -169,6 +169,7 @@ const Categories: AdminComponent = ({ settings }: PageProps) => {
         totalResults={items?.totalResults as number}
         params={params}
         setParams={setParams}
+        deleteDialogMessage="Seçtiğiniz kategorilere bağlı makaleler olabilir. Gerçekten silmek istiyor musunuz ?"
       />
     </Box>
   )

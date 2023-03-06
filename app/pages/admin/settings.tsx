@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { NextPage } from 'next/types'
 import { useQueryClient, useMutation } from 'react-query'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -20,12 +19,9 @@ import usePageQuery from '@/hooks/queries/usePageQuery'
 import Loading from '@/components/Loading'
 import NoFoundData from '@/components/NoFoundData'
 import AsyncAutocomplete from '@/components/AsyncAutocomplete'
+import NextPageType from '@/models/NextPageType'
 
-type AdminComponent = NextPage<PageProps> & {
-  layout: typeof LayoutAdminPage
-}
-
-const AdminSettings: AdminComponent = ({}: PageProps) => {
+const AdminSettings: NextPageType = ({}: PageProps) => {
   const [pageSearchText, setPageSearchText] = useState('')
   const [pageQueryEnable, setPageQueryEnable] = useState(false)
 
@@ -159,17 +155,17 @@ const AdminSettings: AdminComponent = ({}: PageProps) => {
                   // data={!page.data ? [] : page.data.results}
                   objName="title"
                   loading={page.isLoading}
-                  helperText={
-                    errors[i]
-                      ? typeof errors[i]?.value === 'string'
-                        ? errors[i]?.value
-                        : null
-                      : touched[i]
-                      ? typeof touched[i]?.value === 'string'
-                        ? touched[i]?.value
-                        : null
-                      : null
-                  }
+                  // helperText={
+                  //   errors[i]
+                  //     ? typeof errors[i]?.value === 'string'
+                  //       ? errors[i]?.value
+                  //       : null
+                  //     : touched[i]
+                  //     ? typeof touched[i]?.value === 'string'
+                  //       ? touched[i]?.value
+                  //       : null
+                  //     : null
+                  // }
                   error={
                     errors[i]
                       ? typeof errors[i]?.value === 'string'
@@ -203,6 +199,7 @@ const AdminSettings: AdminComponent = ({}: PageProps) => {
 }
 
 AdminSettings.layout = LayoutAdminPage
+AdminSettings.title = 'Ayarlar'
 export default AdminSettings
 
 export { getServerSideProps }

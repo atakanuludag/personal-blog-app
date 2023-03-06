@@ -1,20 +1,28 @@
-import React from 'react'
-import { NextPage } from 'next/types'
+// ** mui
 import Grid from '@mui/material/Grid'
+
+// ** icons
 import ArticleIcon from '@mui/icons-material/Article'
 import AutoStoriesIcon from '@mui/icons-material/AutoStories'
 import FilePresentIcon from '@mui/icons-material/FilePresent'
+
+// ** models
 import PageProps from '@/models/AppPropsModel'
+import NextPageType from '@/models/NextPageType'
+
+// ** layouts
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
+
+// ** utils
 import getServerSideProps from '@/utils/AdminServerSideProps'
+
+// ** components
 import DashboardNumberItem from '@/components/DashboardNumberItem'
+
+// ** hooks
 import useAdminDashboardReport from '@/hooks/queries/useAdminDashboardReport'
 
-type AdminComponent = NextPage<PageProps> & {
-  layout: typeof LayoutAdminPage
-}
-
-const AdminHome: AdminComponent = ({}: PageProps) => {
+const AdminHome: NextPageType = ({}: PageProps) => {
   const { adminDashboardReportQuery } = useAdminDashboardReport()
   const { data, isLoading } = adminDashboardReportQuery()
 
@@ -51,6 +59,7 @@ const AdminHome: AdminComponent = ({}: PageProps) => {
 }
 
 AdminHome.layout = LayoutAdminPage
+AdminHome.title = 'Dashboard'
 export default AdminHome
 
 export { getServerSideProps }

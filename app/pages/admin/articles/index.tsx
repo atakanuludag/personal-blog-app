@@ -25,6 +25,7 @@ import PageProps from '@/models/AppPropsModel'
 import ArticleModel from '@/models/ArticleModel'
 import ListQueryModel from '@/models/ListQueryModel'
 import ListResponseModel from '@/models/ListResponseModel'
+import NextPageType from '@/models/NextPageType'
 
 // ** layouts
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
@@ -42,11 +43,7 @@ import SearchInput from '@/components/admin/SearchInput'
 // ** constants
 import { QUERY_NAMES } from '@/core/Constants'
 
-type AdminComponent = NextPage<PageProps> & {
-  layout: typeof LayoutAdminPage
-}
-
-const AdminArticleIndex: AdminComponent = ({ settings }: PageProps) => {
+const AdminArticleIndex: NextPageType = ({ settings }: PageProps) => {
   const [params, setParams] = useState<ListQueryModel>({
     page: 1,
     pageSize: settings.pageSize,

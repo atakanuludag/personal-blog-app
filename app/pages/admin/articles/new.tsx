@@ -34,15 +34,12 @@ import ListQueryModel from '@/models/ListQueryModel'
 import TagModel from '@/models/TagModel'
 
 import TagAutocomplete from '@/components/admin/TagAutocomplete'
+import NextPageType from '@/models/NextPageType'
 
 const Editor = dynamic((): Promise<any> => import('@/components/editor'), {
   //besure to import dynamically
   ssr: false,
 })
-
-type AdminComponent = NextPage<PageProps> & {
-  layout: typeof LayoutAdminPage
-}
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   '& .MuiPaper-root': {
@@ -50,7 +47,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
   },
 }))
 
-const AdminArticleNew: AdminComponent = ({ settings }: PageProps) => {
+const AdminArticleNew: NextPageType = ({ settings }: PageProps) => {
   const [params, setParams] = useState<ListQueryModel>({
     s: '',
     sType: 'title',

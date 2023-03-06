@@ -63,10 +63,7 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
   const Layout = Component.layout
     ? Component.layout || ((children: any) => children)
     : LayoutBlogPage
-
-  // const Layout = Component.layout
-  //   ? Component.layout || ((page: any) => page)
-  //   : LayoutBlogPage
+  const componentTitle = Component.title || null
 
   const settings: SettingsModel = pageProps.settings
   const auth: TokenModel | undefined = pageProps.auth
@@ -114,7 +111,7 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
             <Theme>
               <ErrorBoundary>
                 <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
-                  <Layout {...pageProps}>
+                  <Layout title={componentTitle} {...pageProps}>
                     <Component {...pageProps} />
                     <FormDrawer />
                     <ConfirmDialog />

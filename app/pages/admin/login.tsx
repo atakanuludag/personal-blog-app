@@ -25,10 +25,7 @@ import PageProps from '@/models/AppPropsModel'
 import LoginFormModel from '@/models/LoginFormModel'
 import TokenModel from '@/models/TokenModel'
 import Cookie from '@/utils/Cookie'
-
-type AdminComponent = NextPage<PageProps> & {
-  layout: typeof LayoutFullPage
-}
+import NextPageType from '@/models/NextPageType'
 
 const LoginBox = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -42,7 +39,7 @@ const Form = styled('form')(() => ({
   width: '100%',
 }))
 
-const AdminLogin: AdminComponent = ({}: PageProps) => {
+const AdminLogin: NextPageType = ({}: PageProps) => {
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
   const [showPassword, setShowPassword] = useState(false)
@@ -189,4 +186,5 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 }
 
 AdminLogin.layout = LayoutFullPage
+AdminLogin.title = 'Giriş Yap'
 export default AdminLogin

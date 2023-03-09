@@ -52,6 +52,7 @@ export class FileController {
     description: 'Success',
     type: ListResultDto,
   })
+  @ApiBearerAuth('accessToken')
   @UseGuards(JwtAuthGuard)
   @Get()
   async list(@Query() query: ListQueryDto) {

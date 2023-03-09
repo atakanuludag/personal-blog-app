@@ -16,34 +16,36 @@ export class FileService {
     private readonly coreMessage: CoreMessage,
   ) {}
 
-  async getItems(query: IQuery): Promise<IListQueryResponse<IFile[]>> {
+  async getItems(
+    query: IQuery,
+  ): Promise<IListQueryResponse<IFile[]> | IFile[]> {
     try {
-      const { pagination, searchQuery, order } = query
-      const { page, pageSize, skip } = pagination
+      const { pagination, searchQuery, order, paging } = query
+      if (paging) {
+        const { page, pageSize, skip } = pagination
+        const items = await this.serviceModel
+          .find(searchQuery)
+          .limit(pageSize)
+          .sort(order)
+          .skip(skip)
+          .exec()
 
-      const items = await this.serviceModel
-        .find(searchQuery)
-        .limit(pageSize)
-        .sort(order)
-        .skip(skip)
-        .exec()
+        const count = await this.serviceModel.find(searchQuery).countDocuments()
 
-      const count = await this.serviceModel
-        .find(query.searchQuery)
-        .countDocuments()
+        const totalPages = Math.ceil(count / pageSize)
 
-      const totalPages = Math.ceil(count / pageSize)
-
-      const data: IListQueryResponse<IFile[]> = {
-        results: items,
-        currentPage: page,
-        currentPageSize: items.length,
-        pageSize: pageSize,
-        totalPages,
-        totalResults: count,
-        hasNextPage: page < totalPages ? true : false,
+        const data: IListQueryResponse<IFile[]> = {
+          results: items,
+          currentPage: page,
+          currentPageSize: items.length,
+          pageSize: pageSize,
+          totalPages,
+          totalResults: count,
+          hasNextPage: page < totalPages ? true : false,
+        }
+        return data
       }
-      return data
+      return await this.serviceModel.find(searchQuery).sort(order).exec()
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

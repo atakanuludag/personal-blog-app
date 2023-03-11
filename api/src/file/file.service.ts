@@ -65,4 +65,39 @@ export class FileService {
       )
     }
   }
+
+  async createFolder(folderTitle: string, path: string): Promise<IFile> {
+    try {
+      const findFolderPath = await this.getFolderByPath(path)
+      if (findFolderPath) {
+        return findFolderPath
+      }
+      const create = new this.serviceModel({
+        title: folderTitle,
+        description: null,
+        filename: null,
+        isFolder: true,
+        mimetype: null,
+        path,
+        size: null,
+      })
+      return create.save()
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.INTERNAL_SERVER_ERROR,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
+    }
+  }
+
+  async getFolderByPath(path: string): Promise<IFile> {
+    try {
+      return await this.serviceModel.findOne({ isFolder: true, path }).exec()
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
 }

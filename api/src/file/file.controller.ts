@@ -19,7 +19,9 @@ import {
   ApiBody,
   ApiConsumes,
 } from '@nestjs/swagger'
+import * as fs from 'fs'
 import { FilesInterceptor } from '@nestjs/platform-express'
+import { ConfigService } from '@nestjs/config'
 import { FileService } from '@/file/file.service'
 import { CoreMessage, FileMessage } from '@/common/messages'
 import { File } from '@/file/schemas/file.schema'
@@ -30,7 +32,8 @@ import { ListResultDto } from '@/common/dto/list-result.dto'
 import { FileDto } from '@/file/dto/file.dto'
 import { DefaultException } from '@/common/dto/default-exception.dto'
 import { QueryHelper } from '@/common/helpers/query.helper'
-
+import { FolderDto } from '@/file/dto/folder.dto'
+import { IEnv } from '@/common/interfaces/env.interface'
 @ApiTags('File')
 @Controller('file')
 export class FileController {
@@ -39,6 +42,7 @@ export class FileController {
     private readonly coreMessage: CoreMessage,
     private readonly fileMessage: FileMessage,
     private readonly queryHelper: QueryHelper,
+    private configService: ConfigService<IEnv>,
   ) {}
 
   @ApiOperation({
@@ -76,6 +80,9 @@ export class FileController {
     schema: {
       type: 'object',
       properties: {
+        path: {
+          type: 'string',
+        },
         file: {
           type: 'array',
           items: {
@@ -96,6 +103,7 @@ export class FileController {
 
       data = file.map((f) => {
         return {
+          isFolder: false,
           title: f.filename,
           description: '',
           filename: f.filename,
@@ -111,5 +119,23 @@ export class FileController {
         HttpStatus.BAD_REQUEST,
       )
     }
+  }
+
+  @ApiOperation({
+    summary: 'Create folder.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: DefaultException,
+  })
+  @ApiBearerAuth('accessToken')
+  @UseGuards(JwtAuthGuard)
+  @Post('/folder')
+  async createFolder(@Body() body: FolderDto) {
+    const { title, path } = body
+    const uploadFolder = this.configService.get<string>('UPLOAD_FOLDER')
+    const dir = `${uploadFolder}/${path}`
+    await fs.promises.mkdir(dir, { recursive: true })
+    return await this.service.createFolder(title, dir)
   }
 }

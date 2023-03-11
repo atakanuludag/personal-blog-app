@@ -7,10 +7,12 @@ import { IEnv } from '@/common/interfaces/env.interface'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    //bodyParser: true,
+    bodyParser: true,
     //logger: console,
     bufferLogs: true,
   })
+
+  // app.use(bodyParser.urlencoded({ extended: true }));
 
   const configService = app.get<ConfigService<IEnv>>(ConfigService)
   const apiPrefix = configService.get<string>('API_PREFIX')

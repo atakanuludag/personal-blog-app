@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { MongooseModule } from '@nestjs/mongoose'
 import { MulterModule } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
+import * as fs from 'fs'
 
 import { IEnv } from '@/common/interfaces/env.interface'
 
@@ -21,7 +22,17 @@ import { editFileName } from '@/common/utils/edit-file-name.util'
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService<IEnv>) => ({
         storage: diskStorage({
-          destination: configService.get<string>('UPLOAD_FOLDER'),
+          destination: (req, file, cb) => {
+            const { path } = req.body
+            let dir = `${configService.get<string>('UPLOAD_FOLDER')}`
+            if (path) dir += `/${path}`
+            if (!fs.existsSync(dir)) {
+              return fs.mkdir(dir, { recursive: true }, (error) =>
+                cb(error, dir),
+              )
+            }
+            return cb(null, dir)
+          },
           filename: editFileName,
         }),
       }),

@@ -27,6 +27,9 @@ export class File {
 
   @Prop({ required: false })
   size: number
+
+  @Prop({ required: true })
+  folderPath: string
 }
 
 export const FileSchema = SchemaFactory.createForClass(File)

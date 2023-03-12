@@ -8,4 +8,5 @@ export interface IFile extends Document {
   readonly path: string
   readonly mimetype: string
   readonly size: number
+  readonly folderPath: string
 }

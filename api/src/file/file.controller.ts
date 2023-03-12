@@ -27,13 +27,14 @@ import { CoreMessage, FileMessage } from '@/common/messages'
 import { File } from '@/file/schemas/file.schema'
 import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
-import { ListQueryDto } from '@/common/dto/list-query.dto'
 import { ListResultDto } from '@/common/dto/list-result.dto'
 import { FileDto } from '@/file/dto/file.dto'
+import { FileListQueryDto } from '@/file/dto/file-list-query.dto'
 import { DefaultException } from '@/common/dto/default-exception.dto'
 import { QueryHelper } from '@/common/helpers/query.helper'
 import { FolderDto } from '@/file/dto/folder.dto'
 import { IEnv } from '@/common/interfaces/env.interface'
+import { slugifyTR } from '@/common/utils/slugify-tr.util'
 @ApiTags('File')
 @Controller('file')
 export class FileController {
@@ -59,9 +60,9 @@ export class FileController {
   @ApiBearerAuth('accessToken')
   @UseGuards(JwtAuthGuard)
   @Get()
-  async list(@Query() query: ListQueryDto) {
+  async list(@Query() query: FileListQueryDto) {
     const q = this.queryHelper.instance(query)
-    return await this.service.getItems(q)
+    return await this.service.getItems(q, query.path)
   }
 
   @ApiOperation({
@@ -97,10 +98,9 @@ export class FileController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(FilesInterceptor('file'))
-  uploadFile(@UploadedFiles() file: Express.Multer.File[]) {
+  uploadFile(@UploadedFiles() file: Express.Multer.File[], @Body() body) {
     try {
       let data = new Array<File>()
-
       data = file.map((f) => {
         return {
           isFolder: false,
@@ -110,6 +110,7 @@ export class FileController {
           path: f.path,
           mimetype: f.mimetype,
           size: f.size,
+          folderPath: body.path,
         }
       })
       return this.service.saveFile(data)
@@ -132,10 +133,15 @@ export class FileController {
   @UseGuards(JwtAuthGuard)
   @Post('/folder')
   async createFolder(@Body() body: FolderDto) {
+    // ** path verilirken ne başında nede sonunda / işareti olmayacak.
     const { title, path } = body
+    const folderTitle = slugifyTR(title)
     const uploadFolder = this.configService.get<string>('UPLOAD_FOLDER')
-    const dir = `${uploadFolder}/${path}`
+    const dir = `${uploadFolder}/${
+      path === '/' || path === null ? '' : `${path}/`
+    }${folderTitle}`
+
     await fs.promises.mkdir(dir, { recursive: true })
-    return await this.service.createFolder(title, dir)
+    return await this.service.createFolder(title, path, dir)
   }
 }

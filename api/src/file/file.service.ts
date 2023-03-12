@@ -1,6 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model, ObjectId } from 'mongoose'
+import { Model } from 'mongoose'
+import { ConfigService } from '@nestjs/config'
 import { IFile } from '@/file/interfaces/file.interface'
 import { File, FileDocument } from '@/file/schemas/file.schema'
 //import { CreateCategoryDto } from './dto/create-category.dto';
@@ -8,29 +9,37 @@ import { File, FileDocument } from '@/file/schemas/file.schema'
 import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { CoreMessage } from '@/common/messages'
 import { IListQueryResponse, IQuery } from '@/common/interfaces/query.interface'
-
+import { IEnv } from '@/common/interfaces/env.interface'
 @Injectable()
 export class FileService {
   constructor(
     @InjectModel(File.name) private readonly serviceModel: Model<FileDocument>,
     private readonly coreMessage: CoreMessage,
+    private configService: ConfigService<IEnv>,
   ) {}
 
   async getItems(
     query: IQuery,
+    folderPath: string,
   ): Promise<IListQueryResponse<IFile[]> | IFile[]> {
     try {
       const { pagination, searchQuery, order, paging } = query
+      const newSearchQuery = {
+        ...searchQuery,
+        folderPath,
+      }
       if (paging) {
         const { page, pageSize, skip } = pagination
         const items = await this.serviceModel
-          .find(searchQuery)
+          .find(newSearchQuery)
           .limit(pageSize)
           .sort(order)
           .skip(skip)
           .exec()
 
-        const count = await this.serviceModel.find(searchQuery).countDocuments()
+        const count = await this.serviceModel
+          .find(newSearchQuery)
+          .countDocuments()
 
         const totalPages = Math.ceil(count / pageSize)
 
@@ -45,7 +54,7 @@ export class FileService {
         }
         return data
       }
-      return await this.serviceModel.find(searchQuery).sort(order).exec()
+      return await this.serviceModel.find(newSearchQuery).sort(order).exec()
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -66,7 +75,11 @@ export class FileService {
     }
   }
 
-  async createFolder(folderTitle: string, path: string): Promise<IFile> {
+  async createFolder(
+    folderTitle: string,
+    path: string,
+    dir: string,
+  ): Promise<IFile> {
     try {
       const findFolderPath = await this.getFolderByPath(path)
       if (findFolderPath) {
@@ -78,8 +91,9 @@ export class FileService {
         filename: null,
         isFolder: true,
         mimetype: null,
-        path,
+        path: dir,
         size: null,
+        folderPath: path,
       })
       return create.save()
     } catch (err) {

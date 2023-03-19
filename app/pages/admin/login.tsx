@@ -1,10 +1,16 @@
-import React, { useState } from 'react'
+// ** react
+import { useState, MouseEvent } from 'react'
+
+// ** next
 import { useRouter } from 'next/router'
-import { GetServerSideProps, NextPage } from 'next/types'
-import axios from 'axios'
+import { GetServerSideProps } from 'next/types'
+
+// ** third party
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useSnackbar } from 'notistack'
+
+// ** mui
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
@@ -17,15 +23,26 @@ import InputLabel from '@mui/material/InputLabel'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import IconButton from '@mui/material/IconButton'
+
+// ** icons
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import LoadingButton from '@mui/lab/LoadingButton'
+
+// ** layouts
 import LayoutFullPage from '@/layouts/LayoutFullPage'
+
+// ** models
 import PageProps from '@/models/AppPropsModel'
 import LoginFormModel from '@/models/LoginFormModel'
 import TokenModel from '@/models/TokenModel'
-import Cookie from '@/utils/Cookie'
 import NextPageType from '@/models/NextPageType'
+
+// ** utils
+import Cookie from '@/utils/Cookie'
+
+// ** services
+import NextService from '@/services/NextService'
 
 const LoginBox = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -59,12 +76,13 @@ const AdminLogin: NextPageType = ({}: PageProps) => {
       initialValues,
       validationSchema,
       onSubmit: async (values, { setSubmitting, resetForm }) => {
+        const redirectUrl = router.query.redirectUrl as string
         try {
-          await axios.post(`/api/login`, values)
+          await NextService.login(values)
           enqueueSnackbar('Başarıyla giriş yapıldı.', {
             variant: 'success',
           })
-          router.push('/admin')
+          router.push(redirectUrl || '/admin')
         } catch (err) {
           console.error(`Admin login page onSubmit() Error: ${err}`)
           enqueueSnackbar('Giriş yapılırken bir sorun oluştu.', {
@@ -78,7 +96,7 @@ const AdminLogin: NextPageType = ({}: PageProps) => {
 
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
-  const handleMouseDownPassword = (e: React.MouseEvent<HTMLButtonElement>) =>
+  const handleMouseDownPassword = (e: MouseEvent<HTMLButtonElement>) =>
     e.preventDefault()
 
   return (

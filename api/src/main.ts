@@ -12,7 +12,8 @@ async function bootstrap() {
     bufferLogs: true,
   })
 
-  // app.use(bodyParser.urlencoded({ extended: true }));
+  //app.use(express.static(join(__dirname, '..', 'client')))
+  //app.use(bodyParser.urlencoded({ extended: true }));
 
   const configService = app.get<ConfigService<IEnv>>(ConfigService)
   const apiPrefix = configService.get<string>('API_PREFIX')

@@ -10,6 +10,7 @@ const QUERY_NAMES = {
   CATEGORY: 'category',
   PAGE: 'page',
   SETTINGS: 'settings',
+  FILES: 'files',
   ADMIN_DASHBOARD_REPORT: 'admin_dashboard_report',
 }
 

@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import { FilterQuery, Model, ObjectId } from 'mongoose'
 import { ConfigService } from '@nestjs/config'
 import { IFile } from '@/file/interfaces/file.interface'
 import { File, FileDocument } from '@/file/schemas/file.schema'
@@ -20,13 +20,13 @@ export class FileService {
 
   async getItems(
     query: IQuery,
-    folderPath: string,
+    folderId: ObjectId,
   ): Promise<IListQueryResponse<IFile[]> | IFile[]> {
     try {
       const { pagination, searchQuery, order, paging } = query
-      const newSearchQuery = {
+      const newSearchQuery: FilterQuery<FileDocument> = {
         ...searchQuery,
-        folderPath,
+        folderId,
       }
       if (paging) {
         const { page, pageSize, skip } = pagination
@@ -78,22 +78,21 @@ export class FileService {
   async createFolder(
     folderTitle: string,
     path: string,
-    dir: string,
+    folderId: ObjectId,
   ): Promise<IFile> {
     try {
       const findFolderPath = await this.getFolderByPath(path)
-      if (findFolderPath) {
-        return findFolderPath
-      }
+      if (findFolderPath) return findFolderPath
+
       const create = new this.serviceModel({
         title: folderTitle,
         description: null,
         filename: null,
         isFolder: true,
         mimetype: null,
-        path: dir,
+        path,
         size: null,
-        folderPath: path,
+        folderId,
       })
       return create.save()
     } catch (err) {

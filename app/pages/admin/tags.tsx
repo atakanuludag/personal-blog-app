@@ -29,7 +29,6 @@ import getServerSideProps from '@/utils/AdminServerSideProps'
 
 // ** hooks
 import useTagQuery from '@/hooks/queries/useTagQuery'
-import useComponentContext from '@/hooks/useComponentContext'
 
 // ** components
 import DataGrid from '@/components/datagrid'
@@ -47,7 +46,6 @@ const Tags: NextPageType = ({ settings }: PageProps) => {
   const [customLoading, setCustomLoading] = useState(false)
 
   const { tagQuery } = useTagQuery(params)
-  const { setFormDrawerData } = useComponentContext()
 
   const { data, isLoading, isFetching } = tagQuery()
   const items = data as ListResponseModel<TagModel[]>

@@ -62,7 +62,7 @@ export class FileController {
   @Get()
   async list(@Query() query: FileListQueryDto) {
     const q = this.queryHelper.instance(query)
-    return await this.service.getItems(q, query.path)
+    return await this.service.getItems(q, query.folderId)
   }
 
   @ApiOperation({
@@ -98,8 +98,15 @@ export class FileController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(FilesInterceptor('file'))
-  uploadFile(@UploadedFiles() file: Express.Multer.File[], @Body() body) {
+  async uploadFile(@UploadedFiles() file: Express.Multer.File[], @Body() body) {
+    //Todo: @Body() body'e dto tipi verilecek.
     try {
+      let folderId = null
+      if (body.path && body.path !== '/') {
+        const folder = await this.service.getFolderByPath(body.path)
+        folderId = folder._id || null
+      }
+
       let data = new Array<File>()
       data = file.map((f) => {
         return {
@@ -107,10 +114,10 @@ export class FileController {
           title: f.filename,
           description: '',
           filename: f.filename,
-          path: f.path,
+          path: body.path === '/' || !body.path ? null : body.path,
+          folderId,
           mimetype: f.mimetype,
           size: f.size,
-          folderPath: body.path,
         }
       })
       return this.service.saveFile(data)
@@ -135,13 +142,25 @@ export class FileController {
   async createFolder(@Body() body: FolderDto) {
     // ** path verilirken ne başında nede sonunda / işareti olmayacak.
     const { title, path } = body
+    let folderId = null
+
+    if (body.path && body.path !== '/') {
+      const folder = await this.service.getFolderByPath(body.path)
+      folderId = folder._id || null
+    }
+
     const folderTitle = slugifyTR(title)
-    const uploadFolder = this.configService.get<string>('UPLOAD_FOLDER')
-    const dir = `${uploadFolder}/${
+    const uploadFolder = this.configService.get<string>('UPLOAD_FOLDER_PATH')
+
+    const uploadFolderDir = `${uploadFolder}/${
       path === '/' || path === null ? '' : `${path}/`
     }${folderTitle}`
 
-    await fs.promises.mkdir(dir, { recursive: true })
-    return await this.service.createFolder(title, path, dir)
+    const newPath = `${
+      path === '/' || path === null ? '' : `${path}/`
+    }${folderTitle}`
+
+    await fs.promises.mkdir(uploadFolderDir, { recursive: true })
+    return await this.service.createFolder(title, newPath, folderId)
   }
 }

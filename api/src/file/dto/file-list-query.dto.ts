@@ -1,13 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger'
+import { ObjectId } from 'mongoose'
 import { ListQueryDto } from '@/common/dto/list-query.dto'
-import { IsOptional, IsString } from 'class-validator'
+import { IsMongoId, IsOptional } from 'class-validator'
 
 export class FileListQueryDto extends ListQueryDto {
   @ApiProperty({
-    description: 'Folder Path',
+    description: 'Folder ID',
+    type: String,
     required: false,
   })
   @IsOptional()
-  @IsString()
-  path: string
+  @IsMongoId()
+  folderId: ObjectId
 }

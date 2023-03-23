@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document } from 'mongoose'
+import { Document, ObjectId } from 'mongoose'
+import * as mongoose from 'mongoose'
 
 export type FileDocument = File & Document
 
@@ -19,17 +20,22 @@ export class File {
   @Prop({ required: false })
   filename: string
 
-  @Prop({ required: true })
+  @Prop({ required: false, default: null })
   path: string
+
+  @Prop({
+    required: false,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'File',
+    default: null,
+  })
+  folderId: ObjectId | null
 
   @Prop({ required: false })
   mimetype: string
 
   @Prop({ required: false })
   size: number
-
-  @Prop({ required: true })
-  folderPath: string
 }
 
 export const FileSchema = SchemaFactory.createForClass(File)

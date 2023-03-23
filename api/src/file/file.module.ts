@@ -24,7 +24,7 @@ import { editFileName } from '@/common/utils/edit-file-name.util'
         storage: diskStorage({
           destination: (req, file, cb) => {
             const { path } = req.body
-            let dir = `${configService.get<string>('UPLOAD_FOLDER')}`
+            let dir = `${configService.get<string>('UPLOAD_FOLDER_PATH')}`
             if (path) dir += `/${path}`
             if (!fs.existsSync(dir)) {
               return fs.mkdir(dir, { recursive: true }, (error) =>

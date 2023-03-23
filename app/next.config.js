@@ -20,4 +20,14 @@ module.exports = {
     )
     return config
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '5051',
+        pathname: '/**',
+      },
+    ],
+  },
 }

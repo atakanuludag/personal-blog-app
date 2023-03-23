@@ -1,21 +1,23 @@
 import axios from '@/core/Axios'
-import ILoginForm from '@/models/ILoginForm'
-import IToken from '@/models/IToken'
+import LoginFormModel from '@/models/LoginFormModel'
+import TokenModel from '@/models/TokenModel'
 
-const postLogin = async (data: ILoginForm): Promise<IToken | null> => {
-  try {
-    const ret = await axios.post(`/user/login`, data)
-    const tokenData: IToken = ret.data
-    if (!tokenData) return null
-    return tokenData
-  } catch (err) {
-    console.log('[LoginService] login() Error: ', err)
-    return null
-  }
+const serviceBaseUrl = `/user/login`
+
+const LoginService = {
+  postLogin: async (data: LoginFormModel): Promise<TokenModel | null> => {
+    try {
+      const ret = await axios.post(`${serviceBaseUrl}`, data)
+      const tokenData: TokenModel = ret.data
+      if (!tokenData) return null
+      return tokenData
+    } catch (err) {
+      console.log('[LoginService] login() Error: ', err)
+      return null
+    }
+  },
 }
 
-const service = {
-  postLogin,
-}
+Object.freeze(LoginService)
 
-export default service
+export default LoginService

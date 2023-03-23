@@ -19,18 +19,22 @@ import {
   ApiBody,
   ApiConsumes,
 } from '@nestjs/swagger'
+import * as fs from 'fs'
 import { FilesInterceptor } from '@nestjs/platform-express'
+import { ConfigService } from '@nestjs/config'
 import { FileService } from '@/file/file.service'
 import { CoreMessage, FileMessage } from '@/common/messages'
 import { File } from '@/file/schemas/file.schema'
 import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
-import { ListQueryDto } from '@/common/dto/list-query.dto'
 import { ListResultDto } from '@/common/dto/list-result.dto'
 import { FileDto } from '@/file/dto/file.dto'
+import { FileListQueryDto } from '@/file/dto/file-list-query.dto'
 import { DefaultException } from '@/common/dto/default-exception.dto'
 import { QueryHelper } from '@/common/helpers/query.helper'
-
+import { FolderDto } from '@/file/dto/folder.dto'
+import { IEnv } from '@/common/interfaces/env.interface'
+import { slugifyTR } from '@/common/utils/slugify-tr.util'
 @ApiTags('File')
 @Controller('file')
 export class FileController {
@@ -39,6 +43,7 @@ export class FileController {
     private readonly coreMessage: CoreMessage,
     private readonly fileMessage: FileMessage,
     private readonly queryHelper: QueryHelper,
+    private configService: ConfigService<IEnv>,
   ) {}
 
   @ApiOperation({
@@ -52,11 +57,12 @@ export class FileController {
     description: 'Success',
     type: ListResultDto,
   })
+  @ApiBearerAuth('accessToken')
   @UseGuards(JwtAuthGuard)
   @Get()
-  async list(@Query() query: ListQueryDto) {
+  async list(@Query() query: FileListQueryDto) {
     const q = this.queryHelper.instance(query)
-    return await this.service.getItems(q)
+    return await this.service.getItems(q, query.folderId)
   }
 
   @ApiOperation({
@@ -75,6 +81,9 @@ export class FileController {
     schema: {
       type: 'object',
       properties: {
+        path: {
+          type: 'string',
+        },
         file: {
           type: 'array',
           items: {
@@ -89,16 +98,24 @@ export class FileController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(FilesInterceptor('file'))
-  uploadFile(@UploadedFiles() file: Express.Multer.File[]) {
+  async uploadFile(@UploadedFiles() file: Express.Multer.File[], @Body() body) {
+    //Todo: @Body() body'e dto tipi verilecek.
     try {
-      let data = new Array<File>()
+      let folderId = null
+      if (body.path && body.path !== '/') {
+        const folder = await this.service.getFolderByPath(body.path)
+        folderId = folder._id || null
+      }
 
+      let data = new Array<File>()
       data = file.map((f) => {
         return {
+          isFolder: false,
           title: f.filename,
           description: '',
           filename: f.filename,
-          path: f.path,
+          path: body.path === '/' || !body.path ? null : body.path,
+          folderId,
           mimetype: f.mimetype,
           size: f.size,
         }
@@ -110,5 +127,40 @@ export class FileController {
         HttpStatus.BAD_REQUEST,
       )
     }
+  }
+
+  @ApiOperation({
+    summary: 'Create folder.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: DefaultException,
+  })
+  @ApiBearerAuth('accessToken')
+  @UseGuards(JwtAuthGuard)
+  @Post('/folder')
+  async createFolder(@Body() body: FolderDto) {
+    // ** path verilirken ne başında nede sonunda / işareti olmayacak.
+    const { title, path } = body
+    let folderId = null
+
+    if (body.path && body.path !== '/') {
+      const folder = await this.service.getFolderByPath(body.path)
+      folderId = folder._id || null
+    }
+
+    const folderTitle = slugifyTR(title)
+    const uploadFolder = this.configService.get<string>('UPLOAD_FOLDER_PATH')
+
+    const uploadFolderDir = `${uploadFolder}/${
+      path === '/' || path === null ? '' : `${path}/`
+    }${folderTitle}`
+
+    const newPath = `${
+      path === '/' || path === null ? '' : `${path}/`
+    }${folderTitle}`
+
+    await fs.promises.mkdir(uploadFolderDir, { recursive: true })
+    return await this.service.createFolder(title, newPath, folderId)
   }
 }

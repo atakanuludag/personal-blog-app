@@ -1,18 +1,16 @@
-import React, { forwardRef, Ref } from 'react'
+// ** third party
 import moment from 'moment'
-import { default as NextLink } from 'next/link'
+
+// ** mui
 import { styled } from '@mui/material/styles'
-import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Divider from '@mui/material/Divider'
-import useText from '@/hooks/useText'
-import { default as MaterialLink } from '@mui/material/Link'
-import IPage from '@/models/IPage'
 
-interface IPageDetailProps {
+// ** models
+import IPage from '@/models/PageModel'
+
+type PageDetailProps = {
   data: IPage
 }
 
@@ -26,12 +24,7 @@ const Title = styled('h2')(() => ({
   fontSize: '2rem',
 }))
 
-const Content = styled('div')(({ theme }) => ({}))
-
-const Description = styled('p')(() => ({
-  margin: '5px 0px',
-  fontSize: '0.770rem',
-}))
+const Content = styled('div')(({}) => ({}))
 
 const StackItem = styled('p')(({ theme }) => ({
   padding: 0,
@@ -40,7 +33,7 @@ const StackItem = styled('p')(({ theme }) => ({
   fontSize: '0.770rem',
 }))
 
-function PageDetail({ data }: IPageDetailProps) {
+export default function PageDetail({ data }: PageDetailProps) {
   return (
     <Page>
       <Grid
@@ -72,5 +65,3 @@ function PageDetail({ data }: IPageDetailProps) {
     </Page>
   )
 }
-
-export default PageDetail

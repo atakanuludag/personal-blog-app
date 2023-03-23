@@ -10,13 +10,6 @@ export class TagDto {
   title: string
 
   @ApiProperty({
-    description: 'Description',
-  })
-  @IsNotEmpty()
-  @IsString()
-  description: string
-
-  @ApiProperty({
     description: 'Guid',
   })
   @IsNotEmpty()

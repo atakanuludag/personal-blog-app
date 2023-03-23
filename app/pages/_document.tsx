@@ -1,6 +1,16 @@
-import React from 'react'
+// ** react
+import { Children } from 'react'
+
+// ** next
 import Document, { Html, Head, Main, NextScript } from 'next/document'
-import ServerStyleSheets from '@mui/styles/ServerStyleSheets'
+
+// ** emotion
+import createEmotionServer from '@emotion/server/create-instance'
+import { EmotionCache } from '@emotion/cache'
+
+// ** utils
+import createEmotionCache from '@/utils/CreateEmotionCache'
+import { AppType } from 'next/app'
 
 export default class AppDocument extends Document {
   render() {
@@ -44,22 +54,35 @@ export default class AppDocument extends Document {
 // `getInitialProps` belongs to `_document` (instead of `_app`),
 // it's compatible with server-side generation (SSG).
 AppDocument.getInitialProps = async (ctx) => {
-  const sheets = new ServerStyleSheets()
   const originalRenderPage = ctx.renderPage
 
+  const cache = createEmotionCache()
+  const { extractCriticalToChunks } = createEmotionServer(cache)
+
+  /* eslint-disable */
   ctx.renderPage = () =>
     originalRenderPage({
-      enhanceApp: (App) => (props) => sheets.collect(<App {...props} />),
+      enhanceApp:
+        (App: AppType | React.ComponentType<{ emotionCache: EmotionCache }>) =>
+        (props) =>
+          <App emotionCache={cache} {...props} />,
     })
+  /* eslint-enable */
 
   const initialProps = await Document.getInitialProps(ctx)
+  const emotionStyles = extractCriticalToChunks(initialProps.html)
+  const emotionStyleTags = emotionStyles.styles.map((style) => (
+    <style
+      data-emotion={`${style.key} ${style.ids.join(' ')}`}
+      key={style.key}
+      // eslint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={{ __html: style.css }}
+    />
+  ))
 
   return {
     ...initialProps,
     // Styles fragment is rendered after the app and page rendering finish.
-    styles: [
-      ...React.Children.toArray(initialProps.styles),
-      sheets.getStyleElement(),
-    ],
+    styles: [...Children.toArray(initialProps.styles), ...emotionStyleTags],
   }
 }

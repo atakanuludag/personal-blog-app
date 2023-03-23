@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import { IsEnum, IsNumber, IsOptional } from 'class-validator'
-import { OrderType } from '@/common/interfaces/query.interface'
+import { OrderType } from '@/common/interfaces/enums'
 
 export class ListQueryDto {
   @ApiProperty({
@@ -39,10 +39,11 @@ export class ListQueryDto {
 
   @ApiProperty({
     description: 'Order by',
-    enum: ['asc', 'desc'],
+    enum: [1, -1],
     required: false,
   })
   @IsOptional()
+  @IsNumber()
   @Type(() => Number)
   orderBy: OrderType
 

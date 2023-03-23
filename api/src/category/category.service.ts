@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, ObjectId } from 'mongoose'
 import { ICategory } from '@/category/interfaces/category.interface'
+import { IListQueryResponse, IQuery } from '@/common/interfaces/query.interface'
 import { Category, CategoryDocument } from '@/category/schemas/category.schema'
 import { CategoryDto } from '@/category/dto/category.dto'
 import { UpdateCategoryDto } from '@/category/dto/update-category.dto'
@@ -41,14 +42,42 @@ export class CategoryService {
     }
   }
 
-  async getItems(): Promise<ICategory[]> {
+  async getItems(
+    query: IQuery,
+  ): Promise<IListQueryResponse<ICategory[]> | ICategory[]> {
     try {
-      const items = await this.serviceModel
-        .find()
+      const { pagination, searchQuery, order, paging } = query
+      if (paging) {
+        const { page, pageSize, skip } = pagination
+        const items = await this.serviceModel
+          .find(searchQuery)
+          .limit(pageSize)
+          .sort(order)
+          .skip(skip)
+          .populate('parent')
+          .exec()
+
+        const count = await this.serviceModel.find(searchQuery).countDocuments()
+
+        const totalPages = Math.ceil(count / pageSize)
+
+        const data: IListQueryResponse<ICategory[]> = {
+          results: items,
+          currentPage: page,
+          currentPageSize: items.length,
+          pageSize: pageSize,
+          totalPages,
+          totalResults: count,
+          hasNextPage: page < totalPages ? true : false,
+        }
+        return data
+      }
+
+      return await this.serviceModel
+        .find(searchQuery)
+        .sort(order)
         .populate('parent')
-        .sort('-title')
         .exec()
-      return items
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

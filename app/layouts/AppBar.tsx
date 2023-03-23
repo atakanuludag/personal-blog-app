@@ -1,21 +1,21 @@
-import React from 'react'
+// ** react
+import { KeyboardEvent, MouseEvent } from 'react'
+
+// ** next
 import { default as NextLink } from 'next/link'
-import { Theme } from '@mui/material'
-import makeStyles from '@mui/styles/makeStyles'
+
+// ** mui
 import { styled } from '@mui/material/styles'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Link from '@mui/material/Link'
 import IconButton from '@mui/material/IconButton'
+import Box from '@mui/material/Box'
+
+// ** icons
 import MenuIcon from '@mui/icons-material/Menu'
 
-const useStyles = makeStyles((theme: Theme) => ({
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-}))
-
-const Title = styled('h1')(({ theme }) => ({
+const StyledTitle = styled('h1')(({ theme }) => ({
   fontSize: '1.2rem',
   fontWeight: 'bold',
   justifyContent: 'center',
@@ -27,35 +27,31 @@ const Title = styled('h1')(({ theme }) => ({
   },
 }))
 
-interface IApplicationBar {
+const StyledMenuButton = styled(IconButton)(({ theme }) => ({
+  marginRight: theme.spacing(2),
+}))
+
+type ApplicationBarProps = {
   open: boolean
-  toggleDrawer: (e: React.KeyboardEvent | React.MouseEvent) => void
+  toggleDrawer: (e: KeyboardEvent | MouseEvent) => void
   personDisplayName: string
 }
 
 export default function ApplicationBar({
   toggleDrawer,
   personDisplayName,
-}: IApplicationBar) {
-  const classes = useStyles()
-
+}: ApplicationBarProps) {
   return (
     <AppBar position="fixed">
       <Toolbar>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          edge="start"
-          onClick={toggleDrawer}
-          className={classes.menuButton}
-        >
+        <StyledMenuButton color="inherit" edge="start" onClick={toggleDrawer}>
           <MenuIcon />
-        </IconButton>
-        <Title>
+        </StyledMenuButton>
+        <StyledTitle>
           <Link component={NextLink} href="/">
             {personDisplayName}
           </Link>
-        </Title>
+        </StyledTitle>
       </Toolbar>
     </AppBar>
   )

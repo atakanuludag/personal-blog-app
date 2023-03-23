@@ -1,34 +1,32 @@
-import React, { ReactNode } from 'react'
-import { makeStyles } from '@mui/styles'
-import Navigation from '@/layouts/Navigation'
+// ** react
+import { ReactNode } from 'react'
+
+// ** mui
+import Box from '@mui/material/Box'
+
+// ** third party
+import { NextSeo } from 'next-seo'
+
+// ** layouts
 import Content from '@/layouts/Content'
+
+// ** models
 import { LayoutPageType } from '@/models/enums'
+import AppPropsModel from '@/models/AppPropsModel'
 
-interface IMain {
+type LayoutFullPageProps = {
   children: ReactNode
-}
-//Todo: scroolbar light ve dark temada farklı renklerde olacak...
-const useStyles = makeStyles({
-  '@global': {
-    '*::-webkit-scrollbar': {
-      width: '6px',
-      backgroundColor: '#2a2a2a',
-    },
-    '*::-webkit-scrollbar-thumb': {
-      backgroundColor: 'rgb(100 100 100)',
-      borderRadius: '.5rem',
-    },
-  },
-  root: {
-    display: 'flex',
-  },
-})
+  title: string
+} & AppPropsModel
 
-export default function LayoutBlogPage({ children }: IMain) {
-  const classes = useStyles()
+export default function LayoutBlogPage({
+  children,
+  title,
+}: LayoutFullPageProps) {
   return (
-    <div className={classes.root}>
+    <Box display="flex">
+      {title && <NextSeo title={title} description={title} />}
       <Content children={children} layoutPageType={LayoutPageType.FullPage} />
-    </div>
+    </Box>
   )
 }

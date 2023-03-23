@@ -3,45 +3,46 @@ import { Fragment } from 'react'
 
 // ** next
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next/types'
-import { useRouter } from 'next/router'
 
 // ** third party
 import { NextSeo } from 'next-seo'
 
 // ** services
 import ArticleService from '@/services/ArticleService'
+import PageService from '@/services/PageService'
 
 // ** components
-import Breadcrumb, { IBreadCrumb } from '@/components/Breadcrumb'
+import Breadcrumb, { BreadcrumbDataProps } from '@/components/Breadcrumb'
 import ArticleDetail from '@/components/ArticleDetail'
+import PageDetail from '@/components/PageDetail'
 
 // ** models
-import IPageProps from '@/models/IPageProps'
-import IArticle from '@/models/IArticle'
+import PageProps from '@/models/AppPropsModel'
+import ArticleModel from '@/models/ArticleModel'
+import IPage from '@/models/PageModel'
 
-type ArticleGuidProps = {
+type GuidProps = {
   currentIpAdressIsLiked: boolean
-  article: IArticle
-} & IPageProps
+  data: ArticleModel | IPage
+  dataType: 'article' | 'page'
+} & PageProps
 
 type StaticPathParams = {
   guid?: string
 }
 
-const ArticleGuid: NextPage<ArticleGuidProps> = ({
+const Guid: NextPage<GuidProps> = ({
   settings,
   userIpAdress,
   currentIpAdressIsLiked,
-  article,
-}: ArticleGuidProps) => {
-  const { query } = useRouter()
-  const guid = !query.guid ? '' : query.guid
+  data,
+  dataType,
+}: GuidProps) => {
+  const url = `${settings.siteUrl}/${data.guid}`
 
-  const url = `${settings.siteUrl}/${article.guid}`
-
-  const breadcrumb: IBreadCrumb[] = [
+  const breadcrumb: BreadcrumbDataProps[] = [
     {
-      title: article.title,
+      title: data.title,
       link: null,
     },
   ]
@@ -49,22 +50,26 @@ const ArticleGuid: NextPage<ArticleGuidProps> = ({
   return (
     <Fragment>
       <NextSeo
-        title={article.title}
-        description={article.shortDescription}
+        title={data.title}
+        description={data.shortDescription}
         canonical={url}
         openGraph={{
           type: 'article',
           locale: 'tr_TR',
-          title: article.title,
+          title: data.title,
           url: url,
           site_name: settings.siteTitle,
         }}
       />
       <Breadcrumb data={breadcrumb} />
-      <ArticleDetail
-        data={article}
-        currentIpAdressIsLiked={currentIpAdressIsLiked}
-      />
+      {dataType === 'article' ? (
+        <ArticleDetail
+          data={data as ArticleModel}
+          currentIpAdressIsLiked={currentIpAdressIsLiked}
+        />
+      ) : (
+        <PageDetail data={data as IPage} />
+      )}
     </Fragment>
   )
 }
@@ -80,15 +85,29 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
     }
   }
 
+  let dataType: 'article' | 'page' | null = null
+  let data: ArticleModel | IPage | null = null
   const article = await ArticleService.getItemByGuid(guid)
-  if (!article || !article.guid) {
+  if (!article || !article?.guid) {
+    const page = await PageService.getItemByGuid(guid)
+    if (page && page?.guid) {
+      data = page
+      dataType = 'page'
+    }
+  } else {
+    data = article
+    dataType = 'article'
+  }
+
+  if (!data) {
     return {
       notFound: true,
     }
   }
   return {
     props: {
-      article,
+      data,
+      dataType,
       guid,
     },
   }
@@ -96,10 +115,16 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
 
 export const getStaticPaths: GetStaticPaths<StaticPathParams> = async () => {
   const articles = await ArticleService.getItems()
-  const paths = (articles as IArticle[]).map((article) => ({
+  const pages = await PageService.getItems()
+
+  const articlePaths = (articles as ArticleModel[]).map((article) => ({
     params: { guid: article.guid },
   }))
+  const pagePaths = (pages as IPage[]).map((page) => ({
+    params: { guid: page.guid },
+  }))
+  const paths = [...articlePaths, ...pagePaths]
   return { paths, fallback: 'blocking' }
 }
 
-export default ArticleGuid
+export default Guid

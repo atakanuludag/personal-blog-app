@@ -1,10 +1,16 @@
-import React, { useState } from 'react'
+// ** react
+import { useState, MouseEvent } from 'react'
+
+// ** next
 import { useRouter } from 'next/router'
-import { GetServerSideProps, NextPage } from 'next/types'
-import axios from 'axios'
+import { GetServerSideProps } from 'next/types'
+
+// ** third party
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useSnackbar } from 'notistack'
+
+// ** mui
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
@@ -17,18 +23,26 @@ import InputLabel from '@mui/material/InputLabel'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import IconButton from '@mui/material/IconButton'
+
+// ** icons
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import LoadingButton from '@mui/lab/LoadingButton'
+
+// ** layouts
 import LayoutFullPage from '@/layouts/LayoutFullPage'
-import IPageProps from '@/models/IPageProps'
-import ILoginForm from '@/models/ILoginForm'
-import IToken from '@/models/IToken'
+
+// ** models
+import PageProps from '@/models/AppPropsModel'
+import LoginFormModel from '@/models/LoginFormModel'
+import TokenModel from '@/models/TokenModel'
+import NextPageType from '@/models/NextPageType'
+
+// ** utils
 import Cookie from '@/utils/Cookie'
 
-type AdminComponent = NextPage<IPageProps> & {
-  layout: typeof LayoutFullPage
-}
+// ** services
+import NextService from '@/services/NextService'
 
 const LoginBox = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -42,11 +56,11 @@ const Form = styled('form')(() => ({
   width: '100%',
 }))
 
-const AdminLogin: AdminComponent = ({}: IPageProps) => {
+const AdminLogin: NextPageType = ({}: PageProps) => {
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
   const [showPassword, setShowPassword] = useState(false)
-  const initialValues: ILoginForm = {
+  const initialValues: LoginFormModel = {
     username: 'atakanuludag',
     password: '123456',
   }
@@ -58,16 +72,17 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
   })
 
   const { errors, touched, isSubmitting, handleSubmit, getFieldProps } =
-    useFormik<ILoginForm>({
+    useFormik<LoginFormModel>({
       initialValues,
       validationSchema,
       onSubmit: async (values, { setSubmitting, resetForm }) => {
+        const redirectUrl = router.query.redirectUrl as string
         try {
-          await axios.post(`/api/login`, values)
+          await NextService.login(values)
           enqueueSnackbar('Başarıyla giriş yapıldı.', {
             variant: 'success',
           })
-          router.push('/admin')
+          router.push(redirectUrl || '/admin')
         } catch (err) {
           console.error(`Admin login page onSubmit() Error: ${err}`)
           enqueueSnackbar('Giriş yapılırken bir sorun oluştu.', {
@@ -81,7 +96,7 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
 
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
-  const handleMouseDownPassword = (e: React.MouseEvent<HTMLButtonElement>) =>
+  const handleMouseDownPassword = (e: MouseEvent<HTMLButtonElement>) =>
     e.preventDefault()
 
   return (
@@ -104,6 +119,7 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
             </Typography>
             <TextField
               fullWidth
+              required
               size="small"
               type="text"
               id="username"
@@ -117,13 +133,19 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
               error={errors.username ? touched.username : false}
             />
 
-            <FormControl fullWidth size="small" variant="outlined">
+            <FormControl
+              required
+              fullWidth
+              size="small"
+              error={errors.password ? touched.password : false}
+              variant="outlined"
+            >
               <InputLabel htmlFor="password">Şifre</InputLabel>
               <OutlinedInput
                 id="password"
+                required
                 type={showPassword ? 'text' : 'password'}
                 {...getFieldProps('password')}
-                error={errors.password ? touched.password : false}
                 disabled={isSubmitting}
                 endAdornment={
                   <InputAdornment position="end">
@@ -165,7 +187,7 @@ const AdminLogin: AdminComponent = ({}: IPageProps) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const { getCookie } = Cookie(req, res)
-  const auth: IToken | null = getCookie('auth', true)
+  const auth: TokenModel | null = getCookie('auth', true)
 
   if (!auth) {
     return {
@@ -182,11 +204,5 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 }
 
 AdminLogin.layout = LayoutFullPage
+AdminLogin.title = 'Giriş Yap'
 export default AdminLogin
-
-/*
-loginde sayfanın ortalanması için main elementine bunu vermek gerekiyor;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-*/

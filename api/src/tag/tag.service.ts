@@ -7,8 +7,7 @@ import { TagDto } from '@/tag/dto/tag.dto'
 import { UpdateTagDto } from '@/tag/dto/update-tag.dto'
 import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { CoreMessage } from '@/common/messages'
-import { escapeRegExp } from '@/common/helpers/string.helper' //todo: kaldırılacak.
-import { IQuery } from '@/common/interfaces/query.interface'
+import { IListQueryResponse, IQuery } from '@/common/interfaces/query.interface'
 
 @Injectable()
 export class TagService {
@@ -42,7 +41,7 @@ export class TagService {
     }
   }
 
-  async getItems(query: IQuery): Promise<ITag[]> {
+  async getItems(query: IQuery): Promise<IListQueryResponse<ITag[]> | ITag[]> {
     try {
       const { pagination, searchQuery, order, paging } = query
       if (paging) {
@@ -58,9 +57,7 @@ export class TagService {
 
         const totalPages = Math.ceil(count / pageSize)
 
-        //Todo: paging için aynı kodu tekrar tekrar yazıyoruz. tip tanımlamasında <T> yöntemi ile tipleri verebiliriz.
-        //Todo: IArticleList
-        const data: any = {
+        const data: IListQueryResponse<ITag[]> = {
           results: items,
           currentPage: page,
           currentPageSize: items.length,
@@ -71,6 +68,7 @@ export class TagService {
         }
         return data
       }
+
       return await this.serviceModel.find(searchQuery).sort(order).exec()
     } catch (err) {
       throw new ExceptionHelper(

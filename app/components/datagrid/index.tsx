@@ -5,46 +5,69 @@ import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import Paper from '@mui/material/Paper'
 import {
   DataGrid,
+  DataGridProps,
   GridColDef,
-  GridRowsProp,
   trTR,
   GridSortModel,
   GridSelectionModel,
-  GridToolbarContainer,
+  GridSlotsComponentsProps,
 } from '@mui/x-data-grid'
+import type { GridSortDirection } from '@mui/x-data-grid'
 
 // ** components
-import Toolbar from '@/components/datagrid/Toolbar'
+import Toolbar, { MuiToolbarProps } from '@/components/datagrid/Toolbar'
 
 // ** models
-import IListQuery from '@/models/IListQuery'
+import ListQueryModel from '@/models/ListQueryModel'
 
-type IMuiDataGridProps = {
+type MuiDataGridProps = {
+  queryName: string
   loading: boolean
-  page: number
-  pageSize: number
-  totalResults: number
-  data: GridRowsProp[]
+  setCustomLoading: Dispatch<SetStateAction<boolean>>
+  deleteService: (id: string) => Promise<void>
+  page?: number
+  pageSize?: number
+  totalResults?: number
+  rows: any[]
   columns: GridColDef[]
-  params: IListQuery
-  setParams: Dispatch<SetStateAction<IListQuery>>
-}
+  params?: ListQueryModel
+  setParams?: Dispatch<SetStateAction<ListQueryModel>>
+  deleteDialogMessage?: string
+} & DataGridProps
+
+export type MuiGridComponentsProps = {
+  toolbar: MuiToolbarProps
+} & GridSlotsComponentsProps
 
 export default function MuiDataGrid({
+  queryName,
   loading,
+  setCustomLoading,
+  deleteService,
   page,
   pageSize,
   totalResults,
-  data = [],
+  rows = [],
   columns,
   params,
   setParams,
-}: IMuiDataGridProps) {
+  deleteDialogMessage,
+  ...props
+}: MuiDataGridProps) {
   const [selected, setSelected] = useState(new Array<string>())
-  const isSelected = selected.length > 0
+
+  const orderTypeConvert = (type: GridSortDirection) => {
+    switch (type) {
+      case 'asc':
+        return -1
+      case 'desc':
+        return 1
+    }
+  }
 
   const handleSortModelChange = useCallback(
     (sortModel: GridSortModel) => {
+      if (!setParams) return
       if (sortModel.length <= 0) {
         setParams({
           ...params,
@@ -57,50 +80,60 @@ export default function MuiDataGrid({
       setParams({
         ...params,
         order: sortItem.field,
-        orderBy: sortItem.sort,
+        orderBy: orderTypeConvert(sortItem.sort),
       })
     },
     [params, setParams],
   )
 
-  const handlePageChange = (page: number) =>
+  const handlePageChange = (page: number) => {
+    if (!setParams) return
     setParams({
       ...params,
       page: page + 1,
     })
+  }
 
-  const handlePageSizeChange = (pageSize: number) =>
+  const handlePageSizeChange = (pageSize: number) => {
+    if (!setParams) return
     setParams({
       ...params,
       pageSize,
     })
+  }
 
   const onSelectionModelChange = (ids: GridSelectionModel) =>
     setSelected(ids as any)
 
-  const tableComponentsProps = {
+  const tableComponentsProps: MuiGridComponentsProps = {
     toolbar: {
+      queryName,
+      loading,
+      setLoading: setCustomLoading,
       selected,
+      deleteService,
+      deleteDialogMessage,
     },
   }
 
   return (
     <Paper sx={{ width: '100%', height: '80vh', p: 2 }} elevation={3}>
       <DataGrid
+        {...props}
         checkboxSelection
         pagination
         disableColumnFilter
         disableSelectionOnClick
         loading={loading}
         pageSize={pageSize}
-        page={page - 1}
+        page={page ? page - 1 : undefined}
         paginationMode="server"
         sortingMode="server"
         onSortModelChange={handleSortModelChange}
         rowsPerPageOptions={[2, 10, 20, 30]}
-        getRowId={(data) => data.id}
+        getRowId={(data) => data._id}
         onSelectionModelChange={onSelectionModelChange}
-        rows={data}
+        rows={rows}
         columns={columns}
         rowCount={totalResults || 0}
         onPageChange={handlePageChange}

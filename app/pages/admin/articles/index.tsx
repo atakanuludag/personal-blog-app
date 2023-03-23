@@ -17,15 +17,20 @@ import Button from '@mui/material/Button'
 // ** third party
 import moment from 'moment'
 
+// ** services
+import ArticleService from '@/services/ArticleService'
+
 // ** models
-import IPageProps from '@/models/IPageProps'
-import IArticle, { IArticleResponse } from '@/models/IArticle'
-import IListQuery from '@/models/IListQuery'
+import PageProps from '@/models/AppPropsModel'
+import ArticleModel from '@/models/ArticleModel'
+import ListQueryModel from '@/models/ListQueryModel'
+import ListResponseModel from '@/models/ListResponseModel'
+import NextPageType from '@/models/NextPageType'
 
 // ** layouts
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
 
-// ** utilis
+// ** utils
 import getServerSideProps from '@/utils/AdminServerSideProps'
 
 // ** hooks
@@ -35,27 +40,26 @@ import useArticleQuery from '@/hooks/queries/useArticleQuery'
 import DataGrid from '@/components/datagrid'
 import SearchInput from '@/components/admin/SearchInput'
 
-type AdminComponent = NextPage<IPageProps> & {
-  layout: typeof LayoutAdminPage
-  title: string
-}
+// ** constants
+import { QUERY_NAMES } from '@/core/Constants'
 
-const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
-  const [params, setParams] = useState<IListQuery>({
+const AdminArticleIndex: NextPageType = ({ settings }: PageProps) => {
+  const [params, setParams] = useState<ListQueryModel>({
     page: 1,
     pageSize: settings.pageSize,
   })
+  const [customLoading, setCustomLoading] = useState(false)
   const { articleQuery } = useArticleQuery(params)
   const { data, isLoading, isFetching } = articleQuery()
-  const items = data as IArticleResponse
-  const loading = isLoading || isFetching
+  const items = data as ListResponseModel<ArticleModel[]>
+  const loading = isLoading || isFetching || customLoading
 
   const columns: GridColDef[] = [
     {
       field: 'title',
       headerName: 'Başlık',
       width: 450,
-      renderCell: ({ row }: GridRenderCellParams<any, IArticle, any>) => (
+      renderCell: ({ row }: GridRenderCellParams<any, ArticleModel, any>) => (
         <Link component={NextLink} href="/">
           {row.title}
         </Link>
@@ -65,14 +69,14 @@ const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
       field: 'publishingDate',
       headerName: 'Tarih',
       width: 200,
-      renderCell: ({ row }: GridRenderCellParams<any, IArticle, any>) =>
+      renderCell: ({ row }: GridRenderCellParams<any, ArticleModel, any>) =>
         moment(new Date(row.publishingDate)).format('DD/MM/YYYY - HH:mm'),
     },
     {
       field: 'categories',
       headerName: 'Kategoriler',
       width: 410,
-      renderCell: ({ row }: GridRenderCellParams<any, IArticle, any>) =>
+      renderCell: ({ row }: GridRenderCellParams<any, ArticleModel, any>) =>
         row.categories.map((v) => v.title).join(', '),
     },
   ]
@@ -107,9 +111,12 @@ const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
       </Grid>
 
       <DataGrid
+        queryName={QUERY_NAMES.ARTICLE}
         loading={loading}
+        setCustomLoading={setCustomLoading}
+        deleteService={ArticleService.deleteItem}
         columns={columns}
-        data={items?.results as any}
+        rows={items?.results || []}
         pageSize={params.pageSize as number}
         page={params.page as number}
         totalResults={items?.totalResults as number}
@@ -121,7 +128,6 @@ const AdminArticleIndex: AdminComponent = ({ settings }: IPageProps) => {
 }
 
 AdminArticleIndex.layout = LayoutAdminPage
-AdminArticleIndex.title = 'Makaleler'
 export default AdminArticleIndex
 
 export { getServerSideProps }

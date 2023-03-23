@@ -1,14 +1,22 @@
+// ** react
 import { useEffect, useState } from 'react'
+
+// ** mui
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Badge from '@mui/material/Badge'
+import { DefaultComponentProps } from '@mui/material/OverridableComponent'
+import { SvgIconTypeMap } from '@mui/material/SvgIcon'
+
+// ** icon
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-// import useStoreSettings from '@/hooks/useStoreSettings'
+
+// ** services
 import ArticleService from '@/services/ArticleService'
 
-interface IArticleLikeButtonProps {
+type ArticleLikeButtonProps = {
   itemId: string
   likedCount: number
   currentIpAdressIsLiked: boolean
@@ -23,23 +31,20 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }))
 
-function ArticleLikeButton({
+export default function ArticleLikeButton({
   itemId,
   likedCount,
   currentIpAdressIsLiked,
-}: IArticleLikeButtonProps) {
+}: ArticleLikeButtonProps) {
   const [count, setCount] = useState(likedCount)
   const [isLiked, setIsLiked] = useState(currentIpAdressIsLiked)
 
   const [loading, setLoading] = useState(false)
 
-  //const { settingsStore } = useStoreSettings()
-  //const { userIpAddress } = settingsStore
-
   useEffect(() => setCount(likedCount), [likedCount])
   useEffect(() => setIsLiked(currentIpAdressIsLiked), [currentIpAdressIsLiked])
 
-  const Icon = (props: any) =>
+  const Icon = (props: DefaultComponentProps<SvgIconTypeMap<{}, 'svg'>>) =>
     isLiked ? <FavoriteIcon {...props} /> : <FavoriteBorderIcon {...props} />
 
   const handleLikeButtonClick = async () => {
@@ -66,5 +71,3 @@ function ArticleLikeButton({
     </Box>
   )
 }
-
-export default ArticleLikeButton

@@ -1,21 +1,35 @@
-import React, { Fragment, useRef, useState } from 'react'
+// ** react
+import { Fragment, useRef, useState } from 'react'
+
+// ** next
 import { NextPage, GetServerSideProps } from 'next/types'
+
+// ** third party
 import { dehydrate, QueryClient } from 'react-query'
 import { TransitionGroup } from 'react-transition-group'
+
+// ** mui
 import Collapse from '@mui/material/Collapse'
 import Box from '@mui/material/Box'
+
+// ** components
 import ArticleItem from '@/components/ArticleItem'
 import Pagination from '@/components/Pagination'
+
+// ** hooks
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
 import useRefScroll from '@/hooks/useRefScroll'
-import IPageProps from '@/models/IPageProps'
-import ISettings from '@/models/ISettings'
-import GlobalStore from '@/utils/GlobalStore'
-import IListQuery from '@/models/IListQuery'
 
-const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
-  // const { articleParamsStore } = useStoreArticle()
-  const [params, setParams] = useState<IListQuery>({
+// ** models
+import PageProps from '@/models/AppPropsModel'
+import SettingsModel from '@/models/SettingsModel'
+import ListQueryModel from '@/models/ListQueryModel'
+
+// ** utils
+import GlobalStore from '@/utils/GlobalStore'
+
+const Home: NextPage<PageProps> = ({ settings }: PageProps) => {
+  const [params, setParams] = useState<ListQueryModel>({
     page: 1,
     pageSize: settings.pageSize,
   })
@@ -49,9 +63,9 @@ const Home: NextPage<IPageProps> = ({ settings }: IPageProps) => {
   return <Fragment> </Fragment>
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ res }) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const queryClient = new QueryClient()
-  const settings: ISettings = GlobalStore.get('settings')
+  const settings: SettingsModel = GlobalStore.get('settings')
   const { articlePrefetchInfiniteQuery } = useArticleQuery({
     page: 1,
     pageSize: settings.pageSize,

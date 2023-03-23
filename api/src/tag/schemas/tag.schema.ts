@@ -10,9 +10,6 @@ export class Tag {
   @Prop({ required: true })
   title: string
 
-  @Prop({ required: true })
-  description: string
-
   @Prop({ required: true, unique: true })
   guid: string
 }

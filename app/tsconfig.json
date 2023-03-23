@@ -27,5 +27,6 @@
   "exclude": [
     "node_modules"
   ],
+  "jsxImportSource": "@emotion/react",
   "extends": "./tspaths.json"
 }

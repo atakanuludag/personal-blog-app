@@ -26,18 +26,14 @@ import SearchIcon from '@mui/icons-material/Search'
 import LayoutFullPage from '@/layouts/LayoutFullPage'
 
 // ** models
-import IPageProps from '@/models/IPageProps'
+import NextPageType from '@/models/NextPageType'
 
 const Title = styled(Typography)(({ theme }) => ({
   letterSpacing: theme.spacing(5),
 }))
 const SubTitle = styled(Typography)(({}) => ({}))
 
-type NotFoundPageComponent = NextPage<IPageProps> & {
-  layout: typeof LayoutFullPage
-}
-
-const NotFoundPage: NotFoundPageComponent = () => {
+const NotFoundPage: NextPageType = () => {
   return (
     <Fragment>
       <NextSeo title="404 Sayfa Bulunamadı" nofollow noindex />

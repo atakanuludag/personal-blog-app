@@ -1,8 +1,17 @@
+// ** next
 import { NextApiResponse, NextApiRequest } from 'next'
-import ILoginForm from '@/models/ILoginForm'
-import LoginService from '@/services/LoginService'
-import Cookie from '@/utils/Cookie'
+
+// ** third party
 import moment from 'moment'
+
+// ** models
+import LoginFormModel from '@/models/LoginFormModel'
+
+// ** services
+import LoginService from '@/services/LoginService'
+
+// ** utils
+import Cookie from '@/utils/Cookie'
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,7 +19,7 @@ export default async function handler(
 ): Promise<void> {
   const { setCookie } = Cookie(req, res)
   if (req.method === 'POST') {
-    const body: ILoginForm = req.body
+    const body: LoginFormModel = req.body
     if (!body) return res.status(500).end()
 
     const data = await LoginService.postLogin(body)

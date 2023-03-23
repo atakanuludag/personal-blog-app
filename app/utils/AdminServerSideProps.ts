@@ -1,12 +1,11 @@
 import { GetServerSideProps } from 'next/types'
 import Cookie from '@/utils/Cookie'
-import IToken from '@/models/IToken'
+import TokenModel from '@/models/TokenModel'
 
 const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const { getCookie } = Cookie(req, res)
-  const auth: IToken | null = getCookie('auth', true)
-  //const auth = true
-  //console.log('req.cookies', req.cookies)
+  const auth: TokenModel | null = getCookie('auth', true)
+  const redirectUrl = !req.url?.includes('login') ? req.url : null
 
   if (auth) {
     return {
@@ -17,7 +16,9 @@ const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   return {
     redirect: {
       permanent: false,
-      destination: '/admin/login',
+      destination: `/admin/login${
+        redirectUrl ? `?redirectUrl=${redirectUrl}` : ''
+      }`,
     },
   }
 }

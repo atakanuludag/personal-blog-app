@@ -1,17 +1,22 @@
+// ** next
 import { useRouter } from 'next/router'
+
+// ** mui
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 
-interface INoFoundDataProps {
+type NoFoundDataProps = {
   message?: string
 }
 
 const defaultMsg = `Herhangi bir veri bulunamadı. İsterseniz sayfayı tekrar yenileyebilirsiniz.`
 
-function NoFoundData({ message = defaultMsg, ...props }: INoFoundDataProps) {
+export default function NoFoundData({
+  message = defaultMsg,
+  ...props
+}: NoFoundDataProps) {
   const router = useRouter()
-
   return (
     <Stack
       spacing={3}
@@ -30,5 +35,3 @@ function NoFoundData({ message = defaultMsg, ...props }: INoFoundDataProps) {
     </Stack>
   )
 }
-
-export default NoFoundData

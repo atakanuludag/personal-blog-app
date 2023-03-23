@@ -18,15 +18,19 @@ import IconButton from '@mui/material/IconButton'
 import SearchIcon from '@mui/icons-material/Search'
 
 // ** model
-import IListQuery from '@/models/IListQuery'
+import ListQueryModel from '@/models/ListQueryModel'
 
 type SearchInputProps = {
   loading: boolean
-  params: IListQuery
-  setParams: Dispatch<SetStateAction<IListQuery>>
+  params: ListQueryModel
+  setParams: Dispatch<SetStateAction<ListQueryModel>>
 }
 
-function SearchInput({ loading, params, setParams }: SearchInputProps) {
+export default function SearchInput({
+  loading,
+  params,
+  setParams,
+}: SearchInputProps) {
   const [searchText, setSearchText] = useState('')
   const handleChange = (
     e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -73,5 +77,3 @@ function SearchInput({ loading, params, setParams }: SearchInputProps) {
     </FormControl>
   )
 }
-
-export default SearchInput

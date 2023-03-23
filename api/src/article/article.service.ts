@@ -2,8 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, ObjectId } from 'mongoose'
 import { IArticle } from '@/article/interfaces/article.interface'
-import { IArticleList } from '@/article/interfaces/article-list.interface'
-import { IQuery } from '@/common/interfaces/query.interface'
+import { IListQueryResponse, IQuery } from '@/common/interfaces/query.interface'
 import { Article, ArticleDocument } from '@/article/schemas/article.schema'
 import { ArticleDto } from '@/article/dto/article.dto'
 import { UpdateArticleDto } from '@/article/dto/update-article.dto'
@@ -43,7 +42,9 @@ export class ArticleService {
     }
   }
 
-  async getItems(query: IQuery): Promise<IArticleList | IArticle[]> {
+  async getItems(
+    query: IQuery,
+  ): Promise<IListQueryResponse<IArticle[]> | IArticle[]> {
     try {
       const { pagination, searchQuery, order, paging } = query
       if (paging) {
@@ -62,7 +63,7 @@ export class ArticleService {
 
         const totalPages = Math.ceil(count / pageSize)
 
-        const data: IArticleList = {
+        const data: IListQueryResponse<IArticle[]> = {
           results: items,
           currentPage: page,
           currentPageSize: items.length,

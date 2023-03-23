@@ -1,37 +1,29 @@
-import React, { ReactNode } from 'react'
-import { makeStyles } from '@mui/styles'
+// ** react
+import { ReactNode } from 'react'
+
+// ** mui
+import Box from '@mui/material/Box'
+
+//  ** layouts
 import Navigation from '@/layouts/Navigation'
 import Content from '@/layouts/Content'
+
+// ** models
 import { LayoutPageType } from '@/models/enums'
-import ISettings from '@/models/ISettings'
+import AppPropsModel from '@/models/AppPropsModel'
 
-interface IMain {
+type LayoutBlogPageProps = {
   children: ReactNode
-  settings: ISettings
-}
-//Todo: scroolbar light ve dark temada farklı renklerde olacak...
-const useStyles = makeStyles({
-  '@global': {
-    '*::-webkit-scrollbar': {
-      width: '6px',
-      backgroundColor: '#2a2a2a',
-    },
-    '*::-webkit-scrollbar-thumb': {
-      backgroundColor: 'rgb(100 100 100)',
-      borderRadius: '.5rem',
-    },
-  },
-  root: {
-    display: 'flex',
-  },
-})
+} & AppPropsModel
 
-export default function LayoutBlogPage({ children, settings }: IMain) {
-  const classes = useStyles()
+export default function LayoutBlogPage({
+  children,
+  ...props
+}: LayoutBlogPageProps) {
   return (
-    <div className={classes.root}>
-      <Navigation settings={settings} />
+    <Box display="flex">
+      <Navigation {...props} />
       <Content children={children} layoutPageType={LayoutPageType.BlogPage} />
-    </div>
+    </Box>
   )
 }

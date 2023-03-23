@@ -1,36 +1,35 @@
-import React, { ReactNode } from 'react'
-import { makeStyles } from '@mui/styles'
+// ** react
+import { ReactNode } from 'react'
+
+// ** mui
+import Box from '@mui/material/Box'
+
+// ** third party
+import { NextSeo } from 'next-seo'
+
+// ** layouts
 import Content from '@/layouts/Content'
 import NavigationAdmin from '@/layouts/NavigationAdmin'
+
+// ** models
 import { LayoutPageType } from '@/models/enums'
+import AppPropsModel from '@/models/AppPropsModel'
 
-interface IMain {
+type LayoutAdminPageProps = {
   children: ReactNode
-  title?: string
-}
-//Todo: scroolbar light ve dark temada farklı renklerde olacak...
-const useStyles = makeStyles({
-  '@global': {
-    '*::-webkit-scrollbar': {
-      width: '6px',
-      backgroundColor: '#2a2a2a',
-    },
-    '*::-webkit-scrollbar-thumb': {
-      backgroundColor: 'rgb(100 100 100)',
-      borderRadius: '.5rem',
-    },
-  },
-  root: {
-    display: 'flex',
-  },
-})
+  title: string
+} & AppPropsModel
 
-export default function LayoutAdminPage({ children, title }: IMain) {
-  const classes = useStyles()
+export default function LayoutAdminPage({
+  children,
+  title,
+}: LayoutAdminPageProps) {
   return (
-    <div className={classes.root}>
+    <Box display="flex">
+      {title && <NextSeo title={title} description={title} />}
+
       <NavigationAdmin />
       <Content children={children} layoutPageType={LayoutPageType.AdminPage} />
-    </div>
+    </Box>
   )
 }

@@ -6,10 +6,11 @@ import {
 } from 'react-query'
 import { QUERY_NAMES } from '@/core/Constants'
 import ArticleService from '@/services/ArticleService'
-import IListQuery from '@/models/IListQuery'
-import { IArticleResponse } from '@/models/IArticle'
+import ListQueryModel from '@/models/ListQueryModel'
+import ListResponseModel from '@/models/ListResponseModel'
+import ArticleModel from '@/models/ArticleModel'
 
-export default function useArticleQuery(params?: IListQuery) {
+export default function useArticleQuery(params?: ListQueryModel) {
   const service = ArticleService
   const queryName = QUERY_NAMES.ARTICLE
 
@@ -25,7 +26,7 @@ export default function useArticleQuery(params?: IListQuery) {
           page: pageParam,
         }) as any,
       {
-        getNextPageParam: (lastPage: IArticleResponse) => {
+        getNextPageParam: (lastPage: ListResponseModel<ArticleModel[]>) => {
           return lastPage.hasNextPage
         },
       },

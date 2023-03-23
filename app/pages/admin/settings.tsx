@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { NextPage } from 'next/types'
 import { useQueryClient, useMutation } from 'react-query'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -10,8 +9,8 @@ import Box from '@mui/material/Box'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { QUERY_NAMES } from '@/core/Constants'
 import SettingService from '@/services/SettingService'
-import { ISettingItem } from '@/models/ISettings'
-import IPageProps from '@/models/IPageProps'
+import { SettingItemModel } from '@/models/SettingsModel'
+import PageProps from '@/models/AppPropsModel'
 import { ValueType } from '@/models/enums'
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
 import getServerSideProps from '@/utils/AdminServerSideProps'
@@ -20,12 +19,9 @@ import usePageQuery from '@/hooks/queries/usePageQuery'
 import Loading from '@/components/Loading'
 import NoFoundData from '@/components/NoFoundData'
 import AsyncAutocomplete from '@/components/AsyncAutocomplete'
+import NextPageType from '@/models/NextPageType'
 
-type AdminComponent = NextPage<IPageProps> & {
-  layout: typeof LayoutAdminPage
-}
-
-const AdminSettings: AdminComponent = ({}: IPageProps) => {
+const AdminSettings: NextPageType = ({}: PageProps) => {
   const [pageSearchText, setPageSearchText] = useState('')
   const [pageQueryEnable, setPageQueryEnable] = useState(false)
 
@@ -49,7 +45,7 @@ const AdminSettings: AdminComponent = ({}: IPageProps) => {
   )
 
   const { errors, touched, isSubmitting, handleSubmit, setValues, values } =
-    useFormik<ISettingItem[]>({
+    useFormik<SettingItemModel[]>({
       initialValues: !data ? [] : data,
       enableReinitialize: true,
       validationSchema,
@@ -144,9 +140,11 @@ const AdminSettings: AdminComponent = ({}: IPageProps) => {
               return (
                 <AsyncAutocomplete
                   key={i}
+                  multiple
                   name={name}
                   value={!values[i] ? '' : values[i].value}
                   label={title}
+                  inputValue=""
                   handleInputChange={handlePageAutoCompleteInputChange}
                   handleChange={(e, val) => {
                     let _values = values
@@ -157,17 +155,17 @@ const AdminSettings: AdminComponent = ({}: IPageProps) => {
                   // data={!page.data ? [] : page.data.results}
                   objName="title"
                   loading={page.isLoading}
-                  helperText={
-                    errors[i]
-                      ? typeof errors[i]?.value === 'string'
-                        ? errors[i]?.value
-                        : null
-                      : touched[i]
-                      ? typeof touched[i]?.value === 'string'
-                        ? touched[i]?.value
-                        : null
-                      : null
-                  }
+                  // helperText={
+                  //   errors[i]
+                  //     ? typeof errors[i]?.value === 'string'
+                  //       ? errors[i]?.value
+                  //       : null
+                  //     : touched[i]
+                  //     ? typeof touched[i]?.value === 'string'
+                  //       ? touched[i]?.value
+                  //       : null
+                  //     : null
+                  // }
                   error={
                     errors[i]
                       ? typeof errors[i]?.value === 'string'
@@ -201,6 +199,7 @@ const AdminSettings: AdminComponent = ({}: IPageProps) => {
 }
 
 AdminSettings.layout = LayoutAdminPage
+AdminSettings.title = 'Ayarlar'
 export default AdminSettings
 
 export { getServerSideProps }

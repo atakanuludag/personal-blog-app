@@ -1,9 +1,9 @@
-import ILocalStorage from '@/models/ILocalStroge'
+import LocalStorageModel from '@/models/LocalStorageModel'
 
 const timestamp: number = new Date().getTime()
 const cacheVersion: number = 1
 
-export const setLocalStorage = (lsConstant: ILocalStorage, data: any) => {
+export const setLocalStorage = (lsConstant: LocalStorageModel, data: any) => {
   try {
     if (typeof window === 'undefined') return
     const ls: any = { data, timestamp, cacheVersion }
@@ -13,7 +13,7 @@ export const setLocalStorage = (lsConstant: ILocalStorage, data: any) => {
   }
 }
 
-export const removeLocalStorage = (lsConstant: ILocalStorage) => {
+export const removeLocalStorage = (lsConstant: LocalStorageModel) => {
   try {
     if (typeof window === 'undefined') return
     localStorage.removeItem(lsConstant.key)
@@ -22,7 +22,7 @@ export const removeLocalStorage = (lsConstant: ILocalStorage) => {
   }
 }
 
-export const getLocalStorage = (lsConstant: ILocalStorage) => {
+export const getLocalStorage = (lsConstant: LocalStorageModel) => {
   try {
     if (typeof window === 'undefined') return
     const ls: any = localStorage.getItem(lsConstant.key)

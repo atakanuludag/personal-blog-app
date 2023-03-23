@@ -1,22 +1,41 @@
+// ** react
 import { SyntheticEvent, useState } from 'react'
+
+// ** third party
+import { FormikErrors, FormikTouched } from 'formik/dist/types'
+
+// ** mui
 import TextField from '@mui/material/TextField'
-import Autocomplete from '@mui/material/Autocomplete'
+import Autocomplete, {
+  AutocompleteChangeReason,
+} from '@mui/material/Autocomplete'
 import CircularProgress from '@mui/material/CircularProgress'
 
-interface IAsyncAutocompleteProps {
+type AsyncAutocompleteProps = {
+  multiple?: boolean
   name: string
   value: any
   label: string
   handleInputChange: (e: SyntheticEvent<Element, Event>, val: string) => void
-  handleChange: (e: SyntheticEvent<Element, Event>, val: any[]) => void
+  handleChange: (
+    e: SyntheticEvent<Element, Event>,
+    val: any | any[],
+    reason: AutocompleteChangeReason,
+  ) => void
   data: any
   objName: string
   loading: boolean
-  helperText?: any
+  helperText?: string | null
   error?: boolean
+  inputValue: string
+  setTouched?: (
+    touched: FormikTouched<any>,
+    shouldValidate?: boolean | undefined,
+  ) => Promise<void> | Promise<FormikErrors<any>>
 }
 
-function AsyncAutocomplete({
+export default function AsyncAutocomplete({
+  multiple = false,
   name,
   value,
   label,
@@ -27,15 +46,18 @@ function AsyncAutocomplete({
   loading,
   helperText = null,
   error = false,
+  inputValue,
+  setTouched,
   ...props
-}: IAsyncAutocompleteProps) {
+}: AsyncAutocompleteProps) {
   const [open, setOpen] = useState(false)
 
   return (
     <Autocomplete
       id="asynchronous-autocomplete"
-      multiple
+      multiple={multiple}
       fullWidth
+      size="small"
       open={open}
       onOpen={() => {
         setOpen(true)
@@ -47,13 +69,15 @@ function AsyncAutocomplete({
         option[objName] === value[objName]
       }
       getOptionLabel={(option) => option[objName]}
-      value={!value ? [] : value}
+      value={value}
       onInputChange={handleInputChange}
+      inputValue={inputValue}
       onChange={handleChange}
       options={data}
       loading={loading}
       loadingText="Yükleniyor..."
       noOptionsText="Veri bulunamadı. Aramanızı genişletin."
+      onBlur={() => setTouched && setTouched({ [name]: true })}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -78,7 +102,3 @@ function AsyncAutocomplete({
     />
   )
 }
-
-//Todo: helpertext and error not working
-
-export default AsyncAutocomplete

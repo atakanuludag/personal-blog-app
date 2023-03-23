@@ -1,6 +1,6 @@
 export interface IEnv {
   MONGODB_URI: string
-  UPLOAD_FOLDER: string
+  UPLOAD_FOLDER_PATH: string
   API_PREFIX: string
   API_SWAGGER_URL: string
   API_PORT: string

@@ -14,25 +14,25 @@ import useTagQuery from '@/hooks/queries/useTagQuery'
 import useDebounce from '@/hooks/useDebounce'
 
 // ** model
-import IListQuery from '@/models/IListQuery'
-import TagModel from '@/models/Tag'
+import ListQueryModel from '@/models/ListQueryModel'
+import TagModel from '@/models/TagModel'
 
-interface TagAutocompleteProps {
+type TagAutocompleteProps = {
   select: (string | TagModel)[]
   setSelect: Dispatch<SetStateAction<(string | TagModel)[]>>
 }
 
-function TagAutocomplete({
+export default function TagAutocomplete({
   select,
   setSelect,
   ...props
 }: TagAutocompleteProps) {
-  const [params, setParams] = useState<IListQuery>({
+  const [params, setParams] = useState<ListQueryModel>({
     s: '',
     sType: 'title',
   })
 
-  const debouncedValue = useDebounce<IListQuery>(params, 500)
+  const debouncedValue = useDebounce<ListQueryModel>(params, 500)
   const { tagQuery } = useTagQuery(debouncedValue)
   const { data, isLoading, isFetching } = tagQuery({
     enabled: debouncedValue.s === '' ? false : true,
@@ -102,5 +102,3 @@ function TagAutocomplete({
     />
   )
 }
-
-export default TagAutocomplete

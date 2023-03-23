@@ -22,27 +22,24 @@ import Autocomplete, {
 } from '@mui/material/Autocomplete'
 import Chip from '@mui/material/Chip'
 
-import IPageProps from '@/models/IPageProps'
+import PageProps from '@/models/AppPropsModel'
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
 import getServerSideProps from '@/utils/AdminServerSideProps'
-import { INewArticle } from '@/models/IArticle'
+import { ArticleFormModel } from '@/models/ArticleModel'
 
 import TagService from '@/services/TagService'
 import useTagQuery from '@/hooks/queries/useTagQuery'
-import IListQuery from '@/models/IListQuery'
+import ListQueryModel from '@/models/ListQueryModel'
 
-import TagModel from '@/models/Tag'
+import TagModel from '@/models/TagModel'
 
 import TagAutocomplete from '@/components/admin/TagAutocomplete'
+import NextPageType from '@/models/NextPageType'
 
 const Editor = dynamic((): Promise<any> => import('@/components/editor'), {
   //besure to import dynamically
   ssr: false,
 })
-
-type AdminComponent = NextPage<IPageProps> & {
-  layout: typeof LayoutAdminPage
-}
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   '& .MuiPaper-root': {
@@ -50,8 +47,8 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
   },
 }))
 
-const AdminArticleNew: AdminComponent = ({ settings }: IPageProps) => {
-  const [params, setParams] = useState<IListQuery>({
+const AdminArticleNew: NextPageType = ({ settings }: PageProps) => {
+  const [params, setParams] = useState<ListQueryModel>({
     s: '',
     sType: 'title',
   })
@@ -61,7 +58,7 @@ const AdminArticleNew: AdminComponent = ({ settings }: IPageProps) => {
   })
   const loading = isLoading || isFetching
 
-  const initialValues: INewArticle = {
+  const initialValues: ArticleFormModel = {
     title: '',
     shortDescription: '',
     content: '',
@@ -88,7 +85,7 @@ const AdminArticleNew: AdminComponent = ({ settings }: IPageProps) => {
     getFieldProps,
     setFieldValue,
     values,
-  } = useFormik<INewArticle>({
+  } = useFormik<ArticleFormModel>({
     initialValues,
     validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {

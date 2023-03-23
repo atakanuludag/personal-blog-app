@@ -2,10 +2,16 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { AppController } from '@/app.controller'
 import { MongooseModule } from '@nestjs/mongoose'
+import {
+  ServeStaticModule,
+  ServeStaticModuleAsyncOptions,
+  ServeStaticModuleOptions,
+} from '@nestjs/serve-static'
+import { join } from 'path'
 
 import { IEnv } from '@/common/interfaces/env.interface'
 
-//Modules
+// ** modules
 import { GlobalModule } from '@/global.module'
 import { CategoryModule } from '@/category/category.module'
 import { UserModule } from '@/user/user.module'
@@ -15,6 +21,10 @@ import { FileModule } from '@/file/file.module'
 import { SettingsModule } from '@/settings/settings.module'
 import { PageModule } from '@/page/page.module'
 import { ReportModule } from '@/report/report.module'
+import { ServeStaticConfigurationModule } from '@/serve-static-config/serve-static-config.module'
+
+// ** services
+import { ServeStaticConfigurationService } from '@/serve-static-config/serve-static-config.service'
 
 import * as moment from 'moment'
 import 'moment/locale/tr'
@@ -25,6 +35,19 @@ moment.locale('tr')
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ServeStaticModule.forRootAsync({
+      imports: [ServeStaticConfigurationModule],
+      useExisting: ServeStaticConfigurationService,
+    }),
+    // ServeStaticModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   useFactory: (configService: ConfigService<IEnv>) => ({
+    //     rootPath: join(__dirname, '..', 'client'),
+    //     serveRoot: '/client',
+    //     exclude: ['/api*'],
+    //   }) as Promise<ServeStaticModuleOptions[]>| ServeStaticModuleAsyncOptions | ServeStaticModuleOptions,
+    //   inject: [ConfigService],
+    // }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService<IEnv>) => ({

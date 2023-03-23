@@ -1,26 +1,27 @@
 import axios from '@/core/Axios'
-import IAdminDashboard from '@/models/IAdminDashboard'
+import AdminDashboardModel from '@/models/AdminDashboardModel'
 
-const getAdminDashboardReport = async (): Promise<IAdminDashboard> => {
-  try {
-    const ret = await axios.get(`/report/dashboard`)
+const serviceBaseUrl = `/report`
 
-    const { data } = ret
+const ReportService = {
+  getAdminDashboardReport: async (): Promise<AdminDashboardModel | null> => {
+    try {
+      const ret = await axios.get(`${serviceBaseUrl}/dashboard`)
 
-    return {
-      articleCount: data.articleCount,
-      pageCount: data.pageCount,
-      fileCount: data.fileCount,
+      const { data } = ret
+
+      return {
+        articleCount: data.articleCount,
+        pageCount: data.pageCount,
+        fileCount: data.fileCount,
+      }
+    } catch (err) {
+      console.log('[ReportService] getItems() Error: ', err)
+      return null
     }
-  } catch (err) {
-    //const error: AxiosError = err;
-    console.log('[ReportService] getItems() Error: ', err)
-    return {} as any
-  }
+  },
 }
 
-const service = {
-  getAdminDashboardReport,
-}
+Object.freeze(ReportService)
 
-export default service
+export default ReportService

@@ -17,3 +17,9 @@ export default interface FileModel {
 export type FileListQueryModel = {
   folderId: string | null
 } & ListQueryModel
+
+export interface FileForm {
+  readonly _id: string
+  readonly title: string
+  readonly description: string
+}

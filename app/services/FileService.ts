@@ -1,6 +1,6 @@
 import axios from '@/core/Axios'
 import ListResponseModel from '@/models/ListResponseModel'
-import FileModel, { FileListQueryModel } from '@/models/FileModel'
+import FileModel, { FileListQueryModel, FileForm } from '@/models/FileModel'
 
 const serviceBaseUrl = `/file`
 
@@ -37,6 +37,8 @@ const FileService = {
       return []
     }
   },
+  patchItem: async (data: FileForm): Promise<void> =>
+    axios.patch(`${serviceBaseUrl}/${data._id}`, data),
 }
 
 Object.freeze(FileService)

@@ -12,67 +12,56 @@ import {
 import Image from 'next/image'
 
 // ** third party
-import { DndProvider, DropTargetMonitor, useDrop } from 'react-dnd'
-import { useQuery, useQueryClient } from 'react-query'
-
-import { HTML5Backend, NativeTypes } from 'react-dnd-html5-backend'
+import { useQueryClient } from 'react-query'
+import { DropTargetMonitor, useDrop } from 'react-dnd'
+import { NativeTypes } from 'react-dnd-html5-backend'
 import { useSnackbar } from 'notistack'
 
 // ** mui
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
-import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
-import Collapse from '@mui/material/Collapse'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemButton from '@mui/material/ListItemButton'
-import ListItemAvatar from '@mui/material/ListItemAvatar'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
-import Stack from '@mui/material/Stack'
-import CircularProgress from '@mui/material/CircularProgress'
 import LinearProgress from '@mui/material/LinearProgress'
-import ToggleButton, { ToggleButtonProps } from '@mui/material/ToggleButton'
+import ToggleButton from '@mui/material/ToggleButton'
 import Typography from '@mui/material/Typography'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
-import Link from '@mui/material/Link'
-import Badge from '@mui/material/Badge'
 import Tooltip from '@mui/material/Tooltip'
+import { PopoverPosition } from '@mui/material/Popover'
 
+// ** models
 import ListResponseModel from '@/models/ListResponseModel'
 import FileModel, { FileListQueryModel } from '@/models/FileModel'
 
 // icons
 import FolderIcon from '@mui/icons-material/Folder'
-import ExpandLess from '@mui/icons-material/ExpandLess'
-import ExpandMore from '@mui/icons-material/ExpandMore'
-import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder'
-import FileUploadIcon from '@mui/icons-material/FileUpload'
-import RefreshIcon from '@mui/icons-material/Refresh'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
-import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload'
 import EditIcon from '@mui/icons-material/Edit'
 import DownloadIcon from '@mui/icons-material/Download'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 
 // ** components
 import FileBrowserIcon from '@/components/file-browser/Icons'
+import EditFile from '@/components/admin/files/EditFile'
 
 // ** utils
-import { getExtentionByFileName, isImageFile } from '@/utils/MimeTypeNames'
-import { PopoverPosition } from '@mui/material/Popover'
+import { isImageFile } from '@/utils/MimeTypeNames'
 
 // ** service
 import FileService from '@/services/FileService'
 
+// ** core
 import { QUERY_NAMES } from '@/core/Constants'
 
+// ** config
 import { UPLOAD_PATH_URL } from '@/config'
+
+// ** hooks
+import useComponentContext from '@/hooks/useComponentContext'
 
 const FileItemBoxStyled = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -81,19 +70,6 @@ const FileItemBoxStyled = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-}))
-
-const FileTitle = styled(Typography)(({ theme }) => ({
-  width: '100%',
-  overflow: 'hidden',
-  whiteSpace: 'nowrap',
-  textOverflow: 'ellipsis',
-}))
-
-const LoadingWrapperStyled = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  top: '49%',
-  left: '49%',
 }))
 
 const DragAndDropWrapperStyled = styled(Box)(({ theme }) => ({
@@ -126,13 +102,6 @@ const ToggleButtonStyled = styled(ToggleButton)(({ theme }) => ({
   },
 }))
 
-const BreadcrumbBoxStyled = styled(Box)(({ theme }) => ({
-  //   borderBottomColor: theme.palette.grey[800],
-  //   borderBottomWidth: 1,
-  //   borderBottomStyle: 'solid',
-  //padding: theme.spacing(1),
-}))
-
 export type FileBrowserProps = {
   params: FileListQueryModel
   setParams: Dispatch<SetStateAction<FileListQueryModel>>
@@ -154,33 +123,17 @@ export default function FileBrowser({
 }: FileBrowserProps) {
   const queryClient = useQueryClient()
   const { enqueueSnackbar } = useSnackbar()
+  const { setFormDrawerData } = useComponentContext()
 
   const [selectFolders, setSelectFolders] = useState(new Array<FileModel>())
-  const [droppedFiles, setDroppedFiles] = useState([])
   const [uploadingFiles, setUploadingFiles] = useState(
     new Array<UploadingFilesProps>(),
   )
-
   const [contextMenu, setContextMenu] = useState<PopoverPosition | null>(null)
-  const [contextMenuData, setContextMenuData] = useState(null)
-
-  const handleFileDrop = useCallback(
-    (item: any) => {
-      if (item) {
-        const { files } = item
-        setDroppedFiles(files)
-      }
-    },
-    [setDroppedFiles],
-  )
+  const [contextMenuData, setContextMenuData] = useState<FileModel | null>(null)
 
   const [{ canDrop, isOver }, drop] = useDrop({
     accept: [NativeTypes.FILE],
-    drop(item) {
-      if (handleFileDrop) {
-        handleFileDrop(item)
-      }
-    },
     canDrop(item) {
       return true
     },
@@ -202,14 +155,7 @@ export default function FileBrowser({
 
   // variables
   const dragAndDropActive = canDrop && isOver
-
-  // const snooze = async (milliseconds: number): Promise<void> => {
-  //   return new Promise((resolve) => {
-  //     setTimeout(() => {
-  //       resolve()
-  //     }, milliseconds)
-  //   })
-  // }
+  const isLoading = loading || uploadingFiles.length > 0
 
   const handleFilesUpload = async (files: File[], path: string | null) => {
     const uploadedFiles = []
@@ -256,8 +202,6 @@ export default function FileBrowser({
     queryClient.invalidateQueries(QUERY_NAMES.FILES)
   }
 
-  console.log('uploadingFiles', uploadingFiles)
-
   const handleBreadcrumbClick = (folder: FileModel | null) => {
     setParams({
       ...params,
@@ -290,7 +234,7 @@ export default function FileBrowser({
     file: FileModel,
   ) => {
     event.preventDefault()
-    // setContextMenuData(file)
+    setContextMenuData(file)
     setContextMenu(
       contextMenu === null
         ? {
@@ -304,12 +248,38 @@ export default function FileBrowser({
     )
   }
 
-  const handleMenuClose = () => setContextMenu(null)
+  const handleMenuClose = () => {
+    setContextMenuData(null)
+    setContextMenu(null)
+  }
+
+  const handleClickDownloadMenuItem = () => {}
+
+  const handleClickEditMenuItem = () => {
+    if (!contextMenuData) return
+    handleMenuClose()
+    setFormDrawerData({
+      open: true,
+      title: `${contextMenuData.filename || contextMenuData.title}`,
+      content: (
+        <EditFile
+          data={{
+            _id: contextMenuData._id,
+            title: contextMenuData.title,
+            description: contextMenuData.description,
+          }}
+          isFolder={contextMenuData.isFolder}
+        />
+      ),
+      submitButtonText: 'Kaydet',
+      submit: false,
+    })
+  }
 
   return (
     <Grid container direction="row" justifyContent="flex-start" spacing={1}>
       <Grid item xs={12}>
-        <BreadcrumbBoxStyled>
+        <Box>
           <Breadcrumbs
             separator={<NavigateNextIcon fontSize="small" />}
             aria-label="breadcrumb"
@@ -318,7 +288,7 @@ export default function FileBrowser({
               variant="text"
               color="inherit"
               onClick={() => handleBreadcrumbClick(null)}
-              disabled={loading}
+              disabled={isLoading}
             >
               Ana Dizin
             </Button>
@@ -328,101 +298,112 @@ export default function FileBrowser({
                 color="inherit"
                 key={folder._id}
                 onClick={() => handleBreadcrumbClick(folder)}
-                disabled={loading}
+                disabled={
+                  selectFolders[selectFolders.length - 1]._id === folder._id ||
+                  isLoading
+                }
               >
                 {folder.title}
               </Button>
             ))}
           </Breadcrumbs>
-        </BreadcrumbBoxStyled>
+        </Box>
       </Grid>
 
-      {!loading && (
-        <Grid
-          item
-          xs={12}
-          display="flex"
-          flexDirection="row"
-          ref={drop}
-          sx={{ position: 'relative' }}
-        >
-          {dragAndDropActive && (
-            <DragAndDropWrapperStyled>
-              <Typography variant="h6">Dosyaları buraya sürükleyin.</Typography>
-            </DragAndDropWrapperStyled>
-          )}
+      {!isLoading && (
+        <Grid item xs={12}>
+          <Grid
+            container
+            direction="row"
+            justifyContent="flex-start"
+            spacing={1}
+            ref={drop}
+            sx={{ position: 'relative' }}
+          >
+            {dragAndDropActive && (
+              <DragAndDropWrapperStyled>
+                <Typography variant="h6">
+                  Dosyaları buraya sürükleyin.
+                </Typography>
+              </DragAndDropWrapperStyled>
+            )}
+            {items.results.map((item) => (
+              <Grid item key={item._id}>
+                <Box sx={{ opacity: !dragAndDropActive ? 1 : 0.3 }}>
+                  <Tooltip title={item.title} placement="bottom">
+                    <ToggleButtonStyled
+                      fullWidth
+                      size="large"
+                      value={item._id}
+                      onClick={() =>
+                        item.isFolder && handleFolderClick(item._id)
+                      }
+                      style={{ cursor: 'pointer' }}
+                      onContextMenu={(e) => handleContextMenu(e, item)}
+                      disabled={isLoading}
+                    >
+                      {item.isFolder === true ? (
+                        <Fragment>
+                          <FolderIcon sx={{ fontSize: 40 }} />
+                          <Typography>{item.title}</Typography>
+                        </Fragment>
+                      ) : (
+                        <FileItemBoxStyled>
+                          {isImageFile(item.mimetype) ? (
+                            <Image
+                              loading="lazy"
+                              src={`${UPLOAD_PATH_URL}/${
+                                item.path ? `${item.path}/` : ''
+                              }${item.filename}`}
+                              alt="Picture of the author"
+                              layout="fill"
+                              objectFit="contain"
+                            />
+                          ) : (
+                            <Fragment>
+                              <FileBrowserIcon
+                                fileName={item.filename}
+                                fontSize="large"
+                              />
+                              <Typography>{item.title}</Typography>
+                            </Fragment>
+                          )}
+                        </FileItemBoxStyled>
+                      )}
+                    </ToggleButtonStyled>
+                  </Tooltip>
+                </Box>
+              </Grid>
+            ))}
 
-          {items.results.map((item) => (
-            <Box sx={{ opacity: !dragAndDropActive ? 1 : 0.3 }} key={item._id}>
-              <Tooltip title={item.title} placement="bottom">
+            {uploadingFiles.map((item, index) => (
+              <Grid key={index} item>
                 <ToggleButtonStyled
                   fullWidth
                   size="large"
-                  value={item._id}
-                  onClick={() => item.isFolder && handleFolderClick(item._id)}
+                  value=""
                   style={{ cursor: 'pointer' }}
-                  onContextMenu={(e) => handleContextMenu(e, item)}
+                  disabled={isLoading}
                 >
-                  {item.isFolder === true ? (
+                  <FileItemBoxStyled>
                     <Fragment>
-                      <FolderIcon sx={{ fontSize: 40 }} />
-                      <Typography>{item.title}</Typography>
-                    </Fragment>
-                  ) : (
-                    <FileItemBoxStyled>
-                      {isImageFile(item.mimetype) ? (
-                        <Image
-                          loading="lazy"
-                          src={`${UPLOAD_PATH_URL}/${
-                            item.path ? `${item.path}/` : ''
-                          }${item.filename}`}
-                          alt="Picture of the author"
-                          layout="fill"
-                          objectFit="contain"
-                        />
-                      ) : (
-                        <Fragment>
-                          <FileBrowserIcon
-                            fileName={item.filename}
-                            fontSize="large"
-                          />
-                          <Typography>{item.title}</Typography>
-                        </Fragment>
+                      <FileBrowserIcon fileName={item.name} fontSize="large" />
+                      <Typography>{item.name}</Typography>
+
+                      {item.waiting && (
+                        <Typography variant="caption">Bekleniyor...</Typography>
                       )}
-                    </FileItemBoxStyled>
-                  )}
+                      {item.uploading && (
+                        <Box sx={{ width: '100%', marginTop: '5px' }}>
+                          <LinearProgress />
+                        </Box>
+                      )}
+                    </Fragment>
+                  </FileItemBoxStyled>
                 </ToggleButtonStyled>
-              </Tooltip>
-            </Box>
-          ))}
-
-          {uploadingFiles.map((item, index) => (
-            <Grid xs={6} sm={3} md={3} lg={2} xl={1} key={index} item>
-              <ToggleButtonStyled
-                fullWidth
-                size="large"
-                value=""
-                style={{ cursor: 'pointer' }}
-                // disabled={isUploadingFiles}
-              >
-                <FileItemBoxStyled>
-                  <Fragment>
-                    <FileBrowserIcon fileName={item.name} fontSize="large" />
-                    <Typography>{item.name}</Typography>
-
-                    {item.waiting && (
-                      <Typography variant="caption">Bekleniyor...</Typography>
-                    )}
-                    {item.uploading && (
-                      <Box sx={{ width: '100%', marginTop: '5px' }}>
-                        <LinearProgress />
-                      </Box>
-                    )}
-                  </Fragment>
-                </FileItemBoxStyled>
-              </ToggleButtonStyled>
-            </Grid>
-          ))}
+              </Grid>
+            ))}
+          </Grid>
         </Grid>
       )}
 
@@ -432,19 +413,19 @@ export default function FileBrowser({
         anchorReference="anchorPosition"
         anchorPosition={contextMenu !== null ? contextMenu : undefined}
       >
-        <MenuItem>
+        <MenuItem disabled={isLoading} onClick={handleClickEditMenuItem}>
           <ListItemIcon>
             <EditIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>Düzenle</ListItemText>
         </MenuItem>
-        <MenuItem>
+        <MenuItem disabled={isLoading} onClick={handleClickDownloadMenuItem}>
           <ListItemIcon>
             <DownloadIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>İndir</ListItemText>
         </MenuItem>
-        <MenuItem>
+        <MenuItem disabled={isLoading}>
           <ListItemIcon>
             <DeleteForeverIcon fontSize="small" />
           </ListItemIcon>

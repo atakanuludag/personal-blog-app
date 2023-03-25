@@ -31,9 +31,15 @@ export class CategoryService {
 
   async update(body: UpdateCategoryDto, id: ObjectId): Promise<ICategory> {
     try {
-      return await this.serviceModel.findByIdAndUpdate(id, {
-        $set: body,
-      })
+      return await this.serviceModel.findByIdAndUpdate(
+        id,
+        {
+          $set: body,
+        },
+        {
+          new: true,
+        },
+      )
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

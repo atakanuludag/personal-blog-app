@@ -6,10 +6,12 @@ import { IFile } from '@/file/interfaces/file.interface'
 import { File, FileDocument } from '@/file/schemas/file.schema'
 //import { CreateCategoryDto } from './dto/create-category.dto';
 //import { UpdateCategoryDto } from './dto/update-category.dto';
+import { UpdateFileDto } from '@/file/dto/update-file.dto'
 import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { CoreMessage } from '@/common/messages'
 import { IListQueryResponse, IQuery } from '@/common/interfaces/query.interface'
 import { IEnv } from '@/common/interfaces/env.interface'
+
 @Injectable()
 export class FileService {
   constructor(
@@ -106,6 +108,25 @@ export class FileService {
   async getFolderByPath(path: string): Promise<IFile> {
     try {
       return await this.serviceModel.findOne({ isFolder: true, path }).exec()
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  async update(body: UpdateFileDto, id: ObjectId): Promise<IFile> {
+    try {
+      return await this.serviceModel.findByIdAndUpdate(
+        id,
+        {
+          $set: body,
+        },
+        {
+          new: true,
+        },
+      )
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

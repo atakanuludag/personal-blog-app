@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Param,
+  Patch,
   Post,
   Query,
   UploadedFiles,
@@ -18,6 +20,7 @@ import {
   ApiTags,
   ApiBody,
   ApiConsumes,
+  ApiParam,
 } from '@nestjs/swagger'
 import * as fs from 'fs'
 import { FilesInterceptor } from '@nestjs/platform-express'
@@ -35,6 +38,8 @@ import { QueryHelper } from '@/common/helpers/query.helper'
 import { FolderDto } from '@/file/dto/folder.dto'
 import { IEnv } from '@/common/interfaces/env.interface'
 import { slugifyTR } from '@/common/utils/slugify-tr.util'
+import { UpdateFileDto } from '@/file/dto/update-file.dto'
+import { IdParamsDto } from '@/common/dto/params.dto'
 @ApiTags('File')
 @Controller('file')
 export class FileController {
@@ -162,5 +167,24 @@ export class FileController {
 
     await fs.promises.mkdir(uploadFolderDir, { recursive: true })
     return await this.service.createFolder(title, newPath, folderId)
+  }
+
+  @ApiOperation({
+    summary: 'Update file item.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: DefaultException,
+  })
+  @ApiOkResponse({
+    description: 'Success',
+    type: FileDto,
+  })
+  @ApiParam({ name: 'id', type: String })
+  @ApiBearerAuth('accessToken')
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async update(@Body() body: UpdateFileDto, @Param() params: IdParamsDto) {
+    return await this.service.update(body, params.id)
   }
 }

@@ -31,9 +31,15 @@ export class PageService {
 
   async update(body: UpdatePageDto, id: ObjectId): Promise<IPage> {
     try {
-      return await this.serviceModel.findByIdAndUpdate(id, {
-        $set: body,
-      })
+      return await this.serviceModel.findByIdAndUpdate(
+        id,
+        {
+          $set: body,
+        },
+        {
+          new: true,
+        },
+      )
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

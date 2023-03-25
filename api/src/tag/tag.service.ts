@@ -30,9 +30,15 @@ export class TagService {
 
   async update(body: UpdateTagDto, id: ObjectId): Promise<ITag> {
     try {
-      return await this.serviceModel.findByIdAndUpdate(id, {
-        $set: body,
-      })
+      return await this.serviceModel.findByIdAndUpdate(
+        id,
+        {
+          $set: body,
+        },
+        {
+          new: true,
+        },
+      )
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

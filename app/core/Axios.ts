@@ -22,6 +22,7 @@ instance.interceptors.response.use(
   async (error: AxiosError) => {
     switch (error.response?.status) {
       case 401:
+        if (typeof window === 'undefined') break
         const pathname = window.location.pathname
         const redirectUrl = !pathname.includes('login') ? pathname : null
         await NextService.logout()

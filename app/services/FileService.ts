@@ -20,11 +20,19 @@ const FileService = {
       console.log('[FileService] deleteItem() Error: ', err)
     }
   },
+  createFolder: async (title: string, path: string | null): Promise<void> => {
+    try {
+      await axios.post(`${serviceBaseUrl}/folder`, { title, path: path || '/' })
+    } catch (err) {
+      console.log('[FileService] createFolder() Error: ', err)
+    }
+  },
   uploadFile: async (file: File, path: string | null): Promise<FileModel[]> => {
     try {
       const formData = new FormData()
-      formData.append('file', file)
+      // ** Path datası en üstte verilmeli. Yoksa api tarafındaki multer'da sıkıntı çıkartıyor.
       if (path) formData.append('path', path)
+      formData.append('file', file)
 
       const res = await axios.post(`${serviceBaseUrl}`, formData, {
         headers: {

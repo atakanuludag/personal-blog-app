@@ -6,6 +6,8 @@ import {
   Dispatch,
   SetStateAction,
   useCallback,
+  ChangeEvent,
+  useEffect,
 } from 'react'
 
 // ** next
@@ -20,6 +22,7 @@ import { useSnackbar } from 'notistack'
 // ** mui
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import Grid from '@mui/material/Grid'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
@@ -125,12 +128,21 @@ export default function FileBrowser({
   const { enqueueSnackbar } = useSnackbar()
   const { setFormDrawerData } = useComponentContext()
 
+  const [path, setPath] = useState<string | null>(null)
   const [selectFolders, setSelectFolders] = useState(new Array<FileModel>())
   const [uploadingFiles, setUploadingFiles] = useState(
     new Array<UploadingFilesProps>(),
   )
   const [contextMenu, setContextMenu] = useState<PopoverPosition | null>(null)
   const [contextMenuData, setContextMenuData] = useState<FileModel | null>(null)
+
+  useEffect(() => {
+    const _path =
+      selectFolders.length > 0
+        ? selectFolders[selectFolders.length - 1].path
+        : null
+    setPath(_path)
+  }, [selectFolders])
 
   const [{ canDrop, isOver }, drop] = useDrop({
     accept: [NativeTypes.FILE],
@@ -139,12 +151,8 @@ export default function FileBrowser({
     },
     collect: (monitor: DropTargetMonitor) => {
       const item: { files: File[] } | null = monitor.getItem()
-      const path =
-        selectFolders.length > 0
-          ? selectFolders[selectFolders.length - 1].path
-          : null
       if (item && item?.files.length > 0) {
-        handleFilesUpload(item.files, path)
+        handleFilesUpload(item.files)
       }
       return {
         isOver: monitor.isOver(),
@@ -157,7 +165,7 @@ export default function FileBrowser({
   const dragAndDropActive = canDrop && isOver
   const isLoading = loading || uploadingFiles.length > 0
 
-  const handleFilesUpload = async (files: File[], path: string | null) => {
+  const handleFilesUpload = async (files: File[]) => {
     const uploadedFiles = []
     const _uploadingFiles = files.map(({ name, size }) => ({
       name,
@@ -178,7 +186,6 @@ export default function FileBrowser({
       }
       setUploadingFiles([..._uploadingFiles])
       const response = await FileService.uploadFile(file, path)
-      //await snooze(10000) //todo: sonradan kaldırılacak
 
       enqueueSnackbar(`"${response[0].filename}" yüklendi.`, {
         variant: 'success',
@@ -276,8 +283,52 @@ export default function FileBrowser({
     })
   }
 
+  const handleButtonClickUploadFile = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length <= 0) return
+    const files = Array.from(e.target.files).map((file) => file)
+    handleFilesUpload(files)
+  }
+
+  const handleButtonClickCreateFolder = async () => {
+    const folderTitle = prompt('Klasör adı giriniz.', '')
+    if ([null, undefined, '', ' '].includes(folderTitle)) return
+    await FileService.createFolder(folderTitle as string, path)
+    setParams({
+      ...params,
+      page: 1,
+    })
+    queryClient.invalidateQueries(QUERY_NAMES.FILES)
+  }
+
   return (
     <Grid container direction="row" justifyContent="flex-start" spacing={1}>
+      <Grid item xs={12}>
+        <Stack spacing={1} direction="row">
+          <Button
+            variant="contained"
+            size="small"
+            component="label"
+            disabled={isLoading}
+          >
+            Dosya yükle
+            <input
+              hidden
+              accept="*"
+              multiple
+              type="file"
+              onChange={handleButtonClickUploadFile}
+            />
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={handleButtonClickCreateFolder}
+            disabled={isLoading}
+          >
+            Klasör oluştur
+          </Button>
+        </Stack>
+      </Grid>
       <Grid item xs={12}>
         <Box>
           <Breadcrumbs
@@ -355,7 +406,7 @@ export default function FileBrowser({
                               src={`${UPLOAD_PATH_URL}/${
                                 item.path ? `${item.path}/` : ''
                               }${item.filename}`}
-                              alt="Picture of the author"
+                              alt={item.title}
                               layout="fill"
                               objectFit="contain"
                             />

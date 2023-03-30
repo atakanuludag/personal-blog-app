@@ -216,13 +216,36 @@ export class ArticleService {
 
   async searchByIpAndGuid(guid: string, ip: string): Promise<boolean> {
     try {
-      const find = await this.serviceModel
-        .findOne({
-          guid,
-          likedIPs: { $in: [ip] },
-        })
-        .exec()
-      return find ? true : false
+      return await this.serviceModel.exists({
+        guid,
+        likedIPs: { $in: [ip] },
+      })
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  async searchContent(text: string): Promise<boolean> {
+    try {
+      return await this.serviceModel.exists({
+        content: { $regex: text, $options: 'i' },
+      })
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  async searchCoverImage(fileId: ObjectId): Promise<boolean> {
+    try {
+      return await this.serviceModel.exists({
+        coverImage: fileId,
+      })
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

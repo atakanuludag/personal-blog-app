@@ -11,6 +11,8 @@ import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { CoreMessage } from '@/common/messages'
 import { IListQueryResponse, IQuery } from '@/common/interfaces/query.interface'
 import { IEnv } from '@/common/interfaces/env.interface'
+import { ArticleService } from '@/article/article.service'
+import { PageService } from '@/page/page.service'
 
 @Injectable()
 export class FileService {
@@ -18,6 +20,8 @@ export class FileService {
     @InjectModel(File.name) private readonly serviceModel: Model<FileDocument>,
     private readonly coreMessage: CoreMessage,
     private configService: ConfigService<IEnv>,
+    private articleService: ArticleService,
+    private pageService: PageService,
   ) {}
 
   async getItems(
@@ -126,6 +130,66 @@ export class FileService {
         {
           new: true,
         },
+      )
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  async delete(id: ObjectId): Promise<void> {
+    try {
+      await this.serviceModel.findByIdAndDelete(id)
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.INTERNAL_SERVER_ERROR,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
+    }
+  }
+
+  async getItemById(_id: ObjectId): Promise<IFile> {
+    try {
+      return await this.serviceModel
+        .findOne({ _id })
+        .populate('folderId')
+        .exec()
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  async checkFile(item: IFile): Promise<boolean> {
+    try {
+      if (item.isFolder) {
+        const checkFolder = await this.serviceModel.exists({
+          folderId: item._id,
+        })
+        return checkFolder
+      }
+
+      const articleSearchCoverImage =
+        await this.articleService.searchCoverImage(item._id)
+      const articleSearchContentText = await this.articleService.searchContent(
+        item.filename,
+      )
+      const pageSearchContentText = await this.pageService.searchContent(
+        item.filename,
+      )
+
+      console.log('articleSearchCoverImage', articleSearchCoverImage)
+      console.log('articleSearchContentText', articleSearchContentText)
+      console.log('pageSearchContentText', pageSearchContentText)
+
+      return (
+        articleSearchCoverImage ||
+        articleSearchContentText ||
+        pageSearchContentText
       )
     } catch (err) {
       throw new ExceptionHelper(

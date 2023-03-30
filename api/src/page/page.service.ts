@@ -148,4 +148,17 @@ export class PageService {
       )
     }
   }
+
+  async searchContent(text: string): Promise<boolean> {
+    try {
+      return await this.serviceModel.exists({
+        content: { $regex: text, $options: 'i' },
+      })
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
 }

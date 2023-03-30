@@ -65,6 +65,8 @@ import { UPLOAD_PATH_URL } from '@/config'
 
 // ** hooks
 import useComponentContext from '@/hooks/useComponentContext'
+import { AxiosError } from 'axios'
+import { BaseServiceErrorModel } from '@/models/ServiceBaseModel'
 
 const FileItemBoxStyled = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -126,7 +128,8 @@ export default function FileBrowser({
 }: FileBrowserProps) {
   const queryClient = useQueryClient()
   const { enqueueSnackbar } = useSnackbar()
-  const { setFormDrawerData } = useComponentContext()
+  const { setFormDrawerData, setConfirmDialogData, handleConfirmDialogClose } =
+    useComponentContext()
 
   const [path, setPath] = useState<string | null>(null)
   const [selectFolders, setSelectFolders] = useState(new Array<FileModel>())
@@ -281,6 +284,43 @@ export default function FileBrowser({
       submitButtonText: 'Kaydet',
       submit: false,
     })
+  }
+
+  const handleClickDeleteMenuItem = () => {
+    setConfirmDialogData({
+      open: true,
+      title: 'Emin misiniz ?',
+      content: 'Seçilenleri silmek için lütfen onaylayın.',
+      handleConfirmFunction: handleConfirmDelete,
+    })
+  }
+
+  const handleConfirmDelete = async () => {
+    if (!contextMenuData) return
+    handleMenuClose()
+    await FileService.deleteItem(contextMenuData._id)
+    // try {
+    //   await FileService.deleteItem(contextMenuData._id)
+    // } catch (err: BaseServiceErrorModel) {
+    //   console.log('err', err)
+    // }
+
+    queryClient.invalidateQueries(QUERY_NAMES.FILES)
+    enqueueSnackbar(
+      `Seçtiğiniz ${
+        contextMenuData.isFolder ? 'klasör' : 'dosya'
+      } başarıyla silindi.`,
+      {
+        variant: 'success',
+      },
+    )
+    handleConfirmDialogClose()
+    // handleConfirmDialogClose()
+    // setLoading(true)
+    // for await (const id of selected) {
+    //   await deleteService(id)
+    // }
+    // setLoading(false)
   }
 
   const handleButtonClickUploadFile = (e: ChangeEvent<HTMLInputElement>) => {
@@ -476,7 +516,7 @@ export default function FileBrowser({
           </ListItemIcon>
           <ListItemText>İndir</ListItemText>
         </MenuItem>
-        <MenuItem disabled={isLoading}>
+        <MenuItem disabled={isLoading} onClick={handleClickDeleteMenuItem}>
           <ListItemIcon>
             <DeleteForeverIcon fontSize="small" />
           </ListItemIcon>

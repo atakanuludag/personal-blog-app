@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -50,6 +51,8 @@ export class FileController {
     private readonly queryHelper: QueryHelper,
     private configService: ConfigService<IEnv>,
   ) {}
+
+  private uploadFolder = this.configService.get<string>('UPLOAD_FOLDER_PATH')
 
   @ApiOperation({
     summary: 'Get file items.',
@@ -155,9 +158,8 @@ export class FileController {
     }
 
     const folderTitle = slugifyTR(title)
-    const uploadFolder = this.configService.get<string>('UPLOAD_FOLDER_PATH')
 
-    const uploadFolderDir = `${uploadFolder}/${
+    const uploadFolderDir = `${this.uploadFolder}/${
       path === '/' || path === null ? '' : `${path}/`
     }${folderTitle}`
 
@@ -186,5 +188,48 @@ export class FileController {
   @Patch(':id')
   async update(@Body() body: UpdateFileDto, @Param() params: IdParamsDto) {
     return await this.service.update(body, params.id)
+  }
+
+  @ApiOperation({
+    summary: 'Delete file item.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad Request',
+    type: DefaultException,
+  })
+  @ApiOkResponse({
+    description: 'Success',
+  })
+  @ApiParam({ name: 'id', type: String })
+  // @ApiBearerAuth('accessToken')
+  // @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async delete(@Param() params: IdParamsDto) {
+    const item = await this.service.getItemById(params.id)
+    if (!item) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+    const exists = await this.service.checkFile(item)
+    if (exists)
+      throw new ExceptionHelper(
+        item.isFolder
+          ? this.fileMessage.EXISTING_FOLDER
+          : this.fileMessage.EXISTING_FILE,
+        HttpStatus.BAD_REQUEST,
+      )
+    await this.service.delete(params.id)
+    if (item.isFolder)
+      await fs.promises.rmdir(
+        `${this.uploadFolder}${item.path ? `/${item.path}` : ''}`,
+      )
+    else
+      await fs.promises.unlink(
+        `${this.uploadFolder}${item.path ? `/${item.path}` : ''}/${
+          item.filename
+        }`,
+      )
   }
 }

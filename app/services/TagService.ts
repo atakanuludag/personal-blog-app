@@ -1,7 +1,7 @@
 import axios from '@/core/Axios'
 import ListQueryModel from '@/models/ListQueryModel'
 import ListResponseModel from '@/models/ListResponseModel'
-import TagModel from '@/models/TagModel'
+import TagModel, { TagFormModel } from '@/models/TagModel'
 
 const serviceBaseUrl = `/tag`
 
@@ -21,6 +21,14 @@ const TagService = {
       console.log('[TagService] deleteItem() Error: ', err)
     }
   },
+  guidExists: async (guid: string): Promise<boolean> =>
+    axios
+      .get(`${serviceBaseUrl}/guidExists/${guid}`)
+      .then((res) => res.data.exists),
+  postItem: async (data: TagFormModel): Promise<void> =>
+    axios.post(`${serviceBaseUrl}`, data),
+  patchItem: async (data: TagFormModel): Promise<void> =>
+    axios.patch(`${serviceBaseUrl}/${data._id}`, data),
 }
 
 Object.freeze(TagService)

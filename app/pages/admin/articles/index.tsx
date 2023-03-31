@@ -38,7 +38,7 @@ import useArticleQuery from '@/hooks/queries/useArticleQuery'
 
 // ** components
 import DataGrid from '@/components/datagrid'
-import SearchInput from '@/components/admin/SearchInput'
+import SearchInput from '@/components/admin/shared/SearchInput'
 
 // ** constants
 import { QUERY_NAMES } from '@/core/Constants'

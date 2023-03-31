@@ -3,10 +3,12 @@ import { useState } from 'react'
 
 // ** mui
 import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid/models'
+import Link from '@mui/material/Link'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
 
 // ** third party
 import moment from 'moment'
@@ -29,10 +31,12 @@ import getServerSideProps from '@/utils/AdminServerSideProps'
 
 // ** hooks
 import useTagQuery from '@/hooks/queries/useTagQuery'
+import useComponentContext from '@/hooks/useComponentContext'
 
 // ** components
 import DataGrid from '@/components/datagrid'
-import SearchInput from '@/components/admin/SearchInput'
+import SearchInput from '@/components/admin/shared/SearchInput'
+import NewEditTag from '@/components/admin/tags/NewEditTag'
 
 // ** constants
 import { QUERY_NAMES } from '@/core/Constants'
@@ -46,6 +50,7 @@ const Tags: NextPageType = ({ settings }: PageProps) => {
   const [customLoading, setCustomLoading] = useState(false)
 
   const { tagQuery } = useTagQuery(params)
+  const { setFormDrawerData } = useComponentContext()
 
   const { data, isLoading, isFetching } = tagQuery()
   const items = data as ListResponseModel<TagModel[]>
@@ -56,6 +61,11 @@ const Tags: NextPageType = ({ settings }: PageProps) => {
       field: 'title',
       headerName: 'Başlık',
       width: 250,
+      renderCell: ({ row }: GridRenderCellParams<any, TagModel, any>) => (
+        <Link onClick={() => handleEditButton(row)} component="button">
+          {row.title}
+        </Link>
+      ),
     },
     {
       field: 'guid',
@@ -78,6 +88,17 @@ const Tags: NextPageType = ({ settings }: PageProps) => {
     },
   ]
 
+  const handleEditButton = (row: TagModel) => handleToggleNewEditButton(row)
+
+  const handleToggleNewEditButton = (data?: TagModel) =>
+    setFormDrawerData({
+      open: true,
+      title: 'Yeni Kategori',
+      content: <NewEditTag data={data} />,
+      submitButtonText: 'Kaydet',
+      submit: false,
+    })
+
   return (
     <Box>
       <Grid
@@ -92,6 +113,13 @@ const Tags: NextPageType = ({ settings }: PageProps) => {
             <Typography variant="h5" fontWeight={500}>
               Etiketler
             </Typography>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => handleToggleNewEditButton()}
+            >
+              Yeni ekle
+            </Button>
           </Stack>
         </Grid>
 

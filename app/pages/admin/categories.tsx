@@ -35,7 +35,7 @@ import useComponentContext from '@/hooks/useComponentContext'
 
 // ** components
 import DataGrid from '@/components/datagrid'
-import SearchInput from '@/components/admin/SearchInput'
+import SearchInput from '@/components/admin/shared/SearchInput'
 import NewEditCategory from '@/components/admin/categories/NewEditCategory'
 
 // ** constants
@@ -95,18 +95,10 @@ const Categories: NextPageType = ({ settings }: PageProps) => {
     },
   ]
 
-  const handleEditButton = (row: CategoryModel) => {
-    const { title, description, guid, parent, _id } = row
-    handleToggleNewEditButton({
-      _id,
-      title,
-      description,
-      guid,
-      parent,
-    })
-  }
+  const handleEditButton = (row: CategoryModel) =>
+    handleToggleNewEditButton(row)
 
-  const handleToggleNewEditButton = (data?: CategoryFormModel) => {
+  const handleToggleNewEditButton = (data?: CategoryFormModel) =>
     setFormDrawerData({
       open: true,
       title: 'Yeni Kategori',
@@ -114,7 +106,6 @@ const Categories: NextPageType = ({ settings }: PageProps) => {
       submitButtonText: 'Kaydet',
       submit: false,
     })
-  }
 
   return (
     <Box>

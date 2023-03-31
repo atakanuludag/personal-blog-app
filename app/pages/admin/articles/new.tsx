@@ -33,7 +33,7 @@ import ListQueryModel from '@/models/ListQueryModel'
 
 import TagModel from '@/models/TagModel'
 
-import TagAutocomplete from '@/components/admin/TagAutocomplete'
+import TagAutocomplete from '@/components/admin/articles/TagAutocomplete'
 import NextPageType from '@/models/NextPageType'
 
 const Editor = dynamic((): Promise<any> => import('@/components/editor'), {

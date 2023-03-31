@@ -40,6 +40,9 @@ import { AutocompleteChangeReason } from '@mui/material/Autocomplete'
 // ** core
 import { QUERY_NAMES } from '@/core/Constants'
 
+// ** utils
+import slugify from '@/utils/Slugify'
+
 type NewEditCategoryProps = {
   data?: CategoryFormModel
 }
@@ -119,6 +122,12 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
       resetForm()
     },
   })
+
+  useEffect(() => {
+    if (values.title !== initialValues.title && !initialValues._id) {
+      setFieldValue('guid', slugify(values.title))
+    }
+  }, [values])
 
   useEffect(() => {
     if (!data) return

@@ -34,6 +34,9 @@ import useComponentContext from '@/hooks/useComponentContext'
 // ** core
 import { QUERY_NAMES } from '@/core/Constants'
 
+// ** utils
+import slugify from '@/utils/Slugify'
+
 type NewEditTagProps = {
   data?: TagFormModel
 }
@@ -65,6 +68,7 @@ export default function NewEditTag({ data }: NewEditTagProps) {
     handleSubmit,
     getFieldProps,
     setValues,
+    setFieldValue,
     isValid,
     values,
   } = useFormik<TagFormModel>({
@@ -98,6 +102,12 @@ export default function NewEditTag({ data }: NewEditTagProps) {
       resetForm()
     },
   })
+
+  useEffect(() => {
+    if (values.title !== initialValues.title && !initialValues._id) {
+      setFieldValue('guid', slugify(values.title))
+    }
+  }, [values])
 
   useEffect(() => {
     if (!data) return

@@ -34,6 +34,7 @@ import ToggleButton from '@mui/material/ToggleButton'
 import Typography from '@mui/material/Typography'
 import Breadcrumbs from '@mui/material/Breadcrumbs'
 import Tooltip from '@mui/material/Tooltip'
+import Skeleton from '@mui/material/Skeleton'
 import { PopoverPosition } from '@mui/material/Popover'
 
 // ** models
@@ -401,7 +402,7 @@ export default function FileBrowser({
         </Box>
       </Grid>
 
-      {!isLoading && (
+      {!isLoading ? (
         <Grid item xs={12}>
           <Grid
             container
@@ -495,6 +496,19 @@ export default function FileBrowser({
               </Grid>
             ))}
           </Grid>
+        </Grid>
+      ) : (
+        <Grid item xs={12}>
+          <Stack spacing={1} direction="row">
+            {[...Array(3)].map((index) => (
+              <Skeleton
+                key={index}
+                variant="rounded"
+                width={100}
+                height={100}
+              />
+            ))}
+          </Stack>
         </Grid>
       )}
 

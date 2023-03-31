@@ -92,7 +92,7 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
   } = useFormik<CategoryFormModel>({
     initialValues,
     validationSchema,
-    validateOnMount: true,
+    validateOnMount: data?._id ? false : true,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         let text = ''

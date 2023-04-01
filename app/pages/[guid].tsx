@@ -21,6 +21,9 @@ import PageProps from '@/models/AppPropsModel'
 import ArticleModel from '@/models/ArticleModel'
 import IPage from '@/models/PageModel'
 
+// ** config
+import { APP_URL, SITE_TITLE } from '@/config'
+
 type GuidProps = {
   currentIpAdressIsLiked: boolean
   data: ArticleModel | IPage
@@ -32,13 +35,12 @@ type StaticPathParams = {
 }
 
 const Guid: NextPage<GuidProps> = ({
-  settings,
   userIpAdress,
   currentIpAdressIsLiked,
   data,
   dataType,
 }: GuidProps) => {
-  const url = `${settings.siteUrl}/${data.guid}`
+  const url = `${APP_URL}/${data.guid}`
 
   const breadcrumb: BreadcrumbDataProps[] = [
     {
@@ -58,7 +60,7 @@ const Guid: NextPage<GuidProps> = ({
           locale: 'tr_TR',
           title: data.title,
           url: url,
-          site_name: settings.siteTitle,
+          site_name: SITE_TITLE,
         }}
       />
       <Breadcrumb data={breadcrumb} />

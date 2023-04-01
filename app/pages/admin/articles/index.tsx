@@ -43,10 +43,13 @@ import SearchInput from '@/components/admin/shared/SearchInput'
 // ** constants
 import { QUERY_NAMES } from '@/core/Constants'
 
-const AdminArticleIndex: NextPageType = ({ settings }: PageProps) => {
+// ** config
+import { PAGE_SIZE } from '@/config'
+
+const AdminArticleIndex: NextPageType = ({}: PageProps) => {
   const [params, setParams] = useState<ListQueryModel>({
     page: 1,
-    pageSize: settings.pageSize,
+    pageSize: PAGE_SIZE,
   })
   const [customLoading, setCustomLoading] = useState(false)
   const { articleQuery } = useArticleQuery(params)

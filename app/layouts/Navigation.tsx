@@ -44,6 +44,17 @@ import { THEME_SETTINGS } from '@/core/Constants'
 // ** models
 import AppPropsModel from '@/models/AppPropsModel'
 
+// ** config
+import {
+  SITE_TITLE,
+  PERSONAL_DESCRIPTION,
+  TWITTER_URL,
+  INSTAGRAM_URL,
+  GITHUB_URL,
+  LINKEDIN_URL,
+  PERSONAL_EMAIL,
+} from '@/config'
+
 const Title = styled('h1')(({ theme }) => ({
   fontSize: '1.5rem',
   fontWeight: 'bold',
@@ -112,7 +123,7 @@ const CategoriesWrapper = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(1.5),
 }))
 
-export default function Navigation({ settings, categories }: AppPropsModel) {
+export default function Navigation({ categories, navbarPages }: AppPropsModel) {
   const theme = useTheme()
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'))
   const [navOpen, setNavOpen] = useState(false)
@@ -145,7 +156,7 @@ export default function Navigation({ settings, categories }: AppPropsModel) {
         <AppBar
           open={navOpen}
           toggleDrawer={toggleDrawer}
-          personDisplayName={settings.personDisplayName}
+          personDisplayName={SITE_TITLE || ''}
         />
       )}
       <StyledDrawer
@@ -163,42 +174,42 @@ export default function Navigation({ settings, categories }: AppPropsModel) {
           <ProfileSection>
             <Title>
               <Link component={NextLink} href="/">
-                {settings.personDisplayName}
+                {SITE_TITLE}
               </Link>
             </Title>
 
             <Avatar
               src="https://www.atakanuludag.com/wp-content/uploads/2019/09/avatar.jpg"
-              alt={settings.personDisplayName}
+              alt={SITE_TITLE}
             />
             <Typography variant="caption" component="p">
-              {settings.personDescription}
+              {PERSONAL_DESCRIPTION}
             </Typography>
 
             <SocialMedia>
               <li>
-                <Link href={settings.personTwitterUrl}>
+                <Link href={TWITTER_URL}>
                   <Tooltip title="Twitter">
                     <TwitterIcon color="action" />
                   </Tooltip>
                 </Link>
               </li>
               <li>
-                <Link href={settings.personInstagramUrl}>
+                <Link href={INSTAGRAM_URL}>
                   <Tooltip title="Instagram">
                     <InstagramIcon color="action" />
                   </Tooltip>
                 </Link>
               </li>
               <li>
-                <Link href={settings.personGithubUrl}>
+                <Link href={GITHUB_URL}>
                   <Tooltip title="Github">
                     <GitHubIcon color="action" />
                   </Tooltip>
                 </Link>
               </li>
               <li>
-                <Link href={settings.personLinkedinUrl}>
+                <Link href={LINKEDIN_URL}>
                   <Tooltip title="Linkedin">
                     <LinkedInIcon color="action" />
                   </Tooltip>
@@ -232,10 +243,10 @@ export default function Navigation({ settings, categories }: AppPropsModel) {
 
           <Divider />
 
-          {settings.navbarPages && (
+          {navbarPages && (
             <Fragment>
               <List>
-                {settings.navbarPages.map((page) => (
+                {navbarPages.map((page) => (
                   <ListItemButton
                     key={page._id}
                     LinkComponent={NextLink}

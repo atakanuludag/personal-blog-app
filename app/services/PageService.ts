@@ -29,6 +29,15 @@ const PageService = {
       return null
     }
   },
+  getItemById: async (id: string): Promise<PageModel | null> => {
+    try {
+      const ret = await axios.get(`${serviceBaseUrl}/getById/${id}`)
+      return ret.data
+    } catch (err) {
+      console.log('[PageService] getItemById() Error: ', err)
+      return null
+    }
+  },
 }
 
 Object.freeze(PageService)

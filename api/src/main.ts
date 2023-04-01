@@ -39,7 +39,6 @@ async function bootstrap() {
     .addTag('Category', 'Category endpoint')
     .addTag('Tag', 'Tag endpoint')
     .addTag('File', 'File endpoint')
-    .addTag('Settings', 'Settings endpoint')
     .addTag('Article', 'Article endpoint')
     .addTag('Page', 'Page endpoint')
     .addTag('Report', 'Report endpoint')

@@ -7,12 +7,7 @@ import type { AppContext, AppProps } from 'next/app'
 import Head from 'next/head'
 
 // ** third party
-import {
-  DehydratedState,
-  Hydrate,
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query'
+import { Hydrate, QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { NextSeo } from 'next-seo'
 import { SnackbarProvider } from 'notistack'
@@ -33,12 +28,12 @@ import GlobalStore from '@/utils/GlobalStore'
 import Cookie from '@/utils/Cookie'
 
 // ** services
-import SettingService from '@/services/SettingService'
 import CategoryService from '@/services/CategoryService'
+import PageService from '@/services/PageService'
 
 // ** models
-import SettingsModel from '@/models/SettingsModel'
 import TokenModel from '@/models/TokenModel'
+import PageModel from '@/models/PageModel'
 import PageWithLayoutType from '@/models/PageWithLayoutType'
 import AppPropsModel from '@/models/AppPropsModel'
 
@@ -54,6 +49,14 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 import FormDrawer from '@/components/FormDrawer'
 import ConfirmDialog from '@/components/ConfirmDialog'
 
+// ** config
+import {
+  APP_URL,
+  SITE_TITLE,
+  SITE_DESCRIPTION,
+  NAVBAR_PAGE_IDS,
+} from '@/config'
+
 type PersonalBlogAppProps = {
   Component: PageWithLayoutType<AppPropsModel>
   pageProps: AppPropsModel
@@ -65,7 +68,6 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
     : LayoutBlogPage
   const componentTitle = Component.title || null
 
-  const settings: SettingsModel = pageProps.settings
   const auth: TokenModel | undefined = pageProps.auth
   if (auth) axiosSetTokenInterceptor(auth.accessToken)
 
@@ -93,17 +95,17 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
           />
         </Head>
         <NextSeo
-          defaultTitle={settings.siteTitle}
-          titleTemplate={`%s | ${settings.siteTitle}`}
-          title={settings.siteTitle}
-          description={settings.siteDescription}
-          canonical={settings.siteUrl}
+          defaultTitle={SITE_TITLE}
+          titleTemplate={`%s | ${SITE_TITLE}`}
+          title={SITE_TITLE}
+          description={SITE_DESCRIPTION}
+          canonical={APP_URL}
           openGraph={{
             type: 'website',
             locale: 'tr_TR',
-            title: settings.siteTitle,
-            url: settings.siteUrl,
-            site_name: settings.siteTitle,
+            title: SITE_TITLE,
+            url: APP_URL,
+            site_name: SITE_TITLE,
           }}
         />
         <SettingsProvider>
@@ -139,7 +141,15 @@ PersonalBlogApp.getInitialProps = async (appContext: AppContext) => {
   }
 
   const categories = await CategoryService.getItems()
-  const settings = await SettingService.getItemsAsObject()
+
+  const navbarPageIds = NAVBAR_PAGE_IDS?.split(',') || []
+  const navbarPages = new Array<PageModel>()
+
+  for await (const pageId of navbarPageIds) {
+    const page = await PageService.getItemById(pageId)
+    if (page) navbarPages.push(page)
+  }
+
   const auth: TokenModel | null = getCookie('auth', true)
   if (auth) {
     //Client side ve server side interceptor için ayrı ayrı setlememiz gerekiyor. Bence bu bir bug.
@@ -148,11 +158,10 @@ PersonalBlogApp.getInitialProps = async (appContext: AppContext) => {
     appProps.pageProps.auth = auth
   }
 
-  GlobalStore.set('settings', settings) //use SSR and use getServerSideProps
   GlobalStore.set('userIpAdress', userIpAdress) //use SSR and use getServerSideProps
 
   appProps.pageProps.categories = categories
-  appProps.pageProps.settings = settings
+  appProps.pageProps.navbarPages = navbarPages
   appProps.pageProps.userIpAdress = userIpAdress
   return { ...appProps }
 }

@@ -24,7 +24,6 @@ import ListItemText from '@mui/material/ListItemText'
 // ** icons
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import ArticleIcon from '@mui/icons-material/Article'
-import SettingsIcon from '@mui/icons-material/Settings'
 import CategoryIcon from '@mui/icons-material/Category'
 import TagIcon from '@mui/icons-material/Tag'
 import PermMediaIcon from '@mui/icons-material/PermMedia'
@@ -115,11 +114,6 @@ export default function NavigationAdmin() {
       title: 'Ortam',
       path: '/admin/files',
       icon: <PermMediaIcon />,
-    },
-    {
-      title: 'Ayarlar',
-      path: '/admin/settings',
-      icon: <SettingsIcon />,
     },
     // {
     //   title: 'Çıkış',

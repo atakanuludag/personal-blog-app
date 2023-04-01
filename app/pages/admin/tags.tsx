@@ -41,10 +41,13 @@ import NewEditTag from '@/components/admin/tags/NewEditTag'
 // ** constants
 import { QUERY_NAMES } from '@/core/Constants'
 
-const Tags: NextPageType = ({ settings }: PageProps) => {
+// ** config
+import { PAGE_SIZE } from '@/config'
+
+const Tags: NextPageType = ({}: PageProps) => {
   const [params, setParams] = useState<ListQueryModel>({
     page: 1,
-    pageSize: settings.pageSize,
+    pageSize: PAGE_SIZE,
   })
 
   const [customLoading, setCustomLoading] = useState(false)

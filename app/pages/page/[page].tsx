@@ -13,7 +13,6 @@ import Pagination from '@/components/Pagination'
 
 // ** models
 import AppPropsModel from '@/models/AppPropsModel'
-import SettingsModel from '@/models/SettingsModel'
 import ListQueryModel from '@/models/ListQueryModel'
 import ListResponseModel from '@/models/ListResponseModel'
 import ArticleModel from '@/models/ArticleModel'
@@ -23,7 +22,9 @@ import GlobalStore from '@/utils/GlobalStore'
 
 // ** services
 import ArticleService from '@/services/ArticleService'
-import SettingService from '@/services/SettingService'
+
+// ** config
+import { PAGE_SIZE } from '@/config'
 
 type StaticPathParams = {
   page?: string
@@ -34,10 +35,10 @@ type PageProps = {
   articles: ListResponseModel<ArticleModel[]>
 } & AppPropsModel
 
-const Page: NextPage<PageProps> = ({ page, articles, settings }: PageProps) => {
+const Page: NextPage<PageProps> = ({ page, articles }: PageProps) => {
   const [params, setParams] = useState<ListQueryModel>({
     page,
-    pageSize: settings.pageSize,
+    pageSize: PAGE_SIZE,
   })
   return (
     <Fragment>
@@ -68,10 +69,10 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
       notFound: true,
     }
   }
-  const settings: SettingsModel = GlobalStore.get('settings')
+
   const articles = (await ArticleService.getItems({
     page: page,
-    pageSize: settings.pageSize,
+    pageSize: PAGE_SIZE,
   })) as ListResponseModel<ArticleModel[]>
 
   return {
@@ -83,10 +84,9 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
 }
 
 export const getStaticPaths: GetStaticPaths<StaticPathParams> = async () => {
-  const settings = await SettingService.getItemsAsObject()
   const article = (await ArticleService.getItems({
     page: 1,
-    pageSize: settings.pageSize,
+    pageSize: PAGE_SIZE,
   })) as ListResponseModel<ArticleModel[]>
 
   const paths = [...Array(article.totalPages)].map((_, page: number) => ({

@@ -41,10 +41,13 @@ import NewEditCategory from '@/components/admin/categories/NewEditCategory'
 // ** constants
 import { QUERY_NAMES } from '@/core/Constants'
 
-const Categories: NextPageType = ({ settings }: PageProps) => {
+// ** config
+import { PAGE_SIZE } from '@/config'
+
+const Categories: NextPageType = ({}: PageProps) => {
   const [params, setParams] = useState<ListQueryModel>({
     page: 1,
-    pageSize: settings.pageSize,
+    pageSize: PAGE_SIZE,
   })
 
   const [customLoading, setCustomLoading] = useState(false)

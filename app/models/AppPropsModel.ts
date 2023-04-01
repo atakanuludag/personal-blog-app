@@ -2,13 +2,13 @@
 import { DehydratedState } from 'react-query'
 
 // ** models
-import SettingsModel from '@/models/SettingsModel'
+import PageModel from '@/models/PageModel'
 import TokenModel from '@/models/TokenModel'
 import CategoryModel from '@/models/CategoryModel'
 
 type AppPropsModel = {
   dehydratedState: DehydratedState
-  settings: SettingsModel
+  navbarPages: PageModel[]
   categories: CategoryModel[]
   userIpAdress: string
   auth?: TokenModel

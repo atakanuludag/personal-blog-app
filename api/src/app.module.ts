@@ -18,7 +18,6 @@ import { UserModule } from '@/user/user.module'
 import { TagModule } from '@/tag/tag.module'
 import { ArticleModule } from '@/article/article.module'
 import { FileModule } from '@/file/file.module'
-import { SettingsModule } from '@/settings/settings.module'
 import { PageModule } from '@/page/page.module'
 import { ReportModule } from '@/report/report.module'
 import { ServeStaticConfigurationModule } from '@/serve-static-config/serve-static-config.module'
@@ -66,7 +65,6 @@ moment.locale('tr')
     TagModule,
     ArticleModule,
     FileModule,
-    SettingsModule,
     PageModule,
     ReportModule,
   ],

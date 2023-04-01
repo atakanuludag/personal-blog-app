@@ -47,7 +47,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
   },
 }))
 
-const AdminArticleNew: NextPageType = ({ settings }: PageProps) => {
+const AdminArticleNew: NextPageType = ({}: PageProps) => {
   const [params, setParams] = useState<ListQueryModel>({
     s: '',
     sType: 'title',

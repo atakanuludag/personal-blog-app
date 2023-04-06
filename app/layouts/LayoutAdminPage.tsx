@@ -15,6 +15,9 @@ import NavigationAdmin from '@/layouts/NavigationAdmin'
 import { LayoutPageType } from '@/models/enums'
 import AppPropsModel from '@/models/AppPropsModel'
 
+// ** components
+import ThemeModeSwitch from '@/components/ThemeModeSwitch'
+
 type LayoutAdminPageProps = {
   children: ReactNode
   title: string
@@ -27,9 +30,9 @@ export default function LayoutAdminPage({
   return (
     <Box display="flex">
       {title && <NextSeo title={title} description={title} />}
-
       <NavigationAdmin />
       <Content children={children} layoutPageType={LayoutPageType.AdminPage} />
+      <ThemeModeSwitch />
     </Box>
   )
 }

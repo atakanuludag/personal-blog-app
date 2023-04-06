@@ -32,9 +32,6 @@ import LogoutIcon from '@mui/icons-material/Logout'
 // ** layouts
 import AppBar from '@/layouts/AppBar'
 
-// ** components
-import DarkModeSwitch from '@/components/DarkModeSwitch'
-
 // ** core
 import { THEME_SETTINGS } from '@/core/Constants'
 import { axiosRemoveTokenInterceptor } from '@/core/Axios'
@@ -190,10 +187,6 @@ export default function NavigationAdmin() {
               />
             </ListItemButton>
           </List>
-
-          <Divider />
-
-          <DarkModeSwitch />
         </Box>
       </StyledDrawer>
     </DrawerWrapper>

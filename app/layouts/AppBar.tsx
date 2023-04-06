@@ -15,6 +15,9 @@ import Box from '@mui/material/Box'
 // ** icons
 import MenuIcon from '@mui/icons-material/Menu'
 
+// ** components
+import ThemeModeSwitch from '@/components/ThemeModeSwitch'
+
 const StyledTitle = styled('h1')(({ theme }) => ({
   fontSize: '1.2rem',
   fontWeight: 'bold',
@@ -47,11 +50,19 @@ export default function ApplicationBar({
         <StyledMenuButton color="inherit" edge="start" onClick={toggleDrawer}>
           <MenuIcon />
         </StyledMenuButton>
-        <StyledTitle>
-          <Link component={NextLink} href="/">
-            {personDisplayName}
-          </Link>
-        </StyledTitle>
+        <Box
+          width="100%"
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <StyledTitle>
+            <Link component={NextLink} href="/">
+              {personDisplayName}
+            </Link>
+          </StyledTitle>
+          <ThemeModeSwitch isMobile />
+        </Box>
       </Toolbar>
     </AppBar>
   )

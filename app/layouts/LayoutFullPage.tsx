@@ -14,6 +14,9 @@ import Content from '@/layouts/Content'
 import { LayoutPageType } from '@/models/enums'
 import AppPropsModel from '@/models/AppPropsModel'
 
+// ** components
+import ThemeModeSwitch from '@/components/ThemeModeSwitch'
+
 type LayoutFullPageProps = {
   children: ReactNode
   title: string
@@ -27,6 +30,7 @@ export default function LayoutBlogPage({
     <Box display="flex">
       {title && <NextSeo title={title} description={title} />}
       <Content children={children} layoutPageType={LayoutPageType.FullPage} />
+      <ThemeModeSwitch />
     </Box>
   )
 }

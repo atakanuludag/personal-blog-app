@@ -35,9 +35,6 @@ import SearchIcon from '@mui/icons-material/Search'
 // ** layouts
 import AppBar from '@/layouts/AppBar'
 
-// ** components
-import DarkModeSwitch from '@/components/DarkModeSwitch'
-
 // ** core
 import { THEME_SETTINGS } from '@/core/Constants'
 
@@ -284,11 +281,8 @@ export default function Navigation({ categories, navbarPages }: AppPropsModel) {
                   </ListItemButton>
                 ))}
               </List>
-              <Divider />
             </CategoriesWrapper>
           )}
-
-          <DarkModeSwitch />
         </StyledNav>
       </StyledDrawer>
     </DrawerWrapper>

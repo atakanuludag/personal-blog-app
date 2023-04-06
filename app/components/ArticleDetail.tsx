@@ -17,6 +17,9 @@ import ArticleModel from '@/models/ArticleModel'
 // ** components
 import ArticleLikeButton from '@/components/ArticleLikeButton'
 
+// ** config
+import { UPLOAD_PATH_URL } from '@/config'
+
 type ArticleDetailProps = {
   data: ArticleModel
   currentIpAdressIsLiked: boolean
@@ -49,8 +52,13 @@ export default function ArticleDetail({
   data,
   currentIpAdressIsLiked,
 }: ArticleDetailProps) {
-  const coverImage = `./blog-post-banner.jpeg`
-  //item.coverImage
+  let coverImage = null
+
+  if (data.coverImage) {
+    coverImage = `${UPLOAD_PATH_URL}/${
+      data.coverImage.path ? `${data.coverImage.path}/` : ''
+    }${data.coverImage.filename}`
+  }
 
   return (
     <Article>
@@ -97,10 +105,11 @@ export default function ArticleDetail({
           </Stack>
         </Grid>
 
-        <Grid item>
-          <Image src={coverImage} alt={data.title} />
-        </Grid>
-
+        {coverImage && (
+          <Grid item>
+            <Image src={coverImage} alt={data.title} />
+          </Grid>
+        )}
         <Grid item>
           <Content dangerouslySetInnerHTML={{ __html: data.content }}></Content>
         </Grid>

@@ -25,6 +25,9 @@ import useText from '@/hooks/useText'
 // ** models
 import ArticleModel from '@/models/ArticleModel'
 
+// ** config
+import { UPLOAD_PATH_URL } from '@/config'
+
 type ArticleItemProps = {
   data: ArticleModel
 }
@@ -68,9 +71,13 @@ const StackItem = styled('p')(({ theme }) => ({
 
 function ArticleItem({ data }: ArticleItemProps, ref?: Ref<HTMLDivElement>) {
   const { textLimit } = useText()
+  let coverImage = null
 
-  const coverImage = `/example-thumb.jpeg`
-  //data.coverImage
+  if (data.coverImage) {
+    coverImage = `${UPLOAD_PATH_URL}/${
+      data.coverImage.path ? `${data.coverImage.path}/` : ''
+    }${data.coverImage.filename}`
+  }
 
   return (
     <Item ref={ref}>
@@ -83,12 +90,14 @@ function ArticleItem({ data }: ArticleItemProps, ref?: Ref<HTMLDivElement>) {
         spacing={1}
       >
         <Grid item>
-          <StyledImage
-            src={coverImage}
-            alt={data.title}
-            width="150"
-            height="150"
-          />
+          {coverImage && (
+            <StyledImage
+              src={coverImage}
+              alt={data.title}
+              width="150"
+              height="150"
+            />
+          )}
         </Grid>
 
         <Grid item xs={12} sm>

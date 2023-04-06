@@ -24,9 +24,6 @@ import useRefScroll from '@/hooks/useRefScroll'
 import PageProps from '@/models/AppPropsModel'
 import ListQueryModel from '@/models/ListQueryModel'
 
-// ** utils
-import GlobalStore from '@/utils/GlobalStore'
-
 // ** config
 import { PAGE_SIZE } from '@/config'
 

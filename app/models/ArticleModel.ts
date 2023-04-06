@@ -1,6 +1,7 @@
 import CategoryModel from '@/models/CategoryModel'
 import TagModel from '@/models/TagModel'
 import { ArticleType } from '@/models/enums'
+import FileModel from '@/models/FileModel'
 
 export default interface ArticleModel {
   readonly _id: string
@@ -12,7 +13,7 @@ export default interface ArticleModel {
   readonly categories: CategoryModel[]
   readonly tags: TagModel[]
   readonly articleType: ArticleType
-  readonly coverImage: string
+  readonly coverImage: FileModel
   readonly isShow: boolean
   readonly viewCount: number
   readonly likedCount: number

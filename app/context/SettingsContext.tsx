@@ -1,19 +1,11 @@
 // ** react
-import { createContext, ReactNode, useEffect, useState } from 'react'
+import { createContext, ReactNode, useState } from 'react'
 
-// ** core
-import { LOCAL_STORAGES } from '@/core/Constants'
+// ** services
+import NextService from '@/services/NextService'
 
-// ** utils
-import { setLocalStorage, getLocalStorage } from '@/utils/LocalStorage'
-
-// ** hooks
-import useInitialBrowserMode from '@/hooks/useInitialBrowserMode'
-
-export enum PaletteMode {
-  DARK = 'dark',
-  LIGHT = 'light',
-}
+// ** models
+import { PaletteMode } from '@/models/enums'
 
 export type SettingsModelContextProps = {
   themeMode: PaletteMode
@@ -25,19 +17,20 @@ export const SettingsContext = createContext<SettingsModelContextProps>({
   handleChangeThemeMode: () => {},
 })
 
-const SettingsProvider = ({ children }: { children: ReactNode }) => {
-  const initialDarkMode = useInitialBrowserMode()
-  const [themeMode, setThemeMode] = useState<PaletteMode>(initialDarkMode())
+type SettingsProviderProps = {
+  children: ReactNode
+  initialThemeMode: PaletteMode
+}
 
-  const lsDarkMode = getLocalStorage(LOCAL_STORAGES.LS_DARK_MODE)
-  //todo: dark mode belki cookiye alırım. çünkü ilkte site beyaz gelip sonra siyah oluyor.
-  useEffect(() => {
-    if (lsDarkMode) setThemeMode(lsDarkMode)
-  }, [lsDarkMode])
+const SettingsProvider = ({
+  children,
+  initialThemeMode,
+}: SettingsProviderProps) => {
+  const [themeMode, setThemeMode] = useState<PaletteMode>(initialThemeMode)
 
-  const handleChangeThemeMode = (mode: PaletteMode) => {
-    setLocalStorage(LOCAL_STORAGES.LS_DARK_MODE, mode)
+  const handleChangeThemeMode = async (mode: PaletteMode) => {
     setThemeMode(mode)
+    await NextService.changeThemeMode(mode)
   }
 
   return (

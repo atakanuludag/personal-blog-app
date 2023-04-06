@@ -5,7 +5,10 @@ import Switch from '@mui/material/Switch'
 import Box from '@mui/material/Box'
 
 // ** hooks
-import useSettingsContext, { PaletteMode } from '@/hooks/useSettingsContext'
+import useSettingsContext from '@/hooks/useSettingsContext'
+
+// ** models
+import { PaletteMode } from '@/models/enums'
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,

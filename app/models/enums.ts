@@ -13,3 +13,8 @@ export enum ArticleType {
   Post = 'post',
   Page = 'page',
 }
+
+export enum PaletteMode {
+  DARK = 'dark',
+  LIGHT = 'light',
+}

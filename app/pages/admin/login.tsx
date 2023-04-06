@@ -44,6 +44,9 @@ import Cookie from '@/utils/Cookie'
 // ** services
 import NextService from '@/services/NextService'
 
+// ** core
+import { COOKIE_NAMES } from '@/core/Constants'
+
 const LoginBox = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(5),
@@ -187,7 +190,7 @@ const AdminLogin: NextPageType = ({}: PageProps) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const { getCookie } = Cookie(req, res)
-  const auth: TokenModel | null = getCookie('auth', true)
+  const auth: TokenModel | null = getCookie(COOKIE_NAMES.AUTH, true)
 
   if (!auth) {
     return {

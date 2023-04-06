@@ -22,6 +22,7 @@ import LayoutBlogPage from '@/layouts/LayoutBlogPage'
 
 // ** core
 import { axiosSetTokenInterceptor } from '@/core/Axios'
+import { COOKIE_NAMES } from '@/core/Constants'
 
 // ** utils
 import GlobalStore from '@/utils/GlobalStore'
@@ -32,6 +33,7 @@ import CategoryService from '@/services/CategoryService'
 import PageService from '@/services/PageService'
 
 // ** models
+import { PaletteMode } from '@/models/enums'
 import TokenModel from '@/models/TokenModel'
 import PageModel from '@/models/PageModel'
 import PageWithLayoutType from '@/models/PageWithLayoutType'
@@ -67,7 +69,6 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
     ? Component.layout || ((children: any) => children)
     : LayoutBlogPage
   const componentTitle = Component.title || null
-
   const auth: TokenModel | undefined = pageProps.auth
   if (auth) axiosSetTokenInterceptor(auth.accessToken)
 
@@ -108,7 +109,7 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
             site_name: SITE_TITLE,
           }}
         />
-        <SettingsProvider>
+        <SettingsProvider initialThemeMode={pageProps.themeMode}>
           <ComponentProvider>
             <Theme>
               <ErrorBoundary>
@@ -150,8 +151,10 @@ PersonalBlogApp.getInitialProps = async (appContext: AppContext) => {
     if (page) navbarPages.push(page)
   }
 
-  const auth: TokenModel | null = getCookie('auth', true)
+  const themeMode: PaletteMode = getCookie(COOKIE_NAMES.THEME_MODE)
+  const auth: TokenModel | null = getCookie(COOKIE_NAMES.AUTH, true)
   if (auth) {
+    //Todo: bakılacak.
     //Client side ve server side interceptor için ayrı ayrı setlememiz gerekiyor. Bence bu bir bug.
     //Server side'da token ile bir işlem yapmayacağım için burayı kapattım.
     //AxiosSetTokenInterceptor(auth.accessToken)
@@ -160,9 +163,13 @@ PersonalBlogApp.getInitialProps = async (appContext: AppContext) => {
 
   GlobalStore.set('userIpAdress', userIpAdress) //use SSR and use getServerSideProps
 
-  appProps.pageProps.categories = categories
-  appProps.pageProps.navbarPages = navbarPages
-  appProps.pageProps.userIpAdress = userIpAdress
+  appProps.pageProps = {
+    ...appProps.pageProps,
+    categories,
+    navbarPages,
+    userIpAdress,
+    themeMode: themeMode || PaletteMode.DARK,
+  }
   return { ...appProps }
 }
 

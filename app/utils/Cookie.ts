@@ -9,7 +9,7 @@ export default function Cookie(
 
   if (req && res) cookies = new Cookies(req, res)
 
-  const setCookie = (name: string, data: any, expires: Date) =>
+  const setCookie = (name: string, data: any, expires?: Date) =>
     cookies &&
     cookies.set(name, typeof data === 'object' ? JSON.stringify(data) : data, {
       httpOnly: true,

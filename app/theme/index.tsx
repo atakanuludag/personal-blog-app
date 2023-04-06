@@ -4,14 +4,17 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { common, grey } from '@mui/material/colors'
 import { trTR } from '@mui/material/locale'
-import useSettingsContext, { PaletteMode } from '@/hooks/useSettingsContext'
+import useSettingsContext from '@/hooks/useSettingsContext'
 import componentsOverride from '@/theme/overrides'
 
-interface ITheme {
+// ** models
+import { PaletteMode } from '@/models/enums'
+
+type ThemeProps = {
   children: ReactNode
 }
 
-const AppTheme = ({ children }: ITheme) => {
+const AppTheme = ({ children }: ThemeProps) => {
   const { themeMode } = useSettingsContext()
   const darkColor = '#202020'
 
@@ -74,12 +77,11 @@ const AppTheme = ({ children }: ITheme) => {
     [themeMode],
   )
 
-  const [theme, setTheme] = useState<Theme>(darkTheme)
+  const theme = themeMode === PaletteMode.DARK ? darkTheme : lightTheme
 
-  useEffect(() => {
-    console.log('themeMode', themeMode)
-    setTheme(themeMode === PaletteMode.DARK ? darkTheme : lightTheme)
-  }, [themeMode])
+  // useEffect(() => {
+  //   setTheme(themeMode === PaletteMode.DARK ? darkTheme : lightTheme)
+  // }, [themeMode])
 
   // const theme: Theme = themeMode === PaletteMode.DARK ? darkTheme : lightTheme
   theme.components = componentsOverride(theme)

@@ -94,6 +94,8 @@ const ProfileSection = styled('div')(() => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  paddingLeft: 5,
+  paddingRight: 5,
   '&>*': {
     paddingBottom: '20px',
   },

@@ -14,6 +14,7 @@ type AppPropsModel = {
   userIpAdress: string
   auth?: TokenModel
   themeMode: PaletteMode
+  deviceType: string
 }
 
 export default AppPropsModel

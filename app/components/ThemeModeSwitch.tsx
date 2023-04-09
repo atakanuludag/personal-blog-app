@@ -16,17 +16,31 @@ export default function ThemeModeSwitch({
 }: ThemeModeSwitchProps) {
   const { themeMode, handleChangeThemeMode } = useSettingsContext()
   return (
-    <Box display="flex" p={!isMobile ? 1.5 : 0}>
-      <input
-        className="theme-mode-toggle"
-        type="checkbox"
-        checked={themeMode === PaletteMode.DARK ? true : false}
-        onChange={(e) =>
-          handleChangeThemeMode(
-            e.target.checked ? PaletteMode.DARK : PaletteMode.LIGHT,
-          )
-        }
-      />
+    <Box
+      position="fixed"
+      top={!isMobile ? 0 : 20}
+      right={!isMobile ? 0 : 20}
+      display="flex"
+      p={!isMobile ? 1.5 : 0}
+      alignItems="flex-start"
+    >
+      <Box position="relative">
+        <input
+          id="theme-mode-toggle"
+          className="theme-mode-toggle"
+          type="checkbox"
+          checked={themeMode === PaletteMode.DARK ? true : false}
+          onChange={(e) =>
+            handleChangeThemeMode(
+              e.target.checked ? PaletteMode.DARK : PaletteMode.LIGHT,
+            )
+          }
+        />
+        <label
+          className="theme-mode-toggle-label"
+          htmlFor="theme-mode-toggle"
+        />
+      </Box>
     </Box>
   )
 }

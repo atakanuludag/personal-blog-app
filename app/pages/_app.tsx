@@ -7,6 +7,9 @@ import type { AppContext, AppProps } from 'next/app'
 import Head from 'next/head'
 
 // ** third party
+import { EmotionCache } from '@emotion/cache'
+import { CacheProvider } from '@emotion/react'
+import parser from 'ua-parser-js'
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { NextSeo } from 'next-seo'
@@ -27,6 +30,7 @@ import { COOKIE_NAMES } from '@/core/Constants'
 // ** utils
 import GlobalStore from '@/utils/GlobalStore'
 import Cookie from '@/utils/Cookie'
+import createEmotionCache from '@/utils/CreateEmotionCache'
 
 // ** services
 import CategoryService from '@/services/CategoryService'
@@ -47,7 +51,6 @@ import SettingsProvider from '@/context/SettingsContext'
 import ComponentProvider from '@/context/ComponentContext'
 
 // ** components
-import ErrorBoundary from '@/components/ErrorBoundary'
 import FormDrawer from '@/components/FormDrawer'
 import ConfirmDialog from '@/components/ConfirmDialog'
 
@@ -62,9 +65,14 @@ import {
 type PersonalBlogAppProps = {
   Component: PageWithLayoutType<AppPropsModel>
   pageProps: AppPropsModel
+  emotionCache: EmotionCache
 } & AppProps
 
-const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
+const clientSideEmotionCache = createEmotionCache()
+
+const PersonalBlogApp = (props: PersonalBlogAppProps) => {
+  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
+
   const Layout = Component.layout
     ? Component.layout || ((children: any) => children)
     : LayoutBlogPage
@@ -85,7 +93,6 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
         },
       }),
   )
-
   return (
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
@@ -111,8 +118,8 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
         />
         <SettingsProvider initialThemeMode={pageProps.themeMode}>
           <ComponentProvider>
-            <Theme>
-              <ErrorBoundary>
+            <CacheProvider value={emotionCache}>
+              <Theme deviceType={pageProps.deviceType}>
                 <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
                   <Layout title={componentTitle} {...pageProps}>
                     <Component {...pageProps} />
@@ -120,8 +127,8 @@ const PersonalBlogApp = ({ Component, pageProps }: PersonalBlogAppProps) => {
                     <ConfirmDialog />
                   </Layout>
                 </SnackbarProvider>
-              </ErrorBoundary>
-            </Theme>
+              </Theme>
+            </CacheProvider>
           </ComponentProvider>
         </SettingsProvider>
         <ReactQueryDevtools initialIsOpen={false} />
@@ -134,6 +141,8 @@ PersonalBlogApp.getInitialProps = async (appContext: AppContext) => {
   const { req, res } = appContext.ctx
   const { getCookie } = Cookie(req, res)
   const appProps = await App.getInitialProps(appContext)
+  const deviceType = parser(req?.headers['user-agent']).device.type || 'desktop'
+
   let userIpAdress = '127.0.0.1'
 
   if (res) {
@@ -168,6 +177,7 @@ PersonalBlogApp.getInitialProps = async (appContext: AppContext) => {
     categories,
     navbarPages,
     userIpAdress,
+    deviceType,
     themeMode: themeMode || PaletteMode.DARK,
   }
   return { ...appProps }

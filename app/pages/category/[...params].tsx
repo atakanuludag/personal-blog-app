@@ -51,6 +51,11 @@ const CategoryParams: NextPage<CategoryParamsProps> = ({
           variant="subtitle1"
           fontWeight="bold"
         >{`Kategori: ${categoryData.title}`}</Typography>
+        {categoryData?.description && (
+          <Typography component="p" variant="caption" color="gray">
+            {categoryData.description}
+          </Typography>
+        )}
       </Paper>
       <Box component="section">
         {data.results.map((item) => (

@@ -1,5 +1,5 @@
 // ** react
-import { ChangeEvent } from 'react'
+import { ChangeEvent, Fragment } from 'react'
 
 // ** next
 import { useRouter } from 'next/router'
@@ -39,6 +39,7 @@ export default function PaginationComponent({
       query: { ...query, page },
     })
   }
+  if (!totalPages || !currentPage) return <Fragment />
 
   return (
     <Box display="flex" justifyContent="center" alignItems="center">

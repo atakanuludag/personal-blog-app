@@ -14,6 +14,8 @@ const TagService = {
         params,
       })
       .then((res) => res.data),
+  getItemByGuid: async (guid: string): Promise<TagModel> =>
+    axios.get(`${serviceBaseUrl}/getByGuid/${guid}`).then((res) => res.data),
   deleteItem: async (id: string): Promise<void> => {
     try {
       await axios.delete(`${serviceBaseUrl}/${id}`)

@@ -58,7 +58,7 @@ export class ArticleController {
   @Get()
   async list(@Query() query: ArticleListQueryDto) {
     const q = this.queryHelper.instance(query)
-    return await this.service.getItems(q, query.category)
+    return await this.service.getItems(q, query.category, query.tag)
   }
 
   @ApiOperation({

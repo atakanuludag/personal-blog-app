@@ -51,6 +51,7 @@ export class ArticleService {
   async getItems(
     query: IQuery,
     category: ObjectId,
+    tag: ObjectId,
   ): Promise<IListQueryResponse<IArticle[]> | IArticle[]> {
     try {
       const { pagination, searchQuery, order, paging } = query
@@ -60,6 +61,7 @@ export class ArticleService {
       }
 
       if (category) filter.categories = category
+      if (tag) filter.tags = tag
 
       if (paging) {
         const { page, pageSize, skip } = pagination

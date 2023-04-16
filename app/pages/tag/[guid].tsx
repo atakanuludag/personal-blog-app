@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography'
 
 // ** services
 import ArticleService from '@/services/ArticleService'
-import CategoryService from '@/services/CategoryService'
+import TagService from '@/services/TagService'
 
 // ** components
 import ArticleItem from '@/components/ArticleItem'
@@ -24,21 +24,18 @@ import PageProps from '@/models/AppPropsModel'
 import { PAGE_SIZE, REVALIDATE_SECONDS } from '@/config'
 import ArticleModel from '@/models/ArticleModel'
 import ListResponseModel from '@/models/ListResponseModel'
-import CategoryModel from '@/models/CategoryModel'
+import TagModel from '@/models/TagModel'
 
 type StaticPathParams = {
   guid: string
 }
 
-type CategoryGuidProps = {
+type TagGuidProps = {
   data: ListResponseModel<ArticleModel[]>
-  categoryData: CategoryModel
+  tagData: TagModel
 } & PageProps
 
-const CategoryGuid: NextPage<CategoryGuidProps> = ({
-  data,
-  categoryData,
-}: CategoryGuidProps) => {
+const TagGuid: NextPage<TagGuidProps> = ({ data, tagData }: TagGuidProps) => {
   return (
     <Fragment>
       <Paper
@@ -50,12 +47,7 @@ const CategoryGuid: NextPage<CategoryGuidProps> = ({
           component="h1"
           variant="subtitle1"
           fontWeight="bold"
-        >{`Kategori: ${categoryData.title}`}</Typography>
-        {categoryData?.description && (
-          <Typography component="p" variant="caption" color="gray">
-            {categoryData.description}
-          </Typography>
-        )}
+        >{`Etiket: ${tagData.title}`}</Typography>
       </Paper>
       <Box component="section">
         {data.results.map((item) => (
@@ -70,11 +62,11 @@ const CategoryGuid: NextPage<CategoryGuidProps> = ({
           routerQuery={[
             {
               path: 'routerUrl',
-              query: 'category',
+              query: 'tag',
             },
             {
               path: 'guid',
-              query: categoryData.guid,
+              query: tagData.guid,
             },
           ]}
         />
@@ -92,10 +84,10 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
     }
   }
 
-  const categoryData = await CategoryService.getItemByGuid(params?.guid)
+  const tagData = await TagService.getItemByGuid(params?.guid)
 
   const articleData = (await ArticleService.getItems({
-    category: categoryData._id,
+    tag: tagData._id,
     page: 1,
     pageSize: PAGE_SIZE,
     paging: 1,
@@ -109,21 +101,21 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
   return {
     props: {
       data: articleData,
-      categoryData,
+      tagData,
     },
     revalidate: REVALIDATE_SECONDS,
   }
 }
 
 export const getStaticPaths: GetStaticPaths<StaticPathParams> = async () => {
-  const categories = (await CategoryService.getItems({
+  const tags = (await TagService.getItems({
     paging: 0,
-  })) as CategoryModel[]
+  })) as TagModel[]
 
-  const paths = categories.map((item) => ({
+  const paths = tags.map((item) => ({
     params: { guid: item.guid },
   }))
 
   return { paths, fallback: false }
 }
-export default CategoryGuid
+export default TagGuid

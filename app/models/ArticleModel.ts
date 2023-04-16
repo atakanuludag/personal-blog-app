@@ -37,4 +37,5 @@ export type ArticleFormModel = {
 
 export type ArticleListQueryModel = {
   readonly category?: string
+  readonly tag?: string
 } & ListQueryModel

@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography'
 
 // ** services
 import ArticleService from '@/services/ArticleService'
-import CategoryService from '@/services/CategoryService'
+import TagService from '@/services/TagService'
 
 // ** components
 import ArticleItem from '@/components/ArticleItem'
@@ -24,21 +24,21 @@ import PageProps from '@/models/AppPropsModel'
 import { PAGE_SIZE, REVALIDATE_SECONDS } from '@/config'
 import ArticleModel from '@/models/ArticleModel'
 import ListResponseModel from '@/models/ListResponseModel'
-import CategoryModel from '@/models/CategoryModel'
+import TagModel from '@/models/TagModel'
 
 type StaticPathParams = {
-  guid: string
+  params: string[]
 }
 
-type CategoryGuidProps = {
+type TagParamsProps = {
   data: ListResponseModel<ArticleModel[]>
-  categoryData: CategoryModel
+  tagData: TagModel
 } & PageProps
 
-const CategoryGuid: NextPage<CategoryGuidProps> = ({
+const TagParams: NextPage<TagParamsProps> = ({
   data,
-  categoryData,
-}: CategoryGuidProps) => {
+  tagData,
+}: TagParamsProps) => {
   return (
     <Fragment>
       <Paper
@@ -50,12 +50,7 @@ const CategoryGuid: NextPage<CategoryGuidProps> = ({
           component="h1"
           variant="subtitle1"
           fontWeight="bold"
-        >{`Kategori: ${categoryData.title}`}</Typography>
-        {categoryData?.description && (
-          <Typography component="p" variant="caption" color="gray">
-            {categoryData.description}
-          </Typography>
-        )}
+        >{`Etiket: ${tagData.title}`}</Typography>
       </Paper>
       <Box component="section">
         {data.results.map((item) => (
@@ -70,11 +65,11 @@ const CategoryGuid: NextPage<CategoryGuidProps> = ({
           routerQuery={[
             {
               path: 'routerUrl',
-              query: 'category',
+              query: 'tag',
             },
             {
               path: 'guid',
-              query: categoryData.guid,
+              query: tagData.guid,
             },
           ]}
         />
@@ -86,17 +81,22 @@ const CategoryGuid: NextPage<CategoryGuidProps> = ({
 export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
   params,
 }) => {
-  if (!params?.guid) {
+  const _params = params?.params
+
+  if (!_params || _params?.length <= 0) {
     return {
       notFound: true,
     }
   }
 
-  const categoryData = await CategoryService.getItemByGuid(params?.guid)
+  const tagGuid = _params[0]
+  const page = _params[1]
+
+  const tagData = await TagService.getItemByGuid(tagGuid)
 
   const articleData = (await ArticleService.getItems({
-    category: categoryData._id,
-    page: 1,
+    tag: tagData._id,
+    page: Number(page),
     pageSize: PAGE_SIZE,
     paging: 1,
   })) as ListResponseModel<ArticleModel[]>
@@ -109,21 +109,47 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
   return {
     props: {
       data: articleData,
-      categoryData,
+      tagData,
     },
     revalidate: REVALIDATE_SECONDS,
   }
 }
 
 export const getStaticPaths: GetStaticPaths<StaticPathParams> = async () => {
-  const categories = (await CategoryService.getItems({
+  const tags = (await TagService.getItems({
     paging: 0,
-  })) as CategoryModel[]
+  })) as TagModel[]
 
-  const paths = categories.map((item) => ({
-    params: { guid: item.guid },
-  }))
+  let tagGuidTotalPages = []
+
+  for await (const tag of tags) {
+    const articlePaging = (await ArticleService.getItems({
+      tag: tag._id,
+      paging: 1,
+      page: 1,
+      pageSize: PAGE_SIZE,
+    })) as ListResponseModel<ArticleModel[]>
+
+    tagGuidTotalPages.push({
+      guid: tag.guid,
+      totalPages: articlePaging.totalPages,
+    })
+  }
+  const paths: {
+    params: {
+      params: string[]
+    }
+  }[] = []
+
+  for (const tag of tagGuidTotalPages) {
+    if (tag.totalPages <= 1) continue
+    ;[...Array(tag.totalPages)].forEach((_, i) => {
+      paths.push({
+        params: { params: [tag.guid, String(i + 1)] },
+      })
+    })
+  }
 
   return { paths, fallback: false }
 }
-export default CategoryGuid
+export default TagParams

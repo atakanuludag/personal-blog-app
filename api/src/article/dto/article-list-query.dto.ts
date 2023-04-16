@@ -12,4 +12,13 @@ export class ArticleListQueryDto extends ListQueryDto {
   @IsOptional()
   @IsMongoId()
   category: ObjectId
+
+  @ApiProperty({
+    description: 'Tag ID',
+    type: String,
+    required: false,
+  })
+  @IsOptional()
+  @IsMongoId()
+  tag: ObjectId
 }

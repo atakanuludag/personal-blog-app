@@ -31,7 +31,7 @@ type GuidProps = {
 } & PageProps
 
 type StaticPathParams = {
-  guid?: string
+  guid: string
 }
 
 const Guid: NextPage<GuidProps> = ({
@@ -126,7 +126,7 @@ export const getStaticPaths: GetStaticPaths<StaticPathParams> = async () => {
     params: { guid: page.guid },
   }))
   const paths = [...articlePaths, ...pagePaths]
-  return { paths, fallback: 'blocking' }
+  return { paths, fallback: false }
 }
 
 export default Guid

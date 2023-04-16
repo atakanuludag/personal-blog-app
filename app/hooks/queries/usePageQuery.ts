@@ -1,9 +1,4 @@
-import {
-  QueryClient,
-  useQueryClient,
-  useInfiniteQuery,
-  useQuery,
-} from 'react-query'
+import { useQuery } from 'react-query'
 import { QUERY_NAMES } from '@/core/Constants'
 import PageService from '@/services/PageService'
 import ListQueryModel from '@/models/ListQueryModel'

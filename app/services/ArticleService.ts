@@ -1,14 +1,13 @@
 import axios from '@/core/Axios'
-import ArticleModel from '@/models/ArticleModel'
+import ArticleModel, { ArticleListQueryModel } from '@/models/ArticleModel'
 import ListResponseModel from '@/models/ListResponseModel'
-import ListQueryModel from '@/models/ListQueryModel'
 import readingTime from 'reading-time'
 
 const serviceBaseUrl = `/article`
 
 const ArticleService = {
   getItems: async (
-    params?: ListQueryModel,
+    params?: ArticleListQueryModel,
   ): Promise<ListResponseModel<ArticleModel[]> | ArticleModel[] | null> => {
     try {
       const ret = await axios.get(`${serviceBaseUrl}`, {

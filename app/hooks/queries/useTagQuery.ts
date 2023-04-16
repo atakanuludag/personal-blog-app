@@ -1,4 +1,4 @@
-import { QueryKey, useQuery, UseQueryOptions } from 'react-query'
+import { useQuery, UseQueryOptions } from 'react-query'
 import { QUERY_NAMES } from '@/core/Constants'
 import TagService from '@/services/TagService'
 import ListQueryModel from '@/models/ListQueryModel'

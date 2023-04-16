@@ -4,6 +4,8 @@ export const APP_BUILD_DIR = process.env.APP_BUILD_DIR
 export const API_URL = process.env.NEXT_PUBLIC_API_URL
 export const UPLOAD_PATH_URL = process.env.NEXT_PUBLIC_UPLOAD_PATH_URL
 export const REVALIDATE_SECRET = process.env.NEXT_PUBLIC_REVALIDATE_SECRET
+export const REVALIDATE_SECONDS =
+  Number(process.env.NEXT_PUBLIC_REVALIDATE_HOURS) * 120
 export const SITE_TITLE = process.env.NEXT_PUBLIC_SITE_TITLE
 export const SITE_DESCRIPTION = process.env.NEXT_PUBLIC_SITE_DESCRIPTION
 export const PERSONAL_DESCRIPTION = process.env.NEXT_PUBLIC_PERSONAL_DESCRIPTION

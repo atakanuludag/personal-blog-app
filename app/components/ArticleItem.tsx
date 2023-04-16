@@ -1,6 +1,3 @@
-// ** react
-import { forwardRef, Ref } from 'react'
-
 // ** next
 import { default as NextLink } from 'next/link'
 import Image from 'next/image'
@@ -69,7 +66,7 @@ const StackItem = styled('p')(({ theme }) => ({
   fontSize: '0.770rem',
 }))
 
-function ArticleItem({ data }: ArticleItemProps, ref?: Ref<HTMLDivElement>) {
+function ArticleItem({ data }: ArticleItemProps) {
   const { textLimit } = useText()
   let coverImage = null
 
@@ -80,7 +77,7 @@ function ArticleItem({ data }: ArticleItemProps, ref?: Ref<HTMLDivElement>) {
   }
 
   return (
-    <Item ref={ref}>
+    <Item>
       <Grid
         container
         direction="row"
@@ -138,4 +135,4 @@ function ArticleItem({ data }: ArticleItemProps, ref?: Ref<HTMLDivElement>) {
   )
 }
 
-export default forwardRef(ArticleItem)
+export default ArticleItem

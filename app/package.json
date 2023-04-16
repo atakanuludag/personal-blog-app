@@ -24,7 +24,6 @@
     "@types/cookies": "^0.7.7",
     "@types/draft-js": "^0.11.10",
     "@types/react-draft-wysiwyg": "^1.13.4",
-    "@types/react-transition-group": "^4.4.5",
     "axios": "^1.2.3",
     "cookies": "^0.8.0",
     "css-mediaquery": "^0.1.2",
@@ -46,7 +45,6 @@
     "react-draft-wysiwyg": "^1.15.0",
     "react-query": "^3.39.2",
     "react-share": "^4.4.1",
-    "react-transition-group": "^4.4.5",
     "reading-time": "^1.5.0",
     "ua-parser-js": "^1.0.35",
     "yup": "^0.32.11"

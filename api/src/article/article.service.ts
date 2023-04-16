@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model, ObjectId } from 'mongoose'
+import { FilterQuery, Model, ObjectId } from 'mongoose'
 import { IArticle } from '@/article/interfaces/article.interface'
 import { IListQueryResponse, IQuery } from '@/common/interfaces/query.interface'
 import { Article, ArticleDocument } from '@/article/schemas/article.schema'
@@ -50,13 +50,21 @@ export class ArticleService {
 
   async getItems(
     query: IQuery,
+    category: ObjectId,
   ): Promise<IListQueryResponse<IArticle[]> | IArticle[]> {
     try {
       const { pagination, searchQuery, order, paging } = query
+
+      let filter: FilterQuery<ArticleDocument> = {
+        ...searchQuery,
+      }
+
+      if (category) filter.categories = category
+
       if (paging) {
         const { page, pageSize, skip } = pagination
         const items = await this.serviceModel
-          .find(searchQuery)
+          .find(filter)
           .limit(pageSize)
           .sort(order)
           .skip(skip)
@@ -65,7 +73,7 @@ export class ArticleService {
           .populate('coverImage')
           .exec()
 
-        const count = await this.serviceModel.find(searchQuery).countDocuments()
+        const count = await this.serviceModel.find(filter).countDocuments()
 
         const totalPages = Math.ceil(count / pageSize)
 
@@ -82,7 +90,7 @@ export class ArticleService {
       }
 
       return await this.serviceModel
-        .find(searchQuery)
+        .find(filter)
         .sort(order)
         .populate('categories')
         .populate('tags')

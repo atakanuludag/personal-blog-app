@@ -1,5 +1,5 @@
 // ** react
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 
 // ** bext
 import { NextPage, GetStaticPaths, GetStaticProps } from 'next/types'
@@ -13,12 +13,8 @@ import Pagination from '@/components/Pagination'
 
 // ** models
 import AppPropsModel from '@/models/AppPropsModel'
-import ListQueryModel from '@/models/ListQueryModel'
 import ListResponseModel from '@/models/ListResponseModel'
 import ArticleModel from '@/models/ArticleModel'
-
-// ** utils
-import GlobalStore from '@/utils/GlobalStore'
 
 // ** services
 import ArticleService from '@/services/ArticleService'
@@ -31,29 +27,29 @@ type StaticPathParams = {
 }
 
 type PageProps = {
-  page: number
-  articles: ListResponseModel<ArticleModel[]>
+  currentPage: number
+  data: ListResponseModel<ArticleModel[]>
 } & AppPropsModel
 
-const Page: NextPage<PageProps> = ({ page, articles }: PageProps) => {
-  const [params, setParams] = useState<ListQueryModel>({
-    page,
-    pageSize: PAGE_SIZE,
-  })
+const Page: NextPage<PageProps> = ({ currentPage, data }: PageProps) => {
   return (
     <Fragment>
       <Box component="section">
-        {articles.results.map((item) => (
-          <ArticleItem key={item._id} data={item} />
+        {data.results.map((item) => (
+          <ArticleItem data={item} key={item._id} />
         ))}
       </Box>
 
       <Box component="section">
         <Pagination
-          type="pagination"
-          params={params}
-          setParams={setParams}
-          totalPages={articles.totalPages}
+          totalPages={data.totalPages}
+          currentPage={currentPage}
+          routerQuery={[
+            {
+              path: 'routerUrl',
+              query: 'page',
+            },
+          ]}
         />
       </Box>
     </Fragment>
@@ -63,22 +59,22 @@ const Page: NextPage<PageProps> = ({ page, articles }: PageProps) => {
 export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
   params,
 }) => {
-  const page = Number(params?.page)
-  if (isNaN(page) || !page) {
+  const currentPage = Number(params?.page)
+  if (isNaN(currentPage) || !currentPage) {
     return {
       notFound: true,
     }
   }
 
-  const articles = (await ArticleService.getItems({
-    page: page,
+  const data = (await ArticleService.getItems({
+    page: currentPage,
     pageSize: PAGE_SIZE,
   })) as ListResponseModel<ArticleModel[]>
 
   return {
     props: {
-      page,
-      articles,
+      currentPage,
+      data,
     },
   }
 }
@@ -92,7 +88,7 @@ export const getStaticPaths: GetStaticPaths<StaticPathParams> = async () => {
   const paths = [...Array(article.totalPages)].map((_, page: number) => ({
     params: { page: (page + 1).toString() },
   }))
-  return { paths, fallback: 'blocking' }
+  return { paths, fallback: false }
 }
 
 export default Page

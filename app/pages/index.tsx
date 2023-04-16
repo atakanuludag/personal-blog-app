@@ -1,79 +1,67 @@
 // ** react
-import { Fragment, useRef, useState } from 'react'
+import { Fragment } from 'react'
 
 // ** next
-import { NextPage, GetServerSideProps } from 'next/types'
-
-// ** third party
-import { dehydrate, QueryClient } from 'react-query'
-import { TransitionGroup } from 'react-transition-group'
+import { NextPage, GetStaticProps } from 'next/types'
 
 // ** mui
-import Collapse from '@mui/material/Collapse'
 import Box from '@mui/material/Box'
 
 // ** components
 import ArticleItem from '@/components/ArticleItem'
 import Pagination from '@/components/Pagination'
 
-// ** hooks
-import useArticleQuery from '@/hooks/queries/useArticleQuery'
-import useRefScroll from '@/hooks/useRefScroll'
+// ** service
+import ArticleService from '@/services/ArticleService'
 
 // ** models
 import PageProps from '@/models/AppPropsModel'
-import ListQueryModel from '@/models/ListQueryModel'
+import ListResponseModel from '@/models/ListResponseModel'
+import ArticleModel from '@/models/ArticleModel'
 
 // ** config
-import { PAGE_SIZE } from '@/config'
+import { PAGE_SIZE, REVALIDATE_SECONDS } from '@/config'
 
-const Home: NextPage<PageProps> = ({}: PageProps) => {
-  const [params, setParams] = useState<ListQueryModel>({
-    page: 1,
-    pageSize: PAGE_SIZE,
-  })
-  const { articleInfiniteQuery } = useArticleQuery(params)
-  const { data, isSuccess, hasNextPage } = articleInfiniteQuery()
-  const articleRef = useRef<HTMLDivElement>(null)
-  const refScroll = useRefScroll(articleRef)
+type HomeIndexProps = {
+  data: ListResponseModel<ArticleModel[]>
+} & PageProps
 
-  if (isSuccess && data) {
-    return (
-      <Fragment>
-        <Box component="section">
-          <TransitionGroup>
-            {data.pages.map((p) =>
-              p.results.map((item) => (
-                <Collapse key={item._id} addEndListener={refScroll}>
-                  <ArticleItem data={item} ref={articleRef} />
-                </Collapse>
-              )),
-            )}
-          </TransitionGroup>
-        </Box>
+const Home: NextPage<HomeIndexProps> = ({ data }: HomeIndexProps) => {
+  return (
+    <Fragment>
+      <Box component="section">
+        {data.results.map((item) => (
+          <ArticleItem data={item} key={item._id} />
+        ))}
+      </Box>
 
-        <Box component="section" hidden={!hasNextPage}>
-          <Pagination params={params} setParams={setParams} />
-        </Box>
-      </Fragment>
-    )
-  }
-
-  return <Fragment> </Fragment>
+      <Box component="section">
+        <Pagination
+          totalPages={data.totalPages}
+          currentPage={data.currentPage}
+          routerQuery={[
+            {
+              path: 'routerUrl',
+              query: 'page',
+            },
+          ]}
+        />
+      </Box>
+    </Fragment>
+  )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const queryClient = new QueryClient()
-  const { articlePrefetchInfiniteQuery } = useArticleQuery({
+export const getStaticProps: GetStaticProps = async () => {
+  const data = (await ArticleService.getItems({
     page: 1,
     pageSize: PAGE_SIZE,
-  })
-  await articlePrefetchInfiniteQuery(queryClient)
+  })) as ListResponseModel<ArticleModel[]>
 
   return {
     props: {
-      dehydratedState: JSON.parse(JSON.stringify(dehydrate(queryClient))),
+      data,
     },
+    revalidate: REVALIDATE_SECONDS,
   }
 }
 

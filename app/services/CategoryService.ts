@@ -14,6 +14,8 @@ const CategoryService = {
         params,
       })
       .then((res) => res.data),
+  getItemByGuid: async (guid: string): Promise<CategoryModel> =>
+    axios.get(`${serviceBaseUrl}/getByGuid/${guid}`).then((res) => res.data),
   guidExists: async (guid: string): Promise<boolean> =>
     axios
       .get(`${serviceBaseUrl}/guidExists/${guid}`)

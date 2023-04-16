@@ -28,7 +28,6 @@ import { axiosSetTokenInterceptor } from '@/core/Axios'
 import { COOKIE_NAMES } from '@/core/Constants'
 
 // ** utils
-import GlobalStore from '@/utils/GlobalStore'
 import Cookie from '@/utils/Cookie'
 import createEmotionCache from '@/utils/CreateEmotionCache'
 
@@ -169,8 +168,6 @@ PersonalBlogApp.getInitialProps = async (appContext: AppContext) => {
     //AxiosSetTokenInterceptor(auth.accessToken)
     appProps.pageProps.auth = auth
   }
-
-  GlobalStore.set('userIpAdress', userIpAdress) //use SSR and use getServerSideProps
 
   appProps.pageProps = {
     ...appProps.pageProps,

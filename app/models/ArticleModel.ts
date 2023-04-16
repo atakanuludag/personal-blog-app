@@ -2,6 +2,7 @@ import CategoryModel from '@/models/CategoryModel'
 import TagModel from '@/models/TagModel'
 import { ArticleType } from '@/models/enums'
 import FileModel from '@/models/FileModel'
+import ListQueryModel from '@/models/ListQueryModel'
 
 export default interface ArticleModel {
   readonly _id: string
@@ -33,3 +34,7 @@ export type ArticleFormModel = {
   readonly coverImage: string
   readonly isShow: boolean
 }
+
+export type ArticleListQueryModel = {
+  readonly category?: string
+} & ListQueryModel

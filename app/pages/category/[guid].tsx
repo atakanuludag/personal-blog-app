@@ -26,6 +26,8 @@ import ArticleModel from '@/models/ArticleModel'
 import ListResponseModel from '@/models/ListResponseModel'
 import CategoryModel from '@/models/CategoryModel'
 
+// Todo: category ve tags gibi sayfalarda next-seo ayarları yapılacak.
+
 type StaticPathParams = {
   guid: string
 }

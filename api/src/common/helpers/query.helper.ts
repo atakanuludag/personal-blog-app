@@ -2,16 +2,25 @@ import { Query } from '@nestjs/common'
 import { ListQueryDto } from '@/common/dto/list-query.dto'
 import { IQuery } from '@/common/interfaces/query.interface'
 import { OrderType } from '@/common/interfaces/enums'
+import { FilterQuery } from 'mongoose'
 export class QueryHelper {
   public constructor() {}
 
   public instance(@Query() query: ListQueryDto): IQuery {
-    const s: string = query.s
-    let searchQuery = {}
-    const search = s ? s.toLocaleLowerCase() : null
-    const searchType = query.sType ? query.sType : null
-    if (search && searchType)
-      searchQuery = { [searchType]: { $regex: `^${search}`, $options: '$i' } }
+    let searchQuery: FilterQuery<any> = {}
+
+    if (query?.s && query?.sType) {
+      const sTypeArr = query?.sType.split(',').map((s) => s.trim())
+      searchQuery = {
+        $or: [],
+      }
+      sTypeArr.forEach((s) => {
+        searchQuery['$or'].push({
+          [s]: { $regex: `${query.s.toLocaleLowerCase()}`, $options: '$i' },
+        })
+      })
+    }
+
     const orderName = query.order || 'createdAt'
     const orderType =
       typeof query.orderBy !== 'undefined' && query.orderBy.toString() !== ''

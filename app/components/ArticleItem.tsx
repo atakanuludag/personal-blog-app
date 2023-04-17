@@ -24,6 +24,7 @@ import ArticleModel from '@/models/ArticleModel'
 
 // ** config
 import { UPLOAD_PATH_URL } from '@/config'
+import { Ref, forwardRef } from 'react'
 
 type ArticleItemProps = {
   data: ArticleModel
@@ -66,7 +67,7 @@ const StackItem = styled('p')(({ theme }) => ({
   fontSize: '0.770rem',
 }))
 
-function ArticleItem({ data }: ArticleItemProps) {
+function ArticleItem({ data }: ArticleItemProps, ref?: Ref<HTMLDivElement>) {
   const { textLimit } = useText()
   let coverImage = null
 
@@ -135,4 +136,4 @@ function ArticleItem({ data }: ArticleItemProps) {
   )
 }
 
-export default ArticleItem
+export default forwardRef(ArticleItem)

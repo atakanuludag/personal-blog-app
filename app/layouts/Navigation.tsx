@@ -3,6 +3,7 @@ import { Fragment, useState, KeyboardEvent, MouseEvent } from 'react'
 
 // ** next
 import { default as NextLink } from 'next/link'
+import { useRouter } from 'next/router'
 
 // ** third party
 import { css } from '@emotion/css'
@@ -123,9 +124,11 @@ const CategoriesWrapper = styled(Box)(({ theme }) => ({
 }))
 
 export default function Navigation({ categories, navbarPages }: AppPropsModel) {
+  const router = useRouter()
   const theme = useTheme()
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'))
   const [navOpen, setNavOpen] = useState(false)
+  const [searchText, setSearchText] = useState(router.query.s || '')
 
   const drawerPaperCSS = css`
     box-shadow: ${theme.palette.mode === 'dark'
@@ -236,6 +239,8 @@ export default function Navigation({ categories, navbarPages }: AppPropsModel) {
                   </InputAdornment>
                 }
                 label="Ara..."
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
               />
             </FormControl>
           </Box>

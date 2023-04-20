@@ -229,7 +229,7 @@ export default function Navigation({ categories, navbarPages }: AppPropsModel) {
                   <ListItemButton
                     key={page._id}
                     LinkComponent={NextLink}
-                    href={`/page/${page.guid}`}
+                    href={`/${page.guid}`}
                   >
                     <ListItemText primary={page.title} />
                   </ListItemButton>

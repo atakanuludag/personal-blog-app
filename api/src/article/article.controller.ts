@@ -27,6 +27,7 @@ import { ListResultDto } from '@/common/dto/list-result.dto'
 import { GuidParamsDto, IdParamsDto } from '@/common/dto/params.dto'
 import { DefaultException } from '@/common/dto/default-exception.dto'
 import { ArticleService } from '@/article/article.service'
+import { PageService } from '@/page/page.service'
 import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { QueryHelper } from '@/common/helpers/query.helper'
 import { CoreMessage, ArticleMessage } from '@/common/messages'
@@ -39,6 +40,7 @@ import { ArticleListQueryDto } from '@/article/dto/article-list-query.dto'
 export class ArticleController {
   constructor(
     private readonly service: ArticleService,
+    private readonly pageService: PageService,
     private readonly coreMessage: CoreMessage,
     private readonly articleMessage: ArticleMessage,
     private readonly queryHelper: QueryHelper,
@@ -124,8 +126,10 @@ export class ArticleController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() body: ArticleDto) {
-    const exists = await this.service.guidExists(body.guid)
-    if (exists)
+    const articleGuidExists = await this.service.guidExists(body.guid)
+    const pageGuidExists = await this.pageService.guidExists(body.guid)
+
+    if (articleGuidExists || pageGuidExists)
       throw new ExceptionHelper(
         this.articleMessage.EXISTING_GUID,
         HttpStatus.BAD_REQUEST,

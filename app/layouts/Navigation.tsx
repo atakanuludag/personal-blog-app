@@ -20,18 +20,12 @@ import Divider from '@mui/material/Divider'
 import Link from '@mui/material/Link'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
-import IconButton from '@mui/material/IconButton'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import InputLabel from '@mui/material/InputLabel'
-import InputAdornment from '@mui/material/InputAdornment'
-import FormControl from '@mui/material/FormControl'
 
 // ** icons
 import TwitterIcon from '@mui/icons-material/Twitter'
 import InstagramIcon from '@mui/icons-material/Instagram'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import GitHubIcon from '@mui/icons-material/GitHub'
-import SearchIcon from '@mui/icons-material/Search'
 
 // ** layouts
 import AppBar from '@/layouts/AppBar'
@@ -41,6 +35,9 @@ import { THEME_SETTINGS } from '@/core/Constants'
 
 // ** models
 import AppPropsModel from '@/models/AppPropsModel'
+
+// ** components
+import SearchInput from '@/components/SearchInput'
 
 // ** config
 import {
@@ -128,7 +125,6 @@ export default function Navigation({ categories, navbarPages }: AppPropsModel) {
   const theme = useTheme()
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'))
   const [navOpen, setNavOpen] = useState(false)
-  const [searchText, setSearchText] = useState(router.query.s || '')
 
   const drawerPaperCSS = css`
     box-shadow: ${theme.palette.mode === 'dark'
@@ -221,28 +217,7 @@ export default function Navigation({ categories, navbarPages }: AppPropsModel) {
           </ProfileSection>
 
           <Box padding={1}>
-            <FormControl variant="outlined" size="small" fullWidth>
-              <InputLabel htmlFor="search-input">Ara...</InputLabel>
-              <OutlinedInput
-                id="search-input"
-                size="small"
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      size="small"
-                      // onClick={handleClickShowPassword}
-                      // onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      <SearchIcon sx={{ fontSize: '20px' }} />
-                    </IconButton>
-                  </InputAdornment>
-                }
-                label="Ara..."
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-              />
-            </FormControl>
+            <SearchInput size="small" fullWidth />
           </Box>
 
           <Divider />

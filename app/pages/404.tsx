@@ -2,7 +2,6 @@
 import { Fragment } from 'react'
 
 // ** next
-import { NextPage } from 'next/types'
 import { default as NextLink } from 'next/link'
 
 // ** third party
@@ -13,17 +12,12 @@ import { default as MaterialLink } from '@mui/material/Link'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
-import InputLabel from '@mui/material/InputLabel'
-import InputAdornment from '@mui/material/InputAdornment'
-import FormControl from '@mui/material/FormControl'
-import IconButton from '@mui/material/IconButton'
-import OutlinedInput from '@mui/material/OutlinedInput'
-
-// ** icons
-import SearchIcon from '@mui/icons-material/Search'
 
 // ** layouts
 import LayoutFullPage from '@/layouts/LayoutFullPage'
+
+// ** components
+import SearchInput from '@/components/SearchInput'
 
 // ** models
 import NextPageType from '@/models/NextPageType'
@@ -67,28 +61,7 @@ const NotFoundPage: NextPageType = () => {
         </Grid>
 
         <Grid item>
-          <FormControl variant="outlined" fullWidth>
-            <InputLabel htmlFor="outlined-adornment-password">
-              Site içinde ara...
-            </InputLabel>
-            <OutlinedInput
-              type="text"
-              value=""
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    // onClick={handleClickShowPassword}
-                    // onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                </InputAdornment>
-              }
-              label="Password"
-            />
-          </FormControl>
+          <SearchInput fullWidth />
         </Grid>
       </Grid>
     </Fragment>

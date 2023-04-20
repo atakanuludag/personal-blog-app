@@ -17,6 +17,7 @@ import Typography from '@mui/material/Typography'
 // ** components
 import ArticleItem from '@/components/ArticleItem'
 import Pagination from '@/components/Pagination'
+import SearchInput from '@/components/SearchInput'
 
 // ** hooks
 import useArticleQuery from '@/hooks/queries/useArticleQuery'
@@ -56,7 +57,7 @@ const Search: NextPage<SearchProps> = ({ s }: SearchProps) => {
 
   return (
     <Fragment>
-      {s && (
+      {s ? (
         <Paper
           elevation={1}
           component="header"
@@ -68,29 +69,42 @@ const Search: NextPage<SearchProps> = ({ s }: SearchProps) => {
             fontWeight="bold"
           >{`Arama Sonuçları: ${s}`}</Typography>
         </Paper>
+      ) : (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height={'100%'}
+        >
+          <SearchInput sx={{ width: '40%' }} />
+        </Box>
       )}
 
-      <Box component="section">
-        <TransitionGroup>
-          {data?.pages.map((p) =>
-            p.results.map((item) => (
-              <Collapse key={item._id} addEndListener={refScroll}>
-                <ArticleItem data={item} ref={articleRef} />
-              </Collapse>
-            )),
-          )}
-        </TransitionGroup>
-      </Box>
+      {s && data?.pages && (
+        <Fragment>
+          <Box component="section">
+            <TransitionGroup>
+              {data?.pages.map((p) =>
+                p.results.map((item) => (
+                  <Collapse key={item._id} addEndListener={refScroll}>
+                    <ArticleItem data={item} ref={articleRef} />
+                  </Collapse>
+                )),
+              )}
+            </TransitionGroup>
+          </Box>
 
-      <Box component="section" hidden={!hasNextPage}>
-        <Pagination
-          type="moreButton"
-          params={params}
-          setParams={setParams}
-          fetchNextPage={fetchNextPage}
-          loading={isLoading || isFetching || isFetchingNextPage}
-        />
-      </Box>
+          <Box component="section" hidden={!hasNextPage}>
+            <Pagination
+              type="moreButton"
+              params={params}
+              setParams={setParams}
+              fetchNextPage={fetchNextPage}
+              loading={isLoading || isFetching || isFetchingNextPage}
+            />
+          </Box>
+        </Fragment>
+      )}
     </Fragment>
   )
 }

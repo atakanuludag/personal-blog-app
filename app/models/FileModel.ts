@@ -15,7 +15,7 @@ export default interface FileModel {
 }
 
 export type FileListQueryModel = {
-  folderId: string | null
+  folderId?: string | null
 } & ListQueryModel
 
 export interface FileForm {

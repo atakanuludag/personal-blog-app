@@ -25,10 +25,10 @@ import useRefScroll from '@/hooks/useRefScroll'
 
 // ** models
 import PageProps from '@/models/AppPropsModel'
+import ListQueryModel from '@/models/ListQueryModel'
 
 // ** config
 import { PAGE_SIZE } from '@/config'
-import ListQueryModel from '@/models/ListQueryModel'
 
 type SearchProps = {
   s: string | undefined
@@ -52,6 +52,8 @@ const Search: NextPage<SearchProps> = ({ s }: SearchProps) => {
     isFetching,
     isFetchingNextPage,
   } = articleInfiniteQuery(!s ? false : true)
+  const loading = isLoading || isFetching || isFetchingNextPage
+
   const articleRef = useRef<HTMLDivElement>(null)
   const refScroll = useRefScroll(articleRef)
 
@@ -96,11 +98,11 @@ const Search: NextPage<SearchProps> = ({ s }: SearchProps) => {
 
           <Box component="section" hidden={!hasNextPage}>
             <Pagination
-              type="moreButton"
+              type="moreButtonServerSide"
               params={params}
               setParams={setParams}
               fetchNextPage={fetchNextPage}
-              loading={isLoading || isFetching || isFetchingNextPage}
+              loading={loading}
             />
           </Box>
         </Fragment>

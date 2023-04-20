@@ -25,11 +25,15 @@ import useFileQuery from '@/hooks/queries/useFileQuery'
 
 // ** components
 import FileBrowser from '@/components/file-browser'
+import Pagination from '@/components/Pagination'
+
+// ** config
+import { PAGE_SIZE } from '@/config'
 
 const Files: NextPageType = ({}: PageProps) => {
   const [params, setParams] = useState<FileListQueryModel>({
     page: 1,
-    pageSize: 9999, //todo: paging yapılacak.
+    pageSize: PAGE_SIZE,
     folderId: null,
     order: 'isFolder',
     orderBy: OrderType.ASC,
@@ -37,9 +41,9 @@ const Files: NextPageType = ({}: PageProps) => {
 
   const { filesQuery } = useFileQuery(params)
 
-  const { data, isLoading, isFetching } = filesQuery()
-  const items = data as ListResponseModel<FileModel[]>
-  const loading = isLoading || isFetching
+  const files = filesQuery()
+  const data = files.data as ListResponseModel<FileModel[]>
+  const loading = files.isLoading || files.isFetching
 
   return (
     <Box>
@@ -58,16 +62,25 @@ const Files: NextPageType = ({}: PageProps) => {
           </Stack>
         </Grid>
 
-        <Grid item md={3} xs={12}>
-          {' '}
-        </Grid>
+        <Grid item md={3} xs={12} />
       </Grid>
       <Box sx={{ flexGrow: 1 }}>
         <FileBrowser
-          items={items}
+          items={data?.results}
           loading={loading}
           params={params}
           setParams={setParams}
+        />
+      </Box>
+
+      <Box>
+        <Pagination
+          type="normalServerSide"
+          params={params}
+          setParams={setParams}
+          loading={loading}
+          totalPages={data?.totalPages}
+          currentPage={data?.currentPage}
         />
       </Box>
     </Box>

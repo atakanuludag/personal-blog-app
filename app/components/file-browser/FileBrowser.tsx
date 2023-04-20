@@ -5,7 +5,6 @@ import {
   MouseEvent,
   Dispatch,
   SetStateAction,
-  useCallback,
   ChangeEvent,
   useEffect,
 } from 'react'
@@ -38,7 +37,6 @@ import Skeleton from '@mui/material/Skeleton'
 import { PopoverPosition } from '@mui/material/Popover'
 
 // ** models
-import ListResponseModel from '@/models/ListResponseModel'
 import FileModel, { FileListQueryModel } from '@/models/FileModel'
 
 // icons
@@ -66,8 +64,6 @@ import { UPLOAD_PATH_URL } from '@/config'
 
 // ** hooks
 import useComponentContext from '@/hooks/useComponentContext'
-import { AxiosError } from 'axios'
-import { BaseServiceErrorModel } from '@/models/ServiceBaseModel'
 
 const FileItemBoxStyled = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -111,7 +107,7 @@ const ToggleButtonStyled = styled(ToggleButton)(({ theme }) => ({
 export type FileBrowserProps = {
   params: FileListQueryModel
   setParams: Dispatch<SetStateAction<FileListQueryModel>>
-  items: ListResponseModel<FileModel[]>
+  items: FileModel[]
   loading: boolean
 }
 type UploadingFilesProps = {
@@ -230,7 +226,7 @@ export default function FileBrowser({
   }
 
   const handleFolderClick = (folderId: string) => {
-    const findFolderData = items.results.find((item) => item._id === folderId)
+    const findFolderData = items.find((item) => item._id === folderId)
     setParams({
       ...params,
       folderId,
@@ -300,11 +296,6 @@ export default function FileBrowser({
     if (!contextMenuData) return
     handleMenuClose()
     await FileService.deleteItem(contextMenuData._id)
-    // try {
-    //   await FileService.deleteItem(contextMenuData._id)
-    // } catch (err: BaseServiceErrorModel) {
-    //   console.log('err', err)
-    // }
 
     queryClient.invalidateQueries(QUERY_NAMES.FILES)
     enqueueSnackbar(
@@ -316,12 +307,6 @@ export default function FileBrowser({
       },
     )
     handleConfirmDialogClose()
-    // handleConfirmDialogClose()
-    // setLoading(true)
-    // for await (const id of selected) {
-    //   await deleteService(id)
-    // }
-    // setLoading(false)
   }
 
   const handleButtonClickUploadFile = (e: ChangeEvent<HTMLInputElement>) => {
@@ -419,7 +404,7 @@ export default function FileBrowser({
                 </Typography>
               </DragAndDropWrapperStyled>
             )}
-            {items.results.map((item) => (
+            {items.map((item) => (
               <Grid item key={item._id}>
                 <Box sx={{ opacity: !dragAndDropActive ? 1 : 0.3 }}>
                   <Tooltip title={item.title} placement="bottom">
@@ -500,7 +485,7 @@ export default function FileBrowser({
       ) : (
         <Grid item xs={12}>
           <Stack spacing={1} direction="row">
-            {[...Array(3)].map((index) => (
+            {[...Array(3)].map((_, index) => (
               <Skeleton
                 key={index}
                 variant="rounded"

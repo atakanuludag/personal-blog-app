@@ -18,6 +18,12 @@ type FormDrawerProps = {
   submit?: boolean
 }
 
+type PopoverProps = {
+  open: boolean
+  anchorEl: Element | ((element: Element) => Element) | null | undefined
+  content: JSX.Element
+}
+
 export type ComponentModelContextProps = {
   formDrawer: FormDrawerProps
   setFormDrawerData: (data: FormDrawerProps) => void
@@ -25,6 +31,9 @@ export type ComponentModelContextProps = {
   confirmDialog: ConfirmDialogProps
   setConfirmDialogData: (data: ConfirmDialogProps) => void
   handleConfirmDialogClose: () => void
+  popover: PopoverProps
+  setPopoverData: (data: PopoverProps) => void
+  handlePopoverClose: () => void
 }
 
 const initialConfirmDialogData: ConfirmDialogProps = {
@@ -44,6 +53,12 @@ const initialFormDrawerData: FormDrawerProps = {
   submit: false,
 }
 
+const initialPopoverData: PopoverProps = {
+  open: false,
+  anchorEl: null,
+  content: <></>,
+}
+
 export const ComponentContext = createContext<ComponentModelContextProps>({
   formDrawer: initialFormDrawerData,
   setFormDrawerData: () => {},
@@ -51,6 +66,9 @@ export const ComponentContext = createContext<ComponentModelContextProps>({
   confirmDialog: initialConfirmDialogData,
   setConfirmDialogData: () => {},
   handleConfirmDialogClose: () => {},
+  setPopoverData: () => {},
+  popover: initialPopoverData,
+  handlePopoverClose: () => {},
 })
 
 const ComponentProvider = ({ children }: { children: ReactNode }) => {
@@ -60,6 +78,8 @@ const ComponentProvider = ({ children }: { children: ReactNode }) => {
   const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogProps>(
     initialConfirmDialogData,
   )
+
+  const [popover, setPopover] = useState<PopoverProps>(initialPopoverData)
 
   const setFormDrawerData = (data: FormDrawerProps) => setFormDrawer(data)
 
@@ -82,6 +102,10 @@ const ComponentProvider = ({ children }: { children: ReactNode }) => {
     setTimeout(() => setConfirmDialogData(initialConfirmDialogData), 500)
   }
 
+  const setPopoverData = (data: PopoverProps) => setPopover(data)
+
+  const handlePopoverClose = () => setPopover(initialPopoverData)
+
   return (
     <ComponentContext.Provider
       value={{
@@ -91,6 +115,9 @@ const ComponentProvider = ({ children }: { children: ReactNode }) => {
         confirmDialog,
         setConfirmDialogData,
         handleConfirmDialogClose,
+        popover,
+        setPopoverData,
+        handlePopoverClose,
       }}
     >
       {children}

@@ -1,148 +1,106 @@
-import { CSSProperties, useState } from 'react'
-import { stateToHTML } from 'draft-js-export-html'
+// ** third party
 import {
-  ContentBlock,
-  EditorState,
-  convertToRaw,
-  CharacterMetadata,
-} from 'draft-js'
-// import { Editor as DraftEditor } from 'react-draft-wysiwyg'
+  InitialConfigType,
+  LexicalComposer,
+} from '@lexical/react/LexicalComposer'
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
+import { ContentEditable } from '@lexical/react/LexicalContentEditable'
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin'
+import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin'
+import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary'
+import { HeadingNode, QuoteNode } from '@lexical/rich-text'
+import { TableCellNode, TableNode, TableRowNode } from '@lexical/table'
+import { ListItemNode, ListNode } from '@lexical/list'
+import { CodeHighlightNode, CodeNode } from '@lexical/code'
+import { AutoLinkNode, LinkNode } from '@lexical/link'
+import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin'
+import { ListPlugin } from '@lexical/react/LexicalListPlugin'
+import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin'
+import { TRANSFORMERS } from '@lexical/markdown'
 
-import DraftEditor from '@draft-js-plugins/editor'
+// ** lexical plugins
+//import TreeViewPlugin from '@/components/editor/plugins/TreeViewPlugin'
+import ToolbarPlugin from '@/components/editor/plugins/ToolbarPlugin'
+import ListMaxIndentLevelPlugin from '@/components/editor/plugins/ListMaxIndentLevelPlugin'
+import CodeHighlightPlugin from '@/components/editor/plugins/CodeHighlightPlugin'
+import AutoLinkPlugin from '@/components/editor/plugins/AutoLinkPlugin'
 
-import Box from '@mui/material/Box'
+// ** lexical theme
+import theme from '@/components/editor/LexicalTheme'
+
+// ** mui
 import { styled } from '@mui/material/styles'
-import {
-  red,
-  pink,
-  purple,
-  deepPurple,
-  indigo,
-  blue,
-  lightBlue,
-  cyan,
-  teal,
-  green,
-  lightGreen,
-  lime,
-  yellow,
-  amber,
-  orange,
-  deepOrange,
-  brown,
-  blueGrey,
-} from '@mui/material/colors'
+import Box from '@mui/material/Box'
 
-import EditorToolbar from '@/components/editor/toolbar'
-import FormatBoldIcon from '@mui/icons-material/FormatBold'
-
-const EditorWrapper = styled(Box)(({ theme }) => ({
+const EditorWrapperBox = styled(Box)(({ theme }) => ({
+  width: '100%',
   borderWidth: 1,
   borderStyle: 'solid',
-  borderColor: theme.palette.secondary.main,
+  borderColor: theme.palette.grey[theme.palette.mode === 'dark' ? 800 : 400],
+  borderRadius: theme.spacing(0.5),
 }))
 
-const colors = [
-  red[500],
-  pink[500],
-  purple[500],
-  deepPurple[500],
-  indigo[500],
-  blue[500],
-  lightBlue[500],
-  cyan[500],
-  teal[500],
-  green[500],
-  lightGreen[500],
-  lime[500],
-  yellow[500],
-  amber[500],
-  orange[500],
-  deepOrange[500],
-  brown[500],
-  blueGrey[500],
-]
+const EditorBox = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  borderTopWidth: 1,
+  borderTopStyle: 'solid',
+  borderTopColor: theme.palette.grey[theme.palette.mode === 'dark' ? 800 : 400],
+}))
 
-function Editor() {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty())
-  const html = stateToHTML(editorState.getCurrentContent(), {
-    inlineStyles: {
-      [`fontColor-${red[500]}`]: { style: { color: red[500] } },
-    },
-  })
-
-  let fontColorsMap: any = {}
-  colors.forEach((val) => (fontColorsMap[`fontColor-${val}`] = { color: val }))
-
-  let bgColorsMap: any = {}
-  colors.forEach(
-    (val) => (bgColorsMap[`bgColor-${val}`] = { backgroundColor: val }),
-  )
-
-  const editorColors = Object.assign(fontColorsMap, bgColorsMap)
-
-  type GenericObject = { [key: string]: CSSProperties }
-  let styleMap: GenericObject = {
-    ...editorColors,
-    ALIGN_CENTER: {
-      display: 'flex',
-      justifyContent: 'center',
-    },
-    ALIGN_LEFT: {
-      display: 'flex',
-      justifyContent: 'flex-start',
-    },
-    ALIGN_RIGHT: {
-      display: 'flex',
-      justifyContent: 'flex-end',
-    },
-  }
-
-  // const blockStyleFn = (contentBlock: any) => {
-  //   const type = contentBlock.getType()
-  //   if (type === 'test') {
-  //     contentBlock.findStyleRanges((e: any) => {
-  //       console.log('e', e)
-  //       // if (e.hasStyle('center')) {
-  //       //   alignment = 'center';
-  //       // }
-  //       // if (e.hasStyle('right')) {
-  //       //   alignment = 'right';
-  //       // }
-  //     })
-
-  //     return 'superFancyBlockquote'
-  //   }
-
-  //   return ''
-  // }
-
-  console.log('styleMap', styleMap)
-
+function Placeholder() {
   return (
-    <EditorWrapper>
-      <EditorToolbar
-        editorState={editorState}
-        setEditorState={setEditorState}
-      />
-      <DraftEditor
-        customStyleMap={styleMap}
-        editorState={editorState}
-        onChange={setEditorState}
-        // blockStyleFn={blockStyleFn}
-        // onEditorStateChange={setEditorState}
-        // toolbarHidden
-        // toolbar={{
-        //   inline: {
-        //     bold: {
-        //       icon: <FormatBoldIcon color="primary" />,
-        //       className: undefined,
-        //     },
-        //   },
-        // }}
-      />
-    </EditorWrapper>
+    <Box position="absolute" top={13} left={10} color={'grey'} zIndex={-1}>
+      Başlamak için bir şeyler yazın...
+    </Box>
   )
 }
 
-export default Editor
+export default function Editor() {
+  const editorConfig: InitialConfigType = {
+    // The editor theme
+    theme,
+    namespace: 'editor',
+    // Handling of errors during update
+    onError(error: Error) {
+      throw error
+    },
+    // Any custom nodes go here
+    nodes: [
+      HeadingNode,
+      ListNode,
+      ListItemNode,
+      QuoteNode,
+      CodeNode,
+      CodeHighlightNode,
+      TableNode,
+      TableCellNode,
+      TableRowNode,
+      AutoLinkNode,
+      LinkNode,
+    ],
+  }
+
+  return (
+    <LexicalComposer initialConfig={editorConfig}>
+      <EditorWrapperBox>
+        <ToolbarPlugin />
+        <EditorBox>
+          <RichTextPlugin
+            contentEditable={<ContentEditable className="editor-input" />}
+            placeholder={<Placeholder />}
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+          <HistoryPlugin />
+          {/* <TreeViewPlugin /> */}
+          <AutoFocusPlugin />
+          <CodeHighlightPlugin />
+          <ListPlugin />
+          <LinkPlugin />
+          <AutoLinkPlugin />
+          <ListMaxIndentLevelPlugin maxDepth={7} />
+          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+        </EditorBox>
+      </EditorWrapperBox>
+    </LexicalComposer>
+  )
+}

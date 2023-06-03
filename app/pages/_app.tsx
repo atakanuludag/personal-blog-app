@@ -52,6 +52,7 @@ import ComponentProvider from '@/context/ComponentContext'
 // ** components
 import FormDrawer from '@/components/FormDrawer'
 import ConfirmDialog from '@/components/ConfirmDialog'
+import Popover from '@/components/Popover'
 
 // ** config
 import {
@@ -124,6 +125,7 @@ const PersonalBlogApp = (props: PersonalBlogAppProps) => {
                     <Component {...pageProps} />
                     <FormDrawer />
                     <ConfirmDialog />
+                    <Popover />
                   </Layout>
                 </SnackbarProvider>
               </Theme>

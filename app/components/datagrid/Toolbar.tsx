@@ -13,7 +13,7 @@ import { useQueryClient } from 'react-query'
 // ** icons
 import DeleteIcon from '@mui/icons-material/Delete'
 
-// **h ooks
+// ** hooks
 import useComponentContext from '@/hooks/useComponentContext'
 
 const StyledGridToolbarContainer = styled(GridToolbarContainer)(

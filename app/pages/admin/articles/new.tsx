@@ -1,6 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  RefObject,
+  ComponentType,
+} from 'react'
 import { NextPage } from 'next/types'
-import dynamic from 'next/dynamic'
+import dynamic, { LoaderComponent } from 'next/dynamic'
 import moment from 'moment'
 
 import { useFormik } from 'formik'
@@ -36,10 +42,7 @@ import TagModel from '@/models/TagModel'
 import TagAutocomplete from '@/components/admin/articles/TagAutocomplete'
 import NextPageType from '@/models/NextPageType'
 
-const Editor = dynamic((): Promise<any> => import('@/components/editor'), {
-  //besure to import dynamically
-  ssr: false,
-})
+import Editor from '@/components/editor'
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   '& .MuiPaper-root': {
@@ -107,9 +110,22 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
   })
 
   //https://github.com/stjerdev/draft-js-next-js/blob/master/components/editor/TextEditor.tsx
+
+  // const insertStar = () => {
+  //   quill.
+  //   const cursorPosition = this.quill.getSelection().index;
+  //   this.quill.insertText(cursorPosition, "★");
+  //   this.quill.setSelection(cursorPosition + 1);
+  // }
+
+  // const Editor = dynamic((): Promise<any> => import('@/components/editor'), {
+  //   //besure to import dynamically
+  //   ssr: false,
+  // })
+
   return (
-    <Stack spacing={1}>
-      {/* <Editor /> */}
+    <Stack spacing={1.8}>
+      <Editor />
       {/* 
       <StyledDrawer
         // className={classes.drawer}

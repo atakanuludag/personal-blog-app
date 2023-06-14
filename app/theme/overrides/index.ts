@@ -10,6 +10,8 @@ import TextField from '@/theme/overrides/TextField'
 import OutlinedInput from '@/theme/overrides/OutlinedInput'
 import FormLabel from '@/theme/overrides/FormLabel'
 import Button from '@/theme/overrides/Button'
+import ToggleButton from '@/theme/overrides/ToggleButton'
+import ButtonBase from '@/theme/overrides/ButtonBase'
 import Link from '@/theme/overrides/Link'
 import ListItemButton from '@/theme/overrides/ListItemButton'
 import Checkbox from '@/theme/overrides/Checkbox'
@@ -25,6 +27,8 @@ export default function ComponentsOverrides(theme: Theme) {
     OutlinedInput(theme),
     FormLabel(theme),
     Button(theme),
+    ToggleButton(theme),
+    ButtonBase(theme),
     Link(theme),
     ListItemButton(theme),
     Checkbox(theme),

@@ -1,13 +1,5 @@
 // ** react
-import {
-  Fragment,
-  useState,
-  MouseEvent,
-  Dispatch,
-  SetStateAction,
-  ChangeEvent,
-  useEffect,
-} from 'react'
+import { Fragment, useState, MouseEvent, ChangeEvent, useEffect } from 'react'
 
 // ** next
 import Image from 'next/image'
@@ -36,9 +28,6 @@ import Tooltip from '@mui/material/Tooltip'
 import Skeleton from '@mui/material/Skeleton'
 import { PopoverPosition } from '@mui/material/Popover'
 
-// ** models
-import FileModel, { FileListQueryModel } from '@/models/FileModel'
-
 // icons
 import FolderIcon from '@mui/icons-material/Folder'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
@@ -46,9 +35,15 @@ import EditIcon from '@mui/icons-material/Edit'
 import DownloadIcon from '@mui/icons-material/Download'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 
+// ** models
+import FileModel, { FileListQueryModel } from '@/models/FileModel'
+import { OrderType } from '@/models/enums'
+import ListResponseModel from '@/models/ListResponseModel'
+
 // ** components
 import FileBrowserIcon from '@/components/file-browser/Icons'
 import EditFile from '@/components/admin/files/EditFile'
+import Pagination from '@/components/Pagination'
 
 // ** utils
 import { isImageFile } from '@/utils/MimeTypeNames'
@@ -60,10 +55,11 @@ import FileService from '@/services/FileService'
 import { QUERY_NAMES } from '@/core/Constants'
 
 // ** config
-import { UPLOAD_PATH_URL } from '@/config'
+import { UPLOAD_PATH_URL, PAGE_SIZE } from '@/config'
 
 // ** hooks
 import useComponentContext from '@/hooks/useComponentContext'
+import useFileQuery from '@/hooks/queries/useFileQuery'
 
 const FileItemBoxStyled = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -105,10 +101,9 @@ const ToggleButtonStyled = styled(ToggleButton)(({ theme }) => ({
 }))
 
 export type FileBrowserProps = {
-  params: FileListQueryModel
-  setParams: Dispatch<SetStateAction<FileListQueryModel>>
-  items: FileModel[]
-  loading: boolean
+  enableSelectedFiles?: boolean
+  handleSelectFilesChange?: (files: FileModel[]) => void
+  selectedFiles?: FileModel[]
 }
 type UploadingFilesProps = {
   name: string
@@ -118,15 +113,30 @@ type UploadingFilesProps = {
 }
 
 export default function FileBrowser({
-  params,
-  setParams,
-  items,
-  loading,
+  enableSelectedFiles = false,
+  handleSelectFilesChange = undefined,
+  selectedFiles = new Array<FileModel>(),
 }: FileBrowserProps) {
+  const [params, setParams] = useState<FileListQueryModel>({
+    page: 1,
+    pageSize: PAGE_SIZE,
+    folderId: null,
+    order: 'isFolder',
+    orderBy: OrderType.ASC,
+  })
+
+  const [selectFiles, setSelectFiles] = useState(selectedFiles)
+
   const queryClient = useQueryClient()
   const { enqueueSnackbar } = useSnackbar()
   const { setFormDrawerData, setConfirmDialogData, handleConfirmDialogClose } =
     useComponentContext()
+
+  const { filesQuery } = useFileQuery(params)
+
+  const files = filesQuery()
+  const data = files.data as ListResponseModel<FileModel[]>
+  const loading = files.isLoading || files.isFetching
 
   const [path, setPath] = useState<string | null>(null)
   const [selectFolders, setSelectFolders] = useState(new Array<FileModel>())
@@ -226,7 +236,7 @@ export default function FileBrowser({
   }
 
   const handleFolderClick = (folderId: string) => {
-    const findFolderData = items.find((item) => item._id === folderId)
+    const findFolderData = data.results.find((item) => item._id === folderId)
     setParams({
       ...params,
       folderId,
@@ -326,202 +336,245 @@ export default function FileBrowser({
     queryClient.invalidateQueries(QUERY_NAMES.FILES)
   }
 
-  return (
-    <Grid container direction="row" justifyContent="flex-start" spacing={1}>
-      <Grid item xs={12}>
-        <Stack spacing={1} direction="row">
-          <Button
-            variant="contained"
-            size="small"
-            component="label"
-            disabled={isLoading}
-          >
-            Dosya yükle
-            <input
-              hidden
-              accept="*"
-              multiple
-              type="file"
-              onChange={handleButtonClickUploadFile}
-            />
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
-            onClick={handleButtonClickCreateFolder}
-            disabled={isLoading}
-          >
-            Klasör oluştur
-          </Button>
-        </Stack>
-      </Grid>
-      <Grid item xs={12}>
-        <Box>
-          <Breadcrumbs
-            separator={<NavigateNextIcon fontSize="small" />}
-            aria-label="breadcrumb"
-          >
-            <Button
-              variant="text"
-              color="inherit"
-              onClick={() => handleBreadcrumbClick(null)}
-              disabled={isLoading}
-            >
-              Ana Dizin
-            </Button>
-            {selectFolders.map((folder) => (
-              <Button
-                variant="text"
-                color="inherit"
-                key={folder._id}
-                onClick={() => handleBreadcrumbClick(folder)}
-                disabled={
-                  selectFolders[selectFolders.length - 1]._id === folder._id ||
-                  isLoading
-                }
-              >
-                {folder.title}
-              </Button>
-            ))}
-          </Breadcrumbs>
-        </Box>
-      </Grid>
+  const handleItemClick = (item: FileModel) => {
+    if (item.isFolder) {
+      handleFolderClick(item._id)
+      return
+    }
 
-      {!isLoading ? (
-        <Grid item xs={12}>
-          <Grid
-            container
-            direction="row"
-            justifyContent="flex-start"
-            spacing={1}
-            ref={drop}
-            sx={{ position: 'relative' }}
-          >
-            {dragAndDropActive && (
-              <DragAndDropWrapperStyled>
-                <Typography variant="h6">
-                  Dosyaları buraya sürükleyin.
-                </Typography>
-              </DragAndDropWrapperStyled>
-            )}
-            {items.map((item) => (
-              <Grid item key={item._id}>
-                <Box sx={{ opacity: !dragAndDropActive ? 1 : 0.3 }}>
-                  <Tooltip title={item.title} placement="bottom">
+    if (!enableSelectedFiles || !handleSelectFilesChange) return
+
+    let _selectFiles = [...selectFiles]
+
+    const findIndex = selectedFiles.findIndex((f) => f._id === item._id)
+    if (findIndex < 0) {
+      _selectFiles = [..._selectFiles, item]
+    } else {
+      _selectFiles.splice(findIndex, 1)
+    }
+
+    handleSelectFilesChange(_selectFiles)
+    setSelectFiles(_selectFiles)
+  }
+
+  return (
+    <Box>
+      <Box>
+        <Grid container direction="row" justifyContent="flex-start" spacing={1}>
+          <Grid item xs={12}>
+            <Stack spacing={1} direction="row">
+              <Button
+                variant="contained"
+                size="small"
+                component="label"
+                disabled={isLoading}
+              >
+                Dosya yükle
+                <input
+                  hidden
+                  accept="*"
+                  multiple
+                  type="file"
+                  onChange={handleButtonClickUploadFile}
+                />
+              </Button>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={handleButtonClickCreateFolder}
+                disabled={isLoading}
+              >
+                Klasör oluştur
+              </Button>
+            </Stack>
+          </Grid>
+          <Grid item xs={12}>
+            <Box>
+              <Breadcrumbs
+                separator={<NavigateNextIcon fontSize="small" />}
+                aria-label="breadcrumb"
+              >
+                <Button
+                  variant="text"
+                  color="inherit"
+                  onClick={() => handleBreadcrumbClick(null)}
+                  disabled={isLoading}
+                >
+                  Ana Dizin
+                </Button>
+                {selectFolders.map((folder) => (
+                  <Button
+                    variant="text"
+                    color="inherit"
+                    key={folder._id}
+                    onClick={() => handleBreadcrumbClick(folder)}
+                    disabled={
+                      selectFolders[selectFolders.length - 1]._id ===
+                        folder._id || isLoading
+                    }
+                  >
+                    {folder.title}
+                  </Button>
+                ))}
+              </Breadcrumbs>
+            </Box>
+          </Grid>
+
+          {!isLoading ? (
+            <Grid item xs={12}>
+              <Grid
+                container
+                direction="row"
+                justifyContent="flex-start"
+                spacing={1}
+                ref={drop}
+                sx={{ position: 'relative' }}
+              >
+                {dragAndDropActive && (
+                  <DragAndDropWrapperStyled>
+                    <Typography variant="h6">
+                      Dosyaları buraya sürükleyin.
+                    </Typography>
+                  </DragAndDropWrapperStyled>
+                )}
+                {data.results.map((item: FileModel) => (
+                  <Grid item key={item._id}>
+                    <Box sx={{ opacity: !dragAndDropActive ? 1 : 0.3 }}>
+                      <Tooltip title={item.title} placement="bottom">
+                        <ToggleButtonStyled
+                          fullWidth
+                          size="large"
+                          value={item._id}
+                          selected={selectFiles.some((s) => s._id === item._id)}
+                          onClick={() => handleItemClick(item)}
+                          style={{ cursor: 'pointer' }}
+                          onContextMenu={(e) => handleContextMenu(e, item)}
+                          disabled={isLoading}
+                        >
+                          {item.isFolder === true ? (
+                            <Fragment>
+                              <FolderIcon sx={{ fontSize: 40 }} />
+                              <Typography>{item.title}</Typography>
+                            </Fragment>
+                          ) : (
+                            <FileItemBoxStyled>
+                              {isImageFile(item.mimetype) ? (
+                                <Image
+                                  loading="lazy"
+                                  src={`${UPLOAD_PATH_URL}/${
+                                    item.path ? `${item.path}/` : ''
+                                  }${item.filename}`}
+                                  alt={item.title}
+                                  layout="fill"
+                                  objectFit="contain"
+                                />
+                              ) : (
+                                <Fragment>
+                                  <FileBrowserIcon
+                                    fileName={item.filename}
+                                    fontSize="large"
+                                  />
+                                  <Typography>{item.title}</Typography>
+                                </Fragment>
+                              )}
+                            </FileItemBoxStyled>
+                          )}
+                        </ToggleButtonStyled>
+                      </Tooltip>
+                    </Box>
+                  </Grid>
+                ))}
+
+                {uploadingFiles.map((item, index) => (
+                  <Grid key={index} item>
                     <ToggleButtonStyled
                       fullWidth
                       size="large"
-                      value={item._id}
-                      onClick={() =>
-                        item.isFolder && handleFolderClick(item._id)
-                      }
+                      value=""
                       style={{ cursor: 'pointer' }}
-                      onContextMenu={(e) => handleContextMenu(e, item)}
                       disabled={isLoading}
                     >
-                      {item.isFolder === true ? (
+                      <FileItemBoxStyled>
                         <Fragment>
-                          <FolderIcon sx={{ fontSize: 40 }} />
-                          <Typography>{item.title}</Typography>
-                        </Fragment>
-                      ) : (
-                        <FileItemBoxStyled>
-                          {isImageFile(item.mimetype) ? (
-                            <Image
-                              loading="lazy"
-                              src={`${UPLOAD_PATH_URL}/${
-                                item.path ? `${item.path}/` : ''
-                              }${item.filename}`}
-                              alt={item.title}
-                              layout="fill"
-                              objectFit="contain"
-                            />
-                          ) : (
-                            <Fragment>
-                              <FileBrowserIcon
-                                fileName={item.filename}
-                                fontSize="large"
-                              />
-                              <Typography>{item.title}</Typography>
-                            </Fragment>
+                          <FileBrowserIcon
+                            fileName={item.name}
+                            fontSize="large"
+                          />
+                          <Typography>{item.name}</Typography>
+
+                          {item.waiting && (
+                            <Typography variant="caption">
+                              Bekleniyor...
+                            </Typography>
                           )}
-                        </FileItemBoxStyled>
-                      )}
+                          {item.uploading && (
+                            <Box sx={{ width: '100%', marginTop: '5px' }}>
+                              <LinearProgress />
+                            </Box>
+                          )}
+                        </Fragment>
+                      </FileItemBoxStyled>
                     </ToggleButtonStyled>
-                  </Tooltip>
-                </Box>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
+            </Grid>
+          ) : (
+            <Grid item xs={12}>
+              <Stack spacing={1} direction="row">
+                {[...Array(3)].map((_, index) => (
+                  <Skeleton
+                    key={index}
+                    variant="rounded"
+                    width={100}
+                    height={100}
+                  />
+                ))}
+              </Stack>
+            </Grid>
+          )}
 
-            {uploadingFiles.map((item, index) => (
-              <Grid key={index} item>
-                <ToggleButtonStyled
-                  fullWidth
-                  size="large"
-                  value=""
-                  style={{ cursor: 'pointer' }}
-                  disabled={isLoading}
-                >
-                  <FileItemBoxStyled>
-                    <Fragment>
-                      <FileBrowserIcon fileName={item.name} fontSize="large" />
-                      <Typography>{item.name}</Typography>
-
-                      {item.waiting && (
-                        <Typography variant="caption">Bekleniyor...</Typography>
-                      )}
-                      {item.uploading && (
-                        <Box sx={{ width: '100%', marginTop: '5px' }}>
-                          <LinearProgress />
-                        </Box>
-                      )}
-                    </Fragment>
-                  </FileItemBoxStyled>
-                </ToggleButtonStyled>
-              </Grid>
-            ))}
-          </Grid>
+          <Menu
+            open={contextMenu !== null}
+            onClose={handleMenuClose}
+            anchorReference="anchorPosition"
+            anchorPosition={contextMenu !== null ? contextMenu : undefined}
+          >
+            <MenuItem disabled={isLoading} onClick={handleClickEditMenuItem}>
+              <ListItemIcon>
+                <EditIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Düzenle</ListItemText>
+            </MenuItem>
+            <MenuItem
+              disabled={isLoading}
+              onClick={handleClickDownloadMenuItem}
+            >
+              <ListItemIcon>
+                <DownloadIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>İndir</ListItemText>
+            </MenuItem>
+            <MenuItem disabled={isLoading} onClick={handleClickDeleteMenuItem}>
+              <ListItemIcon>
+                <DeleteForeverIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Sil</ListItemText>
+            </MenuItem>
+          </Menu>
         </Grid>
-      ) : (
-        <Grid item xs={12}>
-          <Stack spacing={1} direction="row">
-            {[...Array(3)].map((_, index) => (
-              <Skeleton
-                key={index}
-                variant="rounded"
-                width={100}
-                height={100}
-              />
-            ))}
-          </Stack>
-        </Grid>
-      )}
+      </Box>
 
-      <Menu
-        open={contextMenu !== null}
-        onClose={handleMenuClose}
-        anchorReference="anchorPosition"
-        anchorPosition={contextMenu !== null ? contextMenu : undefined}
-      >
-        <MenuItem disabled={isLoading} onClick={handleClickEditMenuItem}>
-          <ListItemIcon>
-            <EditIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Düzenle</ListItemText>
-        </MenuItem>
-        <MenuItem disabled={isLoading} onClick={handleClickDownloadMenuItem}>
-          <ListItemIcon>
-            <DownloadIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>İndir</ListItemText>
-        </MenuItem>
-        <MenuItem disabled={isLoading} onClick={handleClickDeleteMenuItem}>
-          <ListItemIcon>
-            <DeleteForeverIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Sil</ListItemText>
-        </MenuItem>
-      </Menu>
-    </Grid>
+      <Box>
+        <Pagination
+          type="normalServerSide"
+          params={params}
+          setParams={setParams}
+          loading={loading}
+          totalPages={data?.totalPages}
+          currentPage={data?.currentPage}
+        />
+      </Box>
+    </Box>
   )
 }

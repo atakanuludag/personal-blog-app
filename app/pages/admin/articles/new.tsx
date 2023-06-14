@@ -4,6 +4,7 @@ import React, {
   useRef,
   RefObject,
   ComponentType,
+  SyntheticEvent,
 } from 'react'
 import { NextPage } from 'next/types'
 import dynamic, { LoaderComponent } from 'next/dynamic'
@@ -35,14 +36,19 @@ import { ArticleFormModel } from '@/models/ArticleModel'
 
 import TagService from '@/services/TagService'
 import useTagQuery from '@/hooks/queries/useTagQuery'
+import useCategoryQuery from '@/hooks/queries/useCategoryQuery'
+
 import ListQueryModel from '@/models/ListQueryModel'
 
 import TagModel from '@/models/TagModel'
 
 import TagAutocomplete from '@/components/admin/articles/TagAutocomplete'
+import AsyncAutocomplete from '@/components/AsyncAutocomplete'
+
 import NextPageType from '@/models/NextPageType'
 
 import Editor from '@/components/editor'
+import CategoryModel from '@/models/CategoryModel'
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   '& .MuiPaper-root': {
@@ -51,15 +57,19 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
 }))
 
 const AdminArticleNew: NextPageType = ({}: PageProps) => {
-  const [params, setParams] = useState<ListQueryModel>({
-    s: '',
-    sType: 'title',
-  })
-  const { tagQuery } = useTagQuery(params)
-  const { data, isSuccess, isLoading, isFetching } = tagQuery({
-    enabled: params.s === '' ? false : true,
-  })
-  const loading = isLoading || isFetching
+  const [categoryQueryParams, setCategoryQueryParams] =
+    useState<ListQueryModel>({
+      s: '',
+      sType: 'title',
+    })
+
+  const { categoriesQuery } = useCategoryQuery(categoryQueryParams)
+  const categories = categoriesQuery(
+    categoryQueryParams.s !== '' ? true : false,
+  )
+  const [categoryValue, setCategoryValue] = useState<CategoryModel[]>([])
+
+  const [categorySearchText, setCategorySearchText] = useState('')
 
   const initialValues: ArticleFormModel = {
     title: '',
@@ -75,10 +85,45 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
 
   // form validate
   const validationSchema = Yup.object().shape({
-    title: Yup.string().required('test.'),
+    title: Yup.string().required('Zorunlu alan'),
+    shortDescription: Yup.string().required('Zorunlu alan'),
+    content: Yup.mixed().required('Zorunlu alan'),
+    guid: Yup.string().required('Zorunlu alan'),
+    publishingDate: Yup.date().required('Zorunlu alan'),
+    categories: Yup.array().min(1, 'Zorunlu alan').required('Zorunlu alan'),
+    tags: Yup.array().min(1, 'Zorunlu alan').required('Zorunlu alan'),
+    //...
   })
 
   const [tagSelect, setTagSelect] = useState<(string | TagModel)[]>([])
+
+  const handleCategoryAutoCompleteInputChange = (
+    e: any,
+    newInputValue: string,
+  ) => {
+    setCategoryQueryParams({
+      ...categoryQueryParams,
+      s: newInputValue,
+    })
+    setCategorySearchText(newInputValue)
+  }
+
+  const handleCategoryAutoCompleteChange = (
+    e: SyntheticEvent<Element, Event>,
+    val: CategoryModel[],
+    reason: AutocompleteChangeReason,
+  ) => {
+    if (reason === 'clear') {
+      setFieldValue('category', null)
+      setCategoryValue([])
+      return
+    }
+    setFieldValue(
+      'category',
+      val.map((v) => v._id),
+    )
+    setCategoryValue(val)
+  }
 
   const {
     errors,
@@ -88,6 +133,7 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
     getFieldProps,
     setFieldValue,
     values,
+    setTouched,
   } = useFormik<ArticleFormModel>({
     initialValues,
     validationSchema,
@@ -108,20 +154,6 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
       // resetForm()
     },
   })
-
-  //https://github.com/stjerdev/draft-js-next-js/blob/master/components/editor/TextEditor.tsx
-
-  // const insertStar = () => {
-  //   quill.
-  //   const cursorPosition = this.quill.getSelection().index;
-  //   this.quill.insertText(cursorPosition, "★");
-  //   this.quill.setSelection(cursorPosition + 1);
-  // }
-
-  // const Editor = dynamic((): Promise<any> => import('@/components/editor'), {
-  //   //besure to import dynamically
-  //   ssr: false,
-  // })
 
   return (
     <Stack spacing={1.8}>
@@ -171,6 +203,26 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
       />
 
       <TagAutocomplete select={tagSelect} setSelect={setTagSelect} />
+
+      <AsyncAutocomplete
+        multiple
+        name="categories"
+        value={categoryValue}
+        inputValue={categorySearchText}
+        label="Evebeyn Kategori"
+        handleInputChange={handleCategoryAutoCompleteInputChange}
+        handleChange={handleCategoryAutoCompleteChange}
+        setTouched={setTouched}
+        data={categories?.data || []}
+        objName="title"
+        loading={categories.isLoading}
+        helperText={
+          errors.categories && touched.categories
+            ? (errors.categories as any)
+            : null
+        }
+        error={errors.categories ? touched.categories : false}
+      />
 
       <FormGroup>
         <FormControlLabel

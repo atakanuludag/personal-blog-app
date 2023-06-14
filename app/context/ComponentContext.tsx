@@ -1,11 +1,15 @@
 // ** react
 import { createContext, ReactNode, useState } from 'react'
 
+// ** mui
+import { Breakpoint } from '@mui/material/styles'
+
 type ConfirmDialogProps = {
   open: boolean
   title: string
-  content: string
+  content: string | JSX.Element
   handleConfirmFunction: () => void
+  maxWidth?: false | Breakpoint | undefined
 }
 
 type FormDrawerProps = {

@@ -11,12 +11,18 @@ import useComponentContext from '@/hooks/useComponentContext'
 
 export default function ConfirmDialogComponent() {
   const { confirmDialog, handleConfirmDialogClose } = useComponentContext()
-  const { open, title, content, handleConfirmFunction } = confirmDialog
+  const { open, title, content, handleConfirmFunction, maxWidth } =
+    confirmDialog
 
   const handleClose = () => handleConfirmDialogClose()
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog
+      fullWidth
+      maxWidth={maxWidth || 'xs'}
+      open={open}
+      onClose={handleClose}
+    >
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{content}</DialogContentText>

@@ -26,6 +26,7 @@ import {
   $createNodeSelection,
   $getNodeByKey,
   RangeSelection,
+  $isTextNode,
   $insertNodes,
   $createTextNode,
   $getRoot,
@@ -33,7 +34,6 @@ import {
 } from 'lexical'
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link'
-
 import {
   $isParentElementRTL,
   $wrapNodes,
@@ -41,7 +41,13 @@ import {
   $patchStyleText,
   $getSelectionStyleValueForProperty,
 } from '@lexical/selection'
-import { $getNearestNodeOfType, mergeRegister } from '@lexical/utils'
+import {
+  $getNearestNodeOfType,
+  mergeRegister,
+  $findMatchingParent,
+  $getNearestBlockElementAncestorOrThrow,
+} from '@lexical/utils'
+import { $isDecoratorBlockNode } from '@lexical/react/LexicalDecoratorBlockNode'
 import {
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
@@ -53,6 +59,8 @@ import {
   $createHeadingNode,
   $createQuoteNode,
   $isHeadingNode,
+  $isQuoteNode,
+  HeadingTagType,
 } from '@lexical/rich-text'
 import {
   $createCodeNode,
@@ -66,10 +74,8 @@ import { useTheme, styled } from '@mui/material/styles'
 import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import IconButton from '@mui/material/IconButton'
 import Popover from '@mui/material/Popover'
 import Box from '@mui/material/Box'
-import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import {
@@ -93,18 +99,18 @@ import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions'
 import LinkIcon from '@mui/icons-material/Link'
 import UndoIcon from '@mui/icons-material/Undo'
 import RedoIcon from '@mui/icons-material/Redo'
-import Button from '@mui/material/Button'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import InputAdornment from '@mui/material/InputAdornment'
-import EditIcon from '@mui/icons-material/Edit'
+import FormatClearIcon from '@mui/icons-material/FormatClear'
+import ImageIcon from '@mui/icons-material/Image'
 
 // ** components
 import EmojiPicker from '@/components/EmojiPicker'
 import FloatingLinkEditor from '@/components/editor/plugins/FloatingLinkEditor'
+import FileBrowser from '@/components/file-browser'
 
 // ** hooks
 import useComponentContext from '@/hooks/useComponentContext'
 import Badge from '@mui/material/Badge'
+import FileModel from '@/models/FileModel'
 
 const ToggleButtonStyled = styled(ToggleButton)(({ theme }) => ({
   width: 41,
@@ -256,7 +262,12 @@ function BlockOptionsDropdownList({ editor, blockType }: any) {
 
 export default function ToolbarPlugin() {
   const theme = useTheme()
-  const { setPopoverData, handlePopoverClose } = useComponentContext()
+  const {
+    setPopoverData,
+    handlePopoverClose,
+    setConfirmDialogData,
+    handleConfirmDialogClose,
+  } = useComponentContext()
   const [editorSelectElemDOM, setEditorSelectElemDOM] =
     useState<HTMLElement | null>(null)
 
@@ -266,6 +277,10 @@ export default function ToolbarPlugin() {
   const handleLinkPopoverClose = () => setLinkPopoverAnchorEl(null)
 
   const [editor] = useLexicalComposerContext()
+
+  const [selectedImageFiles, setSelectedImageFiles] = useState(
+    new Array<FileModel>(),
+  )
 
   const toolbarRef = useRef(null)
   const [canUndo, setCanUndo] = useState(false)
@@ -350,8 +365,6 @@ export default function ToolbarPlugin() {
     }
   }, [editor])
 
-  console.log('fontColor', fontColor)
-
   const applyStyleText = useCallback(
     (styles: Record<string, string>) => {
       editor.update(() => {
@@ -376,6 +389,46 @@ export default function ToolbarPlugin() {
     },
     [applyStyleText],
   )
+
+  const clearFormatting = useCallback(() => {
+    editor.update(() => {
+      const selection = $getSelection()
+      if ($isRangeSelection(selection)) {
+        const anchor = selection.anchor
+        const focus = selection.focus
+        const nodes = selection.getNodes()
+
+        if (anchor.key === focus.key && anchor.offset === focus.offset) {
+          return
+        }
+
+        nodes.forEach((node, idx) => {
+          // We split the first and last node by the selection
+          // So that we don't format unselected text inside those nodes
+          if ($isTextNode(node)) {
+            if (idx === 0 && anchor.offset !== 0) {
+              node = node.splitText(anchor.offset)[1] || node
+            }
+            if (idx === nodes.length - 1) {
+              node = node.splitText(focus.offset)[0] || node
+            }
+
+            if (node.__style !== '') {
+              node.setStyle('')
+            }
+            if (node.__format !== 0) {
+              node.setFormat(0)
+              $getNearestBlockElementAncestorOrThrow(node).setFormat('')
+            }
+          } else if ($isHeadingNode(node) || $isQuoteNode(node)) {
+            node.replace($createParagraphNode(), true)
+          } else if ($isDecoratorBlockNode(node)) {
+            node.setFormat('')
+          }
+        })
+      }
+    })
+  }, [editor])
 
   useEffect(() => {
     return mergeRegister(
@@ -506,6 +559,28 @@ export default function ToolbarPlugin() {
     })
   }
 
+  const handleSelectImageFilesChange = (data: FileModel[]) => {
+    //https://github.com/facebook/lexical/blob/main/packages/lexical-playground/src/plugins/ImagesPlugin/index.tsx
+    //editor.dispatchCommand(INSERT_IMAGE_COMMAND, data);
+    setSelectedImageFiles(data)
+  }
+
+  const handleClickOpenFileBrowser = (type: 'image') => {
+    setConfirmDialogData({
+      open: true,
+      title: 'Resim Seç',
+      content: (
+        <FileBrowser
+          enableSelectedFiles
+          selectedFiles={selectedImageFiles}
+          handleSelectFilesChange={handleSelectImageFilesChange}
+        />
+      ),
+      handleConfirmFunction: () => {},
+      maxWidth: 'xl',
+    })
+  }
+
   return (
     <ToolbarWrapper spacing={1} direction="row" display="flex" ref={toolbarRef}>
       <ToggleButtonGroup>
@@ -619,6 +694,10 @@ export default function ToolbarPlugin() {
               </Badge>
             </ToggleButtonStyled>
 
+            <ToggleButtonStyled value="" onClick={clearFormatting}>
+              <FormatClearIcon />
+            </ToggleButtonStyled>
+
             <ToggleButtonStyled
               value="code"
               onClick={(e, value) =>
@@ -643,6 +722,16 @@ export default function ToolbarPlugin() {
               onClick={(e) => handleEmojiButtonClick(e)}
             >
               <EmojiEmotionsIcon />
+            </ToggleButtonStyled>
+          </ToggleButtonGroup>
+
+          <ToggleButtonGroup>
+            <ToggleButtonStyled
+              value=""
+              onClick={() => handleClickOpenFileBrowser('image')}
+              // selected={formatType === 'left'}
+            >
+              <ImageIcon />
             </ToggleButtonStyled>
           </ToggleButtonGroup>
 

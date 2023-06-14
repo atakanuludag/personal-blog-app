@@ -1,6 +1,3 @@
-// ** react
-import { useState } from 'react'
-
 // ** mui
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
@@ -9,10 +6,7 @@ import Typography from '@mui/material/Typography'
 
 // ** models
 import PageProps from '@/models/AppPropsModel'
-import FileModel, { FileListQueryModel } from '@/models/FileModel'
-import ListResponseModel from '@/models/ListResponseModel'
 import NextPageType from '@/models/NextPageType'
-import { OrderType } from '@/models/enums'
 
 // ** layouts
 import LayoutAdminPage from '@/layouts/LayoutAdminPage'
@@ -20,31 +14,10 @@ import LayoutAdminPage from '@/layouts/LayoutAdminPage'
 // ** utils
 import getServerSideProps from '@/utils/AdminServerSideProps'
 
-// ** hooks
-import useFileQuery from '@/hooks/queries/useFileQuery'
-
 // ** components
 import FileBrowser from '@/components/file-browser'
-import Pagination from '@/components/Pagination'
-
-// ** config
-import { PAGE_SIZE } from '@/config'
 
 const Files: NextPageType = ({}: PageProps) => {
-  const [params, setParams] = useState<FileListQueryModel>({
-    page: 1,
-    pageSize: PAGE_SIZE,
-    folderId: null,
-    order: 'isFolder',
-    orderBy: OrderType.ASC,
-  })
-
-  const { filesQuery } = useFileQuery(params)
-
-  const files = filesQuery()
-  const data = files.data as ListResponseModel<FileModel[]>
-  const loading = files.isLoading || files.isFetching
-
   return (
     <Box>
       <Grid
@@ -65,23 +38,7 @@ const Files: NextPageType = ({}: PageProps) => {
         <Grid item md={3} xs={12} />
       </Grid>
       <Box sx={{ flexGrow: 1 }}>
-        <FileBrowser
-          items={data?.results}
-          loading={loading}
-          params={params}
-          setParams={setParams}
-        />
-      </Box>
-
-      <Box>
-        <Pagination
-          type="normalServerSide"
-          params={params}
-          setParams={setParams}
-          loading={loading}
-          totalPages={data?.totalPages}
-          currentPage={data?.currentPage}
-        />
+        <FileBrowser />
       </Box>
     </Box>
   )

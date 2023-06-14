@@ -11,6 +11,7 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import CircularProgress from '@mui/material/CircularProgress'
 import Tooltip from '@mui/material/Tooltip'
+import { AutocompleteChangeReason } from '@mui/material/Autocomplete'
 
 // ** icons
 import WarningIcon from '@mui/icons-material/Warning'
@@ -34,8 +35,7 @@ import useComponentContext from '@/hooks/useComponentContext'
 import useCategoryQuery from '@/hooks/queries/useCategoryQuery'
 
 // ** components
-import AsyncAutocomplete from 'components/AsyncAutocomplete'
-import { AutocompleteChangeReason } from '@mui/material/Autocomplete'
+import AsyncAutocomplete from '@/components/AsyncAutocomplete'
 
 // ** core
 import { QUERY_NAMES } from '@/core/Constants'
@@ -91,6 +91,7 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
     setValues,
     isValid,
     values,
+    setTouched,
   } = useFormik<CategoryFormModel>({
     initialValues,
     validationSchema,
@@ -274,7 +275,7 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
         handleChange={handleParentAutoCompleteChange}
         data={categories?.data || []}
         objName="title"
-        // setTouched={setTouched}
+        setTouched={setTouched}
         loading={categories.isLoading}
         helperText={errors.parent && touched.parent ? errors.parent : null}
         error={errors.parent ? touched.parent : false}

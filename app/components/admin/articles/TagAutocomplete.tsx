@@ -84,6 +84,7 @@ export default function TagAutocomplete({
         value.map((option: any, index: number) => (
           <Chip
             variant="outlined"
+            size="small"
             label={typeof option === 'string' ? option : option.title}
             {...getTagProps({ index })}
             key={index}

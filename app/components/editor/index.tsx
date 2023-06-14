@@ -18,9 +18,10 @@ import { ListPlugin } from '@lexical/react/LexicalListPlugin'
 import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin'
 import { TRANSFORMERS } from '@lexical/markdown'
 
+import Toolbar from '@/components/editor/Toolbar'
+
 // ** lexical plugins
 //import TreeViewPlugin from '@/components/editor/plugins/TreeViewPlugin'
-import ToolbarPlugin from '@/components/editor/plugins/ToolbarPlugin'
 import ListMaxIndentLevelPlugin from '@/components/editor/plugins/ListMaxIndentLevelPlugin'
 import CodeHighlightPlugin from '@/components/editor/plugins/CodeHighlightPlugin'
 import AutoLinkPlugin from '@/components/editor/plugins/AutoLinkPlugin'
@@ -83,7 +84,7 @@ export default function Editor() {
   return (
     <LexicalComposer initialConfig={editorConfig}>
       <EditorWrapperBox>
-        <ToolbarPlugin />
+        <Toolbar />
         <EditorBox>
           <RichTextPlugin
             contentEditable={<ContentEditable className="editor-input" />}

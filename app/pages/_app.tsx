@@ -68,6 +68,7 @@ type PersonalBlogAppProps = {
   emotionCache: EmotionCache
 } & AppProps
 
+//https://nextjs.org/docs/messages/opt-out-auto-static-optimization
 const clientSideEmotionCache = createEmotionCache()
 
 const PersonalBlogApp = (props: PersonalBlogAppProps) => {

@@ -1,37 +1,12 @@
-// ** third party
-import {
-  InitialConfigType,
-  LexicalComposer,
-} from '@lexical/react/LexicalComposer'
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
-import { ContentEditable } from '@lexical/react/LexicalContentEditable'
-import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin'
-import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin'
-import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary'
-import { HeadingNode, QuoteNode } from '@lexical/rich-text'
-import { TableCellNode, TableNode, TableRowNode } from '@lexical/table'
-import { ListItemNode, ListNode } from '@lexical/list'
-import { CodeHighlightNode, CodeNode } from '@lexical/code'
-import { AutoLinkNode, LinkNode } from '@lexical/link'
-import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin'
-import { ListPlugin } from '@lexical/react/LexicalListPlugin'
-import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin'
-import { TRANSFORMERS } from '@lexical/markdown'
-
-import Toolbar from '@/components/editor/Toolbar'
-
-// ** lexical plugins
-//import TreeViewPlugin from '@/components/editor/plugins/TreeViewPlugin'
-import ListMaxIndentLevelPlugin from '@/components/editor/plugins/ListMaxIndentLevelPlugin'
-import CodeHighlightPlugin from '@/components/editor/plugins/CodeHighlightPlugin'
-import AutoLinkPlugin from '@/components/editor/plugins/AutoLinkPlugin'
-
-// ** lexical theme
-import theme from '@/components/editor/LexicalTheme'
-
-// ** mui
+// import Markdown from 'react-markdown'
+import dynamic from 'next/dynamic'
+import { MutableRefObject, SyntheticEvent, useRef, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
+import Toolbar from '@/components/editor/Toolbar'
+import Tabs from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
+import Markdown from 'react-markdown'
 
 const EditorWrapperBox = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -41,67 +16,71 @@ const EditorWrapperBox = styled(Box)(({ theme }) => ({
   borderRadius: theme.spacing(0.5),
 }))
 
-const EditorBox = styled(Box)(({ theme }) => ({
-  position: 'relative',
-  borderTopWidth: 1,
-  borderTopStyle: 'solid',
-  borderTopColor: theme.palette.grey[theme.palette.mode === 'dark' ? 800 : 400],
+const ToolbarBox = styled(Box)(({ theme }) => ({
+  borderBottomWidth: 1,
+  borderBottomStyle: 'solid',
+  borderBottomColor:
+    theme.palette.grey[theme.palette.mode === 'dark' ? 800 : 400],
 }))
 
-function Placeholder() {
-  return (
-    <Box position="absolute" top={13} left={10} color={'grey'} zIndex={-1}>
-      Başlamak için bir şeyler yazın...
-    </Box>
-  )
-}
+const TabsWrapper = styled(Tabs)(({ theme }) => ({
+  borderBottomWidth: 1,
+  borderBottomStyle: 'solid',
+  borderBottomColor:
+    theme.palette.grey[theme.palette.mode === 'dark' ? 800 : 400],
+}))
+
+const TextArea = styled('textarea')(({ theme }) => ({
+  width: '100%',
+  height: '300px',
+  backgroundColor: theme.palette.primary.main,
+  border: 'none',
+  color: theme.palette.secondary.main,
+  fontFamily: 'Menlo, Consolas, Monaco, monospace',
+  resize: 'none',
+  WebkitBoxShadow: 'none',
+  boxShadow: 'none',
+  outline: 'none',
+}))
 
 export default function Editor() {
-  const editorConfig: InitialConfigType = {
-    // The editor theme
-    theme,
-    namespace: 'editor',
-    // Handling of errors during update
-    onError(error: Error) {
-      throw error
-    },
-    // Any custom nodes go here
-    nodes: [
-      HeadingNode,
-      ListNode,
-      ListItemNode,
-      QuoteNode,
-      CodeNode,
-      CodeHighlightNode,
-      TableNode,
-      TableCellNode,
-      TableRowNode,
-      AutoLinkNode,
-      LinkNode,
-    ],
+  const [selectTab, setSelectTab] = useState(0)
+
+  const [value, setValue] = useState('atakan yasin uludağ')
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null)
+
+  const handleTabChange = (event: SyntheticEvent, newValue: number) => {
+    setSelectTab(newValue)
   }
 
   return (
-    <LexicalComposer initialConfig={editorConfig}>
-      <EditorWrapperBox>
-        <Toolbar />
-        <EditorBox>
-          <RichTextPlugin
-            contentEditable={<ContentEditable className="editor-input" />}
-            placeholder={<Placeholder />}
-            ErrorBoundary={LexicalErrorBoundary}
+    <EditorWrapperBox>
+      <TabsWrapper value={selectTab} onChange={handleTabChange}>
+        <Tab label="Editör" id="editor" />
+        <Tab label="Önizleme" id="preview" />
+      </TabsWrapper>
+
+      {selectTab === 0 ? (
+        <Box display="flex" flexDirection="column">
+          <ToolbarBox>
+            <Toolbar
+              textAreaRef={textAreaRef}
+              editorValue={value}
+              setEditorValue={setValue}
+            />
+          </ToolbarBox>
+
+          <TextArea
+            ref={textAreaRef}
+            onChange={(e) => setValue(e.target.value)}
+            value={value}
           />
-          <HistoryPlugin />
-          {/* <TreeViewPlugin /> */}
-          <AutoFocusPlugin />
-          <CodeHighlightPlugin />
-          <ListPlugin />
-          <LinkPlugin />
-          <AutoLinkPlugin />
-          <ListMaxIndentLevelPlugin maxDepth={7} />
-          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-        </EditorBox>
-      </EditorWrapperBox>
-    </LexicalComposer>
+        </Box>
+      ) : (
+        <Box pl={1} pr={1}>
+          <Markdown>{value}</Markdown>
+        </Box>
+      )}
+    </EditorWrapperBox>
   )
 }

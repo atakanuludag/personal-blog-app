@@ -17,6 +17,7 @@ import ListItemButton from '@/theme/overrides/ListItemButton'
 import Checkbox from '@/theme/overrides/Checkbox'
 import CircularProgress from '@/theme/overrides/CircularProgress'
 import Switch from '@/theme/overrides/Switch'
+import Tab from '@/theme/overrides/Tab'
 
 // ----------------------------------------------------------------------
 
@@ -34,5 +35,6 @@ export default function ComponentsOverrides(theme: Theme) {
     Checkbox(theme),
     CircularProgress(theme),
     Switch(theme),
+    Tab(theme),
   )
 }

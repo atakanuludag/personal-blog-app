@@ -3,6 +3,7 @@ import { default as NextLink } from 'next/link'
 
 // ** third party
 import moment from 'moment'
+import Markdown from 'react-markdown'
 
 // ** mui
 import { styled } from '@mui/material/styles'
@@ -60,6 +61,7 @@ export default function ArticleDetail({
     }${data.coverImage.filename}`
   }
 
+  console.log('data.content', data.content)
   return (
     <Article>
       <Grid
@@ -111,7 +113,7 @@ export default function ArticleDetail({
           </Grid>
         )}
         <Grid item>
-          <Content dangerouslySetInnerHTML={{ __html: data.content }}></Content>
+          <Markdown>{decodeURI(data.content)}</Markdown>
         </Grid>
 
         <Grid item xs={12}></Grid>

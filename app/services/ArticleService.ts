@@ -14,23 +14,25 @@ const ArticleService = {
         params,
       })
       const { data } = ret
-
       // ** paging model
       if (data.results) {
         return {
           ...data,
           results: data.results.map((item: ArticleModel) => ({
             ...item,
-            readingTimeMin: Math.round(readingTime(item.content).minutes),
+            readingTimeMin: 10,
+            //readingTimeMin: Math.round(readingTime(item.content).minutes),
           })),
         }
       }
 
       return data.map((item: ArticleModel) => ({
         ...item,
-        readingTimeMin: Math.round(readingTime(item.content).minutes),
+        readingTimeMin: 10,
+        //readingTimeMin: Math.round(readingTime(item.content).minutes),
       }))
     } catch (err) {
+      console.log('err', err)
       return null
     }
   },
@@ -40,7 +42,8 @@ const ArticleService = {
       const { data } = ret
       return {
         ...data,
-        readingTimeMin: Math.round(readingTime(data.content).minutes),
+        readingTimeMin: 10,
+        //readingTimeMin: Math.round(readingTime(data.content).minutes),
       }
     } catch (err) {
       return null

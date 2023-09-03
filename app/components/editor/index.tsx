@@ -1,12 +1,17 @@
 // import Markdown from 'react-markdown'
-import dynamic from 'next/dynamic'
+import dynamic, { DynamicOptions, Loader } from 'next/dynamic'
 import { MutableRefObject, SyntheticEvent, useRef, useState } from 'react'
-import { styled } from '@mui/material/styles'
+import { styled, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Toolbar from '@/components/editor/Toolbar'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Markdown from 'react-markdown'
+import { MDEditorProps } from '@uiw/react-md-editor'
+
+import { css } from '@emotion/css'
+
+const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false })
 
 const EditorWrapperBox = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -44,6 +49,8 @@ const TextArea = styled('textarea')(({ theme }) => ({
 }))
 
 export default function Editor() {
+  const theme = useTheme()
+
   const [selectTab, setSelectTab] = useState(0)
 
   const [value, setValue] = useState('atakan yasin uludağ')
@@ -53,9 +60,18 @@ export default function Editor() {
     setSelectTab(newValue)
   }
 
+  const test = css`
+    background-image: none;
+  `
+
   return (
     <EditorWrapperBox>
-      <TabsWrapper value={selectTab} onChange={handleTabChange}>
+      <MDEditor
+        className={test}
+        value={value}
+        onChange={(value) => setValue(value as string)}
+      />
+      {/* <TabsWrapper value={selectTab} onChange={handleTabChange}>
         <Tab label="Editör" id="editor" />
         <Tab label="Önizleme" id="preview" />
       </TabsWrapper>
@@ -80,7 +96,7 @@ export default function Editor() {
         <Box pl={1} pr={1}>
           <Markdown>{value}</Markdown>
         </Box>
-      )}
+      )} */}
     </EditorWrapperBox>
   )
 }

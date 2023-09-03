@@ -21,6 +21,7 @@
     "@mui/material": "^5.11.5",
     "@mui/x-data-grid": "^5.17.21",
     "@types/cookies": "^0.7.7",
+    "@uiw/react-md-editor": "^3.23.5",
     "axios": "^1.2.3",
     "cookies": "^0.8.0",
     "css-mediaquery": "^0.1.2",

@@ -1,5 +1,5 @@
 // ** react
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, useEffect, useMemo } from 'react'
 
 // ** third party
 import mediaQuery from 'css-mediaquery'
@@ -27,6 +27,11 @@ type ThemeProps = {
 const AppTheme = ({ children, deviceType }: ThemeProps) => {
   const { themeMode } = useSettingsContext()
   const darkColor = '#202020'
+
+  useEffect(() => {
+    if (!document?.documentElement) return
+    document.documentElement.setAttribute('data-color-mode', themeMode)
+  }, [themeMode])
 
   const ssrMatchMedia = (query: string) => ({
     matches: mediaQuery.match(query, {

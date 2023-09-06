@@ -7,12 +7,28 @@ import Toolbar from '@/components/editor/Toolbar'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Markdown from 'react-markdown'
-import { MDEditorProps } from '@uiw/react-md-editor'
+import * as commands from '@uiw/react-md-editor/lib/commands'
+import {
+  ExecuteState,
+  TextAreaTextApi,
+  ExecuteCommandState,
+} from '@uiw/react-md-editor'
+
+import FileBrowser from '@/components/file-browser'
+import useComponentContext from '@/hooks/useComponentContext'
 
 import { css } from '@emotion/css'
+import ImageIcon from '@mui/icons-material/Image'
+import FileModel from '@/models/FileModel'
+import { UPLOAD_PATH_URL } from '@/config'
+import Button from '@mui/material/Button'
+import TitleIcon from '@mui/icons-material/Title'
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false })
-
+// const Markdown = dynamic(
+//   () => import("@uiw/react-markdown-preview").then((mod) => mod.default),
+//   { ssr: false }
+// );
 const EditorWrapperBox = styled(Box)(({ theme }) => ({
   width: '100%',
   borderWidth: 1,
@@ -51,18 +67,95 @@ const TextArea = styled('textarea')(({ theme }) => ({
 export default function Editor() {
   const theme = useTheme()
 
-  const [selectTab, setSelectTab] = useState(0)
+  const { setConfirmDialogData, handleConfirmDialogClose } =
+    useComponentContext()
 
-  const [value, setValue] = useState('atakan yasin uludağ')
-  const textAreaRef = useRef<HTMLTextAreaElement | null>(null)
-
-  const handleTabChange = (event: SyntheticEvent, newValue: number) => {
-    setSelectTab(newValue)
-  }
+  const [value, setValue] = useState('')
 
   const test = css`
     background-image: none;
   `
+
+  const handleSelectImageFilesChange = (
+    data: FileModel[],
+    api: TextAreaTextApi,
+  ) => {
+    data.forEach((item) => {
+      // let modifyText = `### ${state.selectedText}\n`
+      // if (!state.selectedText) {
+      //   modifyText = `### `
+      // }
+
+      api.replaceSelection(
+        `<img src="${UPLOAD_PATH_URL}/${item.path ? `${item.path}/` : ''}${
+          item.filename
+        }" alt="image" width="100%">`,
+      )
+
+      // editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
+      //   src: `${UPLOAD_PATH_URL}/${item.path ? `${item.path}/` : ''}${
+      //     item.filename
+      //   }`,
+      //   altText: '',
+      // })
+    })
+  }
+
+  const handleSelectImageButton = (
+    close: () => void,
+    api: TextAreaTextApi | undefined,
+  ) => {
+    if (!api) return
+    setConfirmDialogData({
+      open: true,
+      title: 'Resim Seç',
+      content: (
+        <FileBrowser
+          enableSelectedFiles
+          handleSelectFilesChange={(data) =>
+            handleSelectImageFilesChange(data, api)
+          }
+        />
+      ),
+      handleConfirmFunction: () => {
+        handleConfirmDialogClose()
+        close()
+      },
+      maxWidth: 'xl',
+    })
+  }
+
+  const imageCommand: commands.ICommand = commands.group([], {
+    name: 'update',
+    groupName: 'update',
+    icon: commands.image.icon,
+    children: (handle) => (
+      <Box padding={0.5} display="flex" flexDirection="column">
+        <Button
+          variant="text"
+          size="small"
+          sx={{ textTransform: 'none' }}
+          onClick={() => handleSelectImageButton(handle.close, handle?.textApi)}
+        >
+          Resim Seç
+        </Button>
+        <Button
+          variant="text"
+          size="small"
+          sx={{ textTransform: 'none' }}
+          onClick={() => {
+            handle.textApi?.replaceSelection(
+              `![Alt text](https://picsum.photos/200/300)`,
+            )
+            handle.close()
+          }}
+        >
+          URL Resim
+        </Button>
+      </Box>
+    ),
+    buttonProps: { 'aria-label': 'Insert Image' },
+  })
 
   return (
     <EditorWrapperBox>
@@ -70,6 +163,39 @@ export default function Editor() {
         className={test}
         value={value}
         onChange={(value) => setValue(value as string)}
+        commands={[
+          commands.group(
+            [
+              commands.title1,
+              commands.title2,
+              commands.title3,
+              commands.title4,
+              commands.title5,
+              commands.title6,
+            ],
+            {
+              name: 'title',
+              groupName: 'title',
+              buttonProps: { 'aria-label': 'Insert title' },
+              icon: <TitleIcon sx={{ fontSize: 13 }} />,
+            },
+          ),
+          commands.bold,
+          commands.italic,
+          commands.strikethrough,
+          commands.hr,
+          commands.divider,
+          commands.link,
+          commands.quote,
+          commands.code,
+          commands.codeBlock,
+          imageCommand,
+          commands.divider,
+          commands.orderedListCommand,
+          commands.unorderedListCommand,
+          commands.checkedListCommand,
+          commands.comment,
+        ]}
       />
       {/* <TabsWrapper value={selectTab} onChange={handleTabChange}>
         <Tab label="Editör" id="editor" />

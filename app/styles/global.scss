@@ -6,6 +6,11 @@
 @import '~@uiw/react-md-editor/markdown-editor.css';
 @import '~@uiw/react-markdown-preview/markdown.css';
 
+.wmde-markdown, .w-md-editor {
+  --color-canvas-default: transparent !important;
+}
+
+
 //@import "~nprogress/nprogress";
 //@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap');
 //$nprogressColor: #ffcd38;

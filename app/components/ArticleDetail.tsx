@@ -3,7 +3,6 @@ import { default as NextLink } from 'next/link'
 
 // ** third party
 import moment from 'moment'
-import Markdown from 'react-markdown'
 
 // ** mui
 import { styled } from '@mui/material/styles'
@@ -20,6 +19,13 @@ import ArticleLikeButton from '@/components/ArticleLikeButton'
 
 // ** config
 import { UPLOAD_PATH_URL } from '@/config'
+import dynamic from 'next/dynamic'
+
+const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false })
+const MarkdownPreview = dynamic(
+  () => import('@uiw/react-markdown-preview').then((mod) => mod.default),
+  { ssr: false },
+)
 
 type ArticleDetailProps = {
   data: ArticleModel
@@ -112,11 +118,13 @@ export default function ArticleDetail({
             <Image src={coverImage} alt={data.title} />
           </Grid>
         )}
-        <Grid item>
-          <Markdown>{decodeURI(data.content)}</Markdown>
-        </Grid>
+        {/* <Grid item>
+          <Markdown>{data.content}</Markdown>
+        </Grid> */}
 
-        <Grid item xs={12}></Grid>
+        <Grid item xs={12} width="100%">
+          <MarkdownPreview source={data.content} />
+        </Grid>
 
         <Grid item xs={12}>
           <Stack direction="row" spacing={1}>

@@ -7,6 +7,8 @@ import FileBrowser, {
   FileBrowserProps,
 } from '@/components/file-browser/FileBrowser'
 
+export type { FileBrowserProps }
+
 export default function FileBrowserWrapper(props: FileBrowserProps) {
   return (
     <DndProvider backend={HTML5Backend}>

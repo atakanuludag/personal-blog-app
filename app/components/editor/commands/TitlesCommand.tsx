@@ -3,7 +3,6 @@ import { Fragment, useState, MouseEvent } from 'react'
 
 // ** mui
 import Popover from '@mui/material/Popover'
-
 import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
@@ -22,14 +21,16 @@ import { ICommand } from '@uiw/react-md-editor/lib/commands'
 // ** models
 import EditorBaseCommandProps from '@/components/editor/commands/type'
 
-type TitlesCommandProps = {} & EditorBaseCommandProps
+export const titlesCommand: ICommand = {
+  name: 'titles',
+  keyCommand: 'titles',
+}
 
-export default function TitlesCommand({
+export default function TitlesCommandComponent({
   index,
-  command,
   disabled,
   executeCommand,
-}: TitlesCommandProps) {
+}: EditorBaseCommandProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const open = Boolean(anchorEl)
   const id = open ? 'titles-popover' : undefined

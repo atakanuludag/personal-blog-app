@@ -1,7 +1,11 @@
 // ** react
 import { useEffect, useState } from 'react'
 
+// ** next
+import Image from 'next/image'
+
 // ** mui
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
@@ -13,7 +17,7 @@ import * as Yup from 'yup'
 import { useQueryClient } from 'react-query'
 
 // ** models
-import { FileForm } from '@/models/FileModel'
+import FileModel, { FileForm } from '@/models/FileModel'
 
 // ** services
 import FileService from '@/services/FileService'
@@ -24,8 +28,11 @@ import useComponentContext from '@/hooks/useComponentContext'
 // ** core
 import { QUERY_NAMES } from '@/core/Constants'
 
+// ** config
+import { UPLOAD_PATH_URL } from '@/config'
+
 type EditFileProps = {
-  data: FileForm
+  data: FileModel
   isFolder: boolean
 }
 
@@ -98,9 +105,19 @@ export default function EditFile({ data, isFolder }: EditFileProps) {
   useEffect(() => {
     if (formDrawer.submit) handleSubmit()
   }, [formDrawer.submit])
-
   return (
     <Stack spacing={2}>
+      <Box position="relative" width="100%" height="300px">
+        <Image
+          fill
+          loading="lazy"
+          src={`${UPLOAD_PATH_URL}/${data.path ? `${data.path}/` : ''}${
+            data.filename
+          }`}
+          alt={data.title}
+        />
+      </Box>
+
       <TextField
         fullWidth
         required

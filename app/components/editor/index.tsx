@@ -1,30 +1,16 @@
-// import Markdown from 'react-markdown'
-import dynamic, { DynamicOptions, Loader } from 'next/dynamic'
-import { MutableRefObject, SyntheticEvent, useRef, useState } from 'react'
+// ** react
+import { useState } from 'react'
+
+// ** next
+import dynamic from 'next/dynamic'
+
+// ** mui
 import { styled, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
-import Tabs from '@mui/material/Tabs'
-import Tab from '@mui/material/Tab'
-import rehypeRaw from 'rehype-raw'
 import IconButton from '@mui/material/IconButton'
+import { SvgIconProps } from '@mui/material/SvgIcon'
 
-import * as commands from '@uiw/react-md-editor/lib/commands'
-import {
-  ExecuteState,
-  TextAreaTextApi,
-  ExecuteCommandState,
-  ICommand,
-} from '@uiw/react-md-editor'
-
-import FileBrowser from '@/components/file-browser'
-import useComponentContext from '@/hooks/useComponentContext'
-
-import { css } from '@emotion/css'
-import FileModel from '@/models/FileModel'
-import { UPLOAD_PATH_URL } from '@/config'
-import Button from '@mui/material/Button'
-import Popover from '@mui/material/Popover'
-import TitleIcon from '@mui/icons-material/Title'
+// ** icons
 import FormatBoldIcon from '@mui/icons-material/FormatBold'
 import FormatItalicIcon from '@mui/icons-material/FormatItalic'
 import FormatStrikethroughIcon from '@mui/icons-material/FormatStrikethrough'
@@ -34,20 +20,25 @@ import LinkIcon from '@mui/icons-material/Link'
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote'
 import CodeIcon from '@mui/icons-material/Code'
 import DataObjectIcon from '@mui/icons-material/DataObject'
-import ImageIcon from '@mui/icons-material/Image'
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered'
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted'
 import ChecklistIcon from '@mui/icons-material/Checklist'
+import FullscreenIcon from '@mui/icons-material/Fullscreen'
+import VerticalSplitIcon from '@mui/icons-material/VerticalSplit'
+import SplitscreenIcon from '@mui/icons-material/Splitscreen'
 
-import { OverridableComponent } from '@mui/material/OverridableComponent'
-import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon'
-import TitlesCommand from './commands/TitlesCommand'
-
+// ** third party
+import * as commands from '@uiw/react-md-editor/lib/commands'
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false })
-// const Markdown = dynamic(
-//   () => import("@uiw/react-markdown-preview").then((mod) => mod.default),
-//   { ssr: false }
-// );
+
+// ** editor commands
+import TitlesCommandComponent, {
+  titlesCommand,
+} from '@/components/editor/commands/TitlesCommand'
+import ImageCommandComponent, {
+  imageCommand,
+} from '@/components/editor/commands/ImageCommand'
+import underlineCommand from '@/components/editor/commands/UnderlineCommand'
 
 const Icon = ({ name, ...props }: { name?: string } & SvgIconProps) => {
   switch (name) {
@@ -71,14 +62,26 @@ const Icon = ({ name, ...props }: { name?: string } & SvgIconProps) => {
       return <DataObjectIcon {...props} />
     case commands.codeBlock.name:
       return <DataObjectIcon {...props} />
-    case 'update':
-      return <ImageIcon {...props} />
     case commands.orderedListCommand.name:
       return <FormatListNumberedIcon {...props} />
     case commands.unorderedListCommand.name:
       return <FormatListBulletedIcon {...props} />
     case commands.checkedListCommand.name:
       return <ChecklistIcon {...props} />
+    case commands.fullscreen.name:
+      return <FullscreenIcon {...props} />
+    case commands.codeEdit.name:
+      return <VerticalSplitIcon {...props} />
+    case commands.codePreview.name:
+      return (
+        <VerticalSplitIcon {...props} sx={{ transform: 'rotate(-180deg)' }} />
+      )
+    case commands.codeLive.name:
+      return <SplitscreenIcon {...props} sx={{ transform: 'rotate(90deg)' }} />
+
+    // case 'image':
+    //   return <ImageIcon {...props} />
+
     default:
       return <></>
   }
@@ -90,177 +93,58 @@ const EditorWrapperBox = styled(Box)(({ theme }) => ({
   borderStyle: 'solid',
   borderColor: theme.palette.grey[theme.palette.mode === 'dark' ? 800 : 400],
   borderRadius: theme.spacing(0.5),
-}))
-
-const ToolbarBox = styled(Box)(({ theme }) => ({
-  borderBottomWidth: 1,
-  borderBottomStyle: 'solid',
-  borderBottomColor:
-    theme.palette.grey[theme.palette.mode === 'dark' ? 800 : 400],
-}))
-
-const TabsWrapper = styled(Tabs)(({ theme }) => ({
-  borderBottomWidth: 1,
-  borderBottomStyle: 'solid',
-  borderBottomColor:
-    theme.palette.grey[theme.palette.mode === 'dark' ? 800 : 400],
-}))
-
-const TextArea = styled('textarea')(({ theme }) => ({
-  width: '100%',
-  height: '300px',
-  backgroundColor: theme.palette.primary.main,
-  border: 'none',
-  color: theme.palette.secondary.main,
-  fontFamily: 'Menlo, Consolas, Monaco, monospace',
-  resize: 'none',
-  WebkitBoxShadow: 'none',
-  boxShadow: 'none',
-  outline: 'none',
+  '& .w-md-editor-toolbar': {
+    borderBottomWidth: 1,
+    borderBottomStyle: 'solid',
+    borderBottomColor:
+      theme.palette.grey[theme.palette.mode === 'dark' ? 800 : 400],
+  },
+  '& .w-md-editor-show-live': {
+    '& .w-md-editor-area': {
+      borderRadius: 0,
+      borderRightWidth: 1,
+      borderRightStyle: 'solid',
+      borderRightColor:
+        theme.palette.grey[theme.palette.mode === 'dark' ? 800 : 400],
+    },
+  },
 }))
 
 export default function Editor() {
   const theme = useTheme()
 
-  const { setConfirmDialogData, handleConfirmDialogClose } =
-    useComponentContext()
-
   const [value, setValue] = useState('')
-
-  // console.log(value)
-  // console.log(encodeURI(value))
-
-  const test = css`
-    background-image: none;
-  `
-
-  const handleSelectImageFilesChange = (
-    data: FileModel[],
-    api: TextAreaTextApi,
-  ) => {
-    data.forEach((item) => {
-      // let modifyText = `### ${state.selectedText}\n`
-      // if (!state.selectedText) {
-      //   modifyText = `### `
-      // }
-
-      api.replaceSelection(
-        `<img src="${UPLOAD_PATH_URL}/${item.path ? `${item.path}/` : ''}${
-          item.filename
-        }" alt="image" width="100%">`,
-      )
-
-      // editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
-      //   src: `${UPLOAD_PATH_URL}/${item.path ? `${item.path}/` : ''}${
-      //     item.filename
-      //   }`,
-      //   altText: '',
-      // })
-    })
-  }
-
-  const handleSelectImageButton = (
-    close: () => void,
-    api: TextAreaTextApi | undefined,
-  ) => {
-    if (!api) return
-    setConfirmDialogData({
-      open: true,
-      title: 'Resim Seç',
-      content: (
-        <FileBrowser
-          enableSelectedFiles
-          handleSelectFilesChange={(data) =>
-            handleSelectImageFilesChange(data, api)
-          }
-        />
-      ),
-      handleConfirmFunction: () => {
-        handleConfirmDialogClose()
-        close()
-      },
-      maxWidth: 'xl',
-    })
-  }
-
-  const imageCommand: commands.ICommand = commands.group([], {
-    name: 'update',
-    groupName: 'update',
-    children: (handle) => (
-      <Box padding={0.5} display="flex" flexDirection="column">
-        <Button
-          variant="text"
-          size="small"
-          sx={{ textTransform: 'none' }}
-          onClick={() => handleSelectImageButton(handle.close, handle?.textApi)}
-        >
-          Resim Seç
-        </Button>
-        <Button
-          variant="text"
-          size="small"
-          sx={{ textTransform: 'none' }}
-          onClick={() => {
-            handle.textApi?.replaceSelection(
-              `![Alt text](https://picsum.photos/200/300)`,
-            )
-            handle.close()
-          }}
-        >
-          URL Resim
-        </Button>
-      </Box>
-    ),
-  })
-
-  const titlesCommand: ICommand = {
-    name: 'titles',
-    keyCommand: 'titles',
-  }
-
-  const underlineCommand: ICommand = {
-    name: 'underline',
-    keyCommand: 'underline',
-    execute: (state, api) => {
-      let modifyText = `<ins>${state.selectedText}</ins>\n`
-      if (!state.selectedText) {
-        modifyText = `<ins></ins>`
-      }
-      api.replaceSelection(modifyText)
-    },
-  }
 
   return (
     <EditorWrapperBox>
-      {/* <ReactMarkdown
-        children={value}
-        rehypePlugins={[rehypeRaw] as PluggableList}
-      /> */}
-
       <MDEditor
-        className={test}
         value={value}
         onChange={(value) => setValue(value || '')}
         components={{
           toolbar: (command, disabled, executeCommand, index) => {
+            const props = { command, disabled, index }
             switch (command.name) {
               case 'titles':
                 return (
-                  <TitlesCommand
-                    index={index}
-                    command={command}
-                    disabled={disabled}
+                  <TitlesCommandComponent
+                    {...props}
+                    executeCommand={executeCommand}
+                  />
+                )
+              case 'image':
+                return (
+                  <ImageCommandComponent
+                    {...props}
                     executeCommand={executeCommand}
                   />
                 )
               default:
                 return (
                   <IconButton
-                    disabled={disabled}
                     size="small"
                     onClick={() => executeCommand(command)}
-                    key={index}
                     tabIndex={index}
+                    {...props}
                   >
                     <Icon fontSize="small" name={command.name} />
                   </IconButton>

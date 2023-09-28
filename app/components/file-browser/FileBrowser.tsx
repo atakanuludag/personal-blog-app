@@ -61,7 +61,7 @@ import { UPLOAD_PATH_URL, PAGE_SIZE } from '@/config'
 import useComponentContext from '@/hooks/useComponentContext'
 import useFileQuery from '@/hooks/queries/useFileQuery'
 
-const FileItemBoxStyled = styled(Box)(({ theme }) => ({
+const FileItemBoxStyled = styled(Box)(({}) => ({
   width: '100%',
   height: '140px',
   display: 'flex',
@@ -145,6 +145,10 @@ export default function FileBrowser({
   )
   const [contextMenu, setContextMenu] = useState<PopoverPosition | null>(null)
   const [contextMenuData, setContextMenuData] = useState<FileModel | null>(null)
+
+  useEffect(() => {
+    setSelectFiles(selectedFiles || [])
+  }, [selectedFiles])
 
   useEffect(() => {
     const _path =
@@ -279,14 +283,7 @@ export default function FileBrowser({
       open: true,
       title: `${contextMenuData.filename || contextMenuData.title}`,
       content: (
-        <EditFile
-          data={{
-            _id: contextMenuData._id,
-            title: contextMenuData.title,
-            description: contextMenuData.description,
-          }}
-          isFolder={contextMenuData.isFolder}
-        />
+        <EditFile data={contextMenuData} isFolder={contextMenuData.isFolder} />
       ),
       submitButtonText: 'Kaydet',
       submit: false,
@@ -460,13 +457,12 @@ export default function FileBrowser({
                             <FileItemBoxStyled>
                               {isImageFile(item.mimetype) ? (
                                 <Image
+                                  fill
                                   loading="lazy"
                                   src={`${UPLOAD_PATH_URL}/${
                                     item.path ? `${item.path}/` : ''
                                   }${item.filename}`}
                                   alt={item.title}
-                                  layout="fill"
-                                  objectFit="contain"
                                 />
                               ) : (
                                 <Fragment>

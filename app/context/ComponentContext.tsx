@@ -10,6 +10,7 @@ type ConfirmDialogProps = {
   content: string | JSX.Element
   handleConfirmFunction: () => void
   maxWidth?: false | Breakpoint | undefined
+  data?: any
 }
 
 type FormDrawerProps = {
@@ -45,6 +46,7 @@ const initialConfirmDialogData: ConfirmDialogProps = {
   title: '',
   content: '',
   handleConfirmFunction: () => {},
+  data: null,
 }
 
 const initialFormDrawerData: FormDrawerProps = {

@@ -67,7 +67,6 @@ export default function ArticleDetail({
     }${data.coverImage.filename}`
   }
 
-  console.log('data.content', data.content)
   return (
     <Article>
       <Grid

@@ -6,6 +6,11 @@ import App from 'next/app'
 import type { AppContext, AppProps } from 'next/app'
 import Head from 'next/head'
 
+// ** mui
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import tr from 'date-fns/locale/tr'
+
 // ** third party
 import { EmotionCache } from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
@@ -123,7 +128,12 @@ const PersonalBlogApp = (props: PersonalBlogAppProps) => {
               <Theme deviceType={pageProps.deviceType}>
                 <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
                   <Layout title={componentTitle} {...pageProps}>
-                    <Component {...pageProps} />
+                    <LocalizationProvider
+                      dateAdapter={AdapterDateFns}
+                      adapterLocale={tr}
+                    >
+                      <Component {...pageProps} />{' '}
+                    </LocalizationProvider>
                     <FormDrawer />
                     <ConfirmDialog />
                     <Popover />

@@ -5,7 +5,7 @@ import { useState } from 'react'
 import dynamic from 'next/dynamic'
 
 // ** mui
-import { styled, useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import { SvgIconProps } from '@mui/material/SvgIcon'
@@ -111,8 +111,6 @@ const EditorWrapperBox = styled(Box)(({ theme }) => ({
 }))
 
 export default function Editor() {
-  const theme = useTheme()
-
   const [value, setValue] = useState('')
 
   return (
@@ -120,6 +118,7 @@ export default function Editor() {
       <MDEditor
         value={value}
         onChange={(value) => setValue(value || '')}
+        height={550}
         components={{
           toolbar: (command, disabled, executeCommand, index) => {
             const props = { command, disabled, index }

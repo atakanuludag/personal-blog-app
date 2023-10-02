@@ -418,14 +418,14 @@ export default function FileBrowser({
           </Grid>
 
           {!isLoading ? (
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{ minHeight: 400 }}>
               <Grid
                 container
                 direction="row"
                 justifyContent="flex-start"
                 spacing={1}
                 ref={drop}
-                sx={{ position: 'relative' }}
+                sx={{ position: 'relative', height: '100%' }}
               >
                 {dragAndDropActive && (
                   <DragAndDropWrapperStyled>
@@ -516,7 +516,7 @@ export default function FileBrowser({
               </Grid>
             </Grid>
           ) : (
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{ minHeight: 400 }}>
               <Stack spacing={1} direction="row">
                 {[...Array(3)].map((_, index) => (
                   <Skeleton

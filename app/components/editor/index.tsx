@@ -38,6 +38,9 @@ import TitlesCommandComponent, {
 import ImageCommandComponent, {
   imageCommand,
 } from '@/components/editor/commands/ImageCommand'
+import EmojiPickerComponent, {
+  emojiPickerCommand,
+} from '@/components/editor/commands/EmojiPickerCommand'
 import underlineCommand from '@/components/editor/commands/UnderlineCommand'
 
 const Icon = ({ name, ...props }: { name?: string } & SvgIconProps) => {
@@ -137,6 +140,13 @@ export default function Editor() {
                     executeCommand={executeCommand}
                   />
                 )
+              case 'emojiPicker':
+                return (
+                  <EmojiPickerComponent
+                    {...props}
+                    executeCommand={executeCommand}
+                  />
+                )
               default:
                 return (
                   <IconButton
@@ -168,6 +178,7 @@ export default function Editor() {
           commands.orderedListCommand,
           commands.unorderedListCommand,
           commands.checkedListCommand,
+          emojiPickerCommand,
         ]}
       />
     </EditorWrapperBox>

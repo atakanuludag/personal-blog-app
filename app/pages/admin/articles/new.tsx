@@ -255,19 +255,21 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
                     }}
                   />
 
-                  <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={values.isShow}
-                          onChange={(e, checked) =>
-                            setFieldValue('isShow', checked)
-                          }
-                        />
-                      }
-                      label={values.isShow ? 'Aktif' : 'Pasif'}
-                    />
-                  </FormGroup>
+                  <Box display="flex" justifyContent="flex-end">
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={values.isShow}
+                            onChange={(e, checked) =>
+                              setFieldValue('isShow', checked)
+                            }
+                          />
+                        }
+                        label={values.isShow ? 'Aktif' : 'Pasif'}
+                      />
+                    </FormGroup>
+                  </Box>
                 </Stack>
               </CardContent>
             </Card>

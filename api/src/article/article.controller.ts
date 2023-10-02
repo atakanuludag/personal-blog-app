@@ -138,6 +138,20 @@ export class ArticleController {
   }
 
   @ApiOperation({
+    summary:
+      'Sayfa ve makalelerde guid bilgisinin daha önce kullanılıp kullanılmadığını kontrol eder.',
+  })
+  @ApiParam({ name: 'guid', type: String, required: true })
+  // @ApiBearerAuth('accessToken')
+  // @UseGuards(JwtAuthGuard)
+  @Get(`/guidExists/:guid`)
+  async getGuidExists(@Param() params: GuidParamsDto) {
+    const articleGuidExists = await this.service.guidExists(params.guid)
+    const pageGuidExists = await this.pageService.guidExists(params.guid)
+    return { exists: articleGuidExists || pageGuidExists }
+  }
+
+  @ApiOperation({
     summary: 'Update article item.',
   })
   @ApiBadRequestResponse({

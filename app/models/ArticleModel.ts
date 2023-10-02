@@ -24,6 +24,7 @@ export default interface ArticleModel {
 }
 
 export type ArticleFormModel = {
+  readonly _id?: string | null
   readonly title: string
   readonly shortDescription: string
   readonly content: string

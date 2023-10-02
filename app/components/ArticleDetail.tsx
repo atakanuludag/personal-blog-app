@@ -1,9 +1,13 @@
 // ** next
 import { default as NextLink } from 'next/link'
+import dynamic from 'next/dynamic'
 
 // ** third party
 import moment from 'moment'
-
+const MarkdownPreview = dynamic(
+  () => import('@uiw/react-markdown-preview').then((mod) => mod.default),
+  { ssr: false },
+)
 // ** mui
 import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
@@ -17,15 +21,8 @@ import ArticleModel from '@/models/ArticleModel'
 // ** components
 import ArticleLikeButton from '@/components/ArticleLikeButton'
 
-// ** config
-import { UPLOAD_PATH_URL } from '@/config'
-import dynamic from 'next/dynamic'
-
-const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false })
-const MarkdownPreview = dynamic(
-  () => import('@uiw/react-markdown-preview').then((mod) => mod.default),
-  { ssr: false },
-)
+// ** utils
+import generateFileUrl from '@/utils/GenerateFileUrl'
 
 type ArticleDetailProps = {
   data: ArticleModel
@@ -61,11 +58,7 @@ export default function ArticleDetail({
 }: ArticleDetailProps) {
   let coverImage = null
 
-  if (data.coverImage) {
-    coverImage = `${UPLOAD_PATH_URL}/${
-      data.coverImage.path ? `${data.coverImage.path}/` : ''
-    }${data.coverImage.filename}`
-  }
+  if (data.coverImage) coverImage = generateFileUrl(data.coverImage)
 
   return (
     <Article>
@@ -117,9 +110,6 @@ export default function ArticleDetail({
             <Image src={coverImage} alt={data.title} />
           </Grid>
         )}
-        {/* <Grid item>
-          <Markdown>{data.content}</Markdown>
-        </Grid> */}
 
         <Grid item xs={12} width="100%">
           <MarkdownPreview source={data.content} />

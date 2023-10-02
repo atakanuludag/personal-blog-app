@@ -22,8 +22,11 @@ import useText from '@/hooks/useText'
 // ** models
 import ArticleModel from '@/models/ArticleModel'
 
+// ** utils
+import generateFileUrl from '@/utils/GenerateFileUrl'
+
 // ** config
-import { UPLOAD_PATH_URL } from '@/config'
+
 import { Ref, forwardRef } from 'react'
 
 type ArticleItemProps = {
@@ -68,13 +71,13 @@ const StackItem = styled('p')(({ theme }) => ({
 }))
 
 function ArticleItem({ data }: ArticleItemProps, ref?: Ref<HTMLDivElement>) {
+  //todo: ref props?
+
   const { textLimit } = useText()
   let coverImage = null
 
   if (data.coverImage) {
-    coverImage = `${UPLOAD_PATH_URL}/${
-      data.coverImage.path ? `${data.coverImage.path}/` : ''
-    }${data.coverImage.filename}`
+    coverImage = generateFileUrl(data.coverImage)
   }
 
   return (

@@ -78,6 +78,10 @@ const ArticleService = {
       console.log('[ArticleService] deleteItem() Error: ', err)
     }
   },
+  guidExists: async (guid: string): Promise<boolean> =>
+    axios
+      .get(`${serviceBaseUrl}/guidExists/${guid}`)
+      .then((res) => res.data.exists),
 }
 
 Object.freeze(ArticleService)

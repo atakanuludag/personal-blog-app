@@ -47,6 +47,7 @@ import Pagination from '@/components/Pagination'
 
 // ** utils
 import { isImageFile } from '@/utils/MimeTypeNames'
+import generateFileUrl from '@/utils/GenerateFileUrl'
 
 // ** service
 import FileService from '@/services/FileService'
@@ -55,7 +56,7 @@ import FileService from '@/services/FileService'
 import { QUERY_NAMES } from '@/core/Constants'
 
 // ** config
-import { UPLOAD_PATH_URL, PAGE_SIZE } from '@/config'
+import { PAGE_SIZE } from '@/config'
 
 // ** hooks
 import useComponentContext from '@/hooks/useComponentContext'
@@ -459,9 +460,7 @@ export default function FileBrowser({
                                 <Image
                                   fill
                                   loading="lazy"
-                                  src={`${UPLOAD_PATH_URL}/${
-                                    item.path ? `${item.path}/` : ''
-                                  }${item.filename}`}
+                                  src={generateFileUrl(item)}
                                   alt={item.title}
                                 />
                               ) : (

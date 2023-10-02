@@ -23,8 +23,8 @@ import DialogFileBrowser from '@/components/file-browser/DialogFileBrowser'
 import EditorBaseCommandProps from '@/components/editor/commands/type'
 import FileModel from '@/models/FileModel'
 
-// ** config
-import { UPLOAD_PATH_URL } from '@/config'
+// ** utils
+import generateFileUrl from '@/utils/GenerateFileUrl'
 
 export const imageCommand: ICommand = {
   name: 'image',
@@ -55,9 +55,7 @@ export default function ImageCommandComponent({
       execute: (state, api) => {
         const html = selectImages.map(
           (item) =>
-            `<img src="${UPLOAD_PATH_URL}/${item.path ? `${item.path}/` : ''}${
-              item.filename
-            }" alt="image" width="100%" />`,
+            `<img src="${generateFileUrl(item)}" alt="image" width="100%" />`,
         )
         api.replaceSelection(html.join('<br/>'))
       },

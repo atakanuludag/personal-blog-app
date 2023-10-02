@@ -1,20 +1,12 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  RefObject,
-  ComponentType,
-  SyntheticEvent,
-  Fragment,
-} from 'react'
-import { NextPage } from 'next/types'
-import dynamic, { LoaderComponent } from 'next/dynamic'
-import moment from 'moment'
+// ** react
+import { useState, useEffect, SyntheticEvent, Fragment } from 'react'
+
+// ** next
 import Image from 'next/image'
 
+// ** third party
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-//import dayjs, { Dayjs } from 'dayjs'
 
 // ** mui
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
@@ -22,49 +14,57 @@ import Box from '@mui/material/Box'
 import { useTheme, styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
-import Paper from '@mui/material/Paper'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
-import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
 import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import TextField from '@mui/material/TextField'
 import Stack from '@mui/material/Stack'
-import MenuItem from '@mui/material/MenuItem'
-import Drawer from '@mui/material/Drawer'
 import Switch from '@mui/material/Switch'
-import Autocomplete, {
-  AutocompleteChangeDetails,
-  AutocompleteChangeReason,
-} from '@mui/material/Autocomplete'
-import Chip from '@mui/material/Chip'
+import { AutocompleteChangeReason } from '@mui/material/Autocomplete'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import OutlinedInput from '@mui/material/OutlinedInput'
+import InputAdornment from '@mui/material/InputAdornment'
+import CircularProgress from '@mui/material/CircularProgress'
+import Tooltip from '@mui/material/Tooltip'
+import FormHelperText from '@mui/material/FormHelperText'
+
+// ** icons
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
+import WarningIcon from '@mui/icons-material/Warning'
+import DoneIcon from '@mui/icons-material/Done'
+
+// ** models
 import PageProps from '@/models/AppPropsModel'
-import LayoutAdminPage from '@/layouts/LayoutAdminPage'
-import getServerSideProps from '@/utils/AdminServerSideProps'
+import NextPageType from '@/models/NextPageType'
+import CategoryModel from '@/models/CategoryModel'
+import ListQueryModel from '@/models/ListQueryModel'
+import TagModel from '@/models/TagModel'
+import FileModel from '@/models/FileModel'
 import { ArticleFormModel } from '@/models/ArticleModel'
 
+// ** layouts
+import LayoutAdminPage from '@/layouts/LayoutAdminPage'
+
+// ** utils
+import getServerSideProps from '@/utils/AdminServerSideProps'
+import generateFileUrl from '@/utils/GenerateFileUrl'
+
+// ** services
+import ArticleService from '@/services/ArticleService'
 import TagService from '@/services/TagService'
+
+// ** hooks
 import useTagQuery from '@/hooks/queries/useTagQuery'
 import useCategoryQuery from '@/hooks/queries/useCategoryQuery'
 
-import ListQueryModel from '@/models/ListQueryModel'
-
-import TagModel from '@/models/TagModel'
-
+// ** components
+import Editor from '@/components/editor'
+import DialogFileBrowser from '@/components/file-browser/DialogFileBrowser'
 import TagAutocomplete from '@/components/admin/articles/TagAutocomplete'
 import AsyncAutocomplete from '@/components/AsyncAutocomplete'
-
-import NextPageType from '@/models/NextPageType'
-
-import Editor from '@/components/editor'
-import CategoryModel from '@/models/CategoryModel'
-
-// ** components
-import DialogFileBrowser from '@/components/file-browser/DialogFileBrowser'
-import FileModel from '@/models/FileModel'
-import { UPLOAD_PATH_URL } from '@/config'
 
 const CoverImageBox = styled(Box)(({ theme }) => ({
   cursor: 'pointer',
@@ -83,10 +83,18 @@ const CoverImageBox = styled(Box)(({ theme }) => ({
     borderColor: theme.palette.grey[500],
   },
 }))
+const StyledCardHeader = styled(CardHeader)(({ theme }) => ({
+  paddingBottom: theme.spacing(0.5),
+  '& .MuiTypography-root': {
+    fontSize: 17,
+  },
+}))
 
 const AdminArticleNew: NextPageType = ({}: PageProps) => {
   const theme = useTheme()
 
+  const [guidExistsLoading, setGuidExistsLoading] = useState(false)
+  const [guidExists, setGuidExists] = useState<boolean | null>(null)
   const [categoryQueryParams, setCategoryQueryParams] =
     useState<ListQueryModel>({
       s: '',
@@ -102,7 +110,8 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
   const [categoryValue, setCategoryValue] = useState(new Array<CategoryModel>())
   const [categorySearchText, setCategorySearchText] = useState('')
   const [imageBrowserOpen, setImageBrowserOpen] = useState(false)
-
+  const [tagSelect, setTagSelect] = useState<(string | TagModel)[]>([])
+  console.log('tagSelect', tagSelect)
   const initialValues: ArticleFormModel = {
     title: '',
     shortDescription: '',
@@ -127,8 +136,6 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
     //...
   })
 
-  const [tagSelect, setTagSelect] = useState<(string | TagModel)[]>([])
-
   const handleCategoryAutoCompleteInputChange = (
     e: any,
     newInputValue: string,
@@ -146,12 +153,12 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
     reason: AutocompleteChangeReason,
   ) => {
     if (reason === 'clear') {
-      setFieldValue('category', null)
+      setFieldValue('categories', null)
       setCategoryValue([])
       return
     }
     setFieldValue(
-      'category',
+      'categories',
       val.map((v) => v._id),
     )
     setCategoryValue(val)
@@ -173,6 +180,7 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
     setFieldValue,
     values,
     setTouched,
+    isValid,
   } = useFormik<ArticleFormModel>({
     initialValues,
     validationSchema,
@@ -194,8 +202,35 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
     },
   })
 
+  console.log('values', values)
+
+  useEffect(() => {
+    if (values._id && initialValues.guid === values.guid) {
+      setGuidExistsLoading(false)
+      setGuidExists(false)
+      return
+    }
+
+    const delayDebounceFn = setTimeout(async () => {
+      if (values.guid) {
+        setGuidExistsLoading(true)
+        const response = await ArticleService.guidExists(values.guid)
+        setTimeout(() => {
+          setGuidExistsLoading(false)
+          setGuidExists(response)
+        }, 500)
+      }
+    }, 1000)
+
+    return () => clearTimeout(delayDebounceFn)
+  }, [values.guid])
+
   const handleSelectImageChange = (data: FileModel[]) =>
     setSelectCoverImage(data[data.length - 1])
+
+  const handleChangeSetContent = (text: string) => {
+    setFieldValue('content', text)
+  }
 
   return (
     <Fragment>
@@ -203,6 +238,7 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
         <Grid item xs={9}>
           <Stack spacing={2}>
             <TextField
+              required
               fullWidth
               type="text"
               id="title"
@@ -216,6 +252,7 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
             />
 
             <TextField
+              required
               fullWidth
               multiline
               type="text"
@@ -233,16 +270,64 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
               error={errors.shortDescription ? touched.shortDescription : false}
             />
 
-            <Editor />
+            <FormControl
+              fullWidth
+              size="small"
+              variant="outlined"
+              error={errors.guid ? touched.guid : false}
+              required
+            >
+              <InputLabel htmlFor="guid">Kısa Link</InputLabel>
+              <OutlinedInput
+                id="guid"
+                required
+                {...getFieldProps('guid')}
+                disabled={isSubmitting || guidExistsLoading}
+                endAdornment={
+                  <InputAdornment position="end">
+                    {guidExistsLoading ? (
+                      <CircularProgress size={18} />
+                    ) : (
+                      guidExists !== null &&
+                      (!guidExists ? (
+                        <DoneIcon />
+                      ) : (
+                        <Tooltip
+                          title="Eklemeye çalıştığınız guid bilgisi zaten kullanılıyor."
+                          placement="top"
+                        >
+                          <WarningIcon />
+                        </Tooltip>
+                      ))
+                    )}
+                  </InputAdornment>
+                }
+                label="Kısa Link"
+              />
+              <FormHelperText>
+                {errors.guid && touched.guid ? errors.guid : null}
+              </FormHelperText>
+            </FormControl>
+
+            <Editor value={values.content} setValue={handleChangeSetContent} />
           </Stack>
         </Grid>
 
         <Grid item xs={3}>
           <Stack spacing={2}>
             <Card>
-              <CardHeader
+              <StyledCardHeader
                 title="Ayarlar"
-                action={<Button variant="contained">YAYINLA</Button>}
+                action={
+                  <Button
+                    variant="contained"
+                    disabled={
+                      !isValid || guidExistsLoading || guidExists === true
+                    }
+                  >
+                    YAYINLA
+                  </Button>
+                }
               />
               <CardContent>
                 <Stack spacing={2}>
@@ -275,7 +360,7 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
             </Card>
 
             <Card>
-              <CardHeader title="Öne Çıkan Görsel" />
+              <StyledCardHeader title="Öne Çıkan Görsel" />
               <CardContent>
                 <CoverImageBox onClick={handleSelectCoverImage}>
                   {values.coverImage === '' ? (
@@ -283,36 +368,46 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
                   ) : (
                     <Image
                       fill
-                      src={`${UPLOAD_PATH_URL}/${
-                        selectCoverImage.path ? `${selectCoverImage.path}/` : ''
-                      }${selectCoverImage.filename}`}
+                      src={generateFileUrl(selectCoverImage)}
                       alt=""
                     />
                   )}
                 </CoverImageBox>
               </CardContent>
             </Card>
-            <TagAutocomplete select={tagSelect} setSelect={setTagSelect} />
 
-            <AsyncAutocomplete
-              multiple
-              name="categories"
-              value={categoryValue}
-              inputValue={categorySearchText}
-              label="Evebeyn Kategori"
-              handleInputChange={handleCategoryAutoCompleteInputChange}
-              handleChange={handleCategoryAutoCompleteChange}
-              setTouched={setTouched}
-              data={categories?.data || []}
-              objName="title"
-              loading={categories.isLoading}
-              helperText={
-                errors.categories && touched.categories
-                  ? (errors.categories as any)
-                  : null
-              }
-              error={errors.categories ? touched.categories : false}
-            />
+            <Card>
+              <StyledCardHeader title="Kategori & Etiketler" />
+              <CardContent>
+                <Stack spacing={2}>
+                  <TagAutocomplete
+                    select={tagSelect}
+                    setSelect={setTagSelect}
+                  />
+
+                  {/* <AsyncAutocomplete<CategoryModel[], ArticleFormModel > */}
+                  <AsyncAutocomplete
+                    multiple
+                    name="categories"
+                    value={categoryValue}
+                    inputValue={categorySearchText}
+                    label="Evebeyn Kategori"
+                    handleInputChange={handleCategoryAutoCompleteInputChange}
+                    handleChange={handleCategoryAutoCompleteChange}
+                    setTouched={setTouched}
+                    data={categories?.data || []}
+                    objName="title"
+                    loading={categories.isLoading}
+                    helperText={
+                      errors.categories && touched.categories
+                        ? (errors.categories as any)
+                        : null
+                    }
+                    error={errors.categories ? touched.categories : false}
+                  />
+                </Stack>
+              </CardContent>
+            </Card>
           </Stack>
         </Grid>
       </Grid>

@@ -1,6 +1,3 @@
-// ** react
-import { useState } from 'react'
-
 // ** next
 import dynamic from 'next/dynamic'
 
@@ -113,9 +110,12 @@ const EditorWrapperBox = styled(Box)(({ theme }) => ({
   },
 }))
 
-export default function Editor() {
-  const [value, setValue] = useState('')
+type EditorProps = {
+  value: string
+  setValue: (text: string) => void
+}
 
+export default function Editor({ value, setValue }: EditorProps) {
   return (
     <EditorWrapperBox>
       <MDEditor

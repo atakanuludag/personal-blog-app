@@ -28,8 +28,8 @@ import useComponentContext from '@/hooks/useComponentContext'
 // ** core
 import { QUERY_NAMES } from '@/core/Constants'
 
-// ** config
-import { UPLOAD_PATH_URL } from '@/config'
+// ** utils
+import generateFileUrl from '@/utils/GenerateFileUrl'
 
 type EditFileProps = {
   data: FileModel
@@ -111,9 +111,7 @@ export default function EditFile({ data, isFolder }: EditFileProps) {
         <Image
           fill
           loading="lazy"
-          src={`${UPLOAD_PATH_URL}/${data.path ? `${data.path}/` : ''}${
-            data.filename
-          }`}
+          src={generateFileUrl(data)}
           alt={data.title}
         />
       </Box>

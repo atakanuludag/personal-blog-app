@@ -107,7 +107,7 @@ export default function NewEditTag({ data }: NewEditTagProps) {
     if (values.title !== initialValues.title && !initialValues._id) {
       setFieldValue('guid', slugify(values.title))
     }
-  }, [values])
+  }, [values.title])
 
   useEffect(() => {
     if (!data) return

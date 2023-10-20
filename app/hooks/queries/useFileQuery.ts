@@ -9,7 +9,7 @@ import FileService from '@/services/FileService'
 import FileModel, { FileListQueryModel } from '@/models/FileModel'
 import ListResponseModel from '@/models/ListResponseModel'
 
-export default function useCategoryQuery(params?: FileListQueryModel) {
+export default function useFileQuery(params?: FileListQueryModel) {
   const service = FileService
   const queryName = QUERY_NAMES.FILES
 

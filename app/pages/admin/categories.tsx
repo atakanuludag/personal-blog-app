@@ -162,7 +162,7 @@ const Categories: NextPageType = ({}: PageProps) => {
 }
 
 Categories.layout = LayoutAdminPage
-Categories.title = 'Makaleler'
+Categories.title = 'Kategoriler'
 export default Categories
 
 export { getServerSideProps }

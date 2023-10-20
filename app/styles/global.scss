@@ -5,6 +5,8 @@
 
 @import '~@uiw/react-md-editor/markdown-editor.css';
 @import '~@uiw/react-markdown-preview/markdown.css';
+@import '~react-checkbox-tree/lib/react-checkbox-tree.css';
+
 
 .wmde-markdown, .w-md-editor {
   --color-canvas-default: transparent !important;
@@ -16,6 +18,24 @@
   --md-editor-box-shadow-color: #000 !important;
 }
 
+.rct-collapse, .rct-checkbox, .rct-node-icon {
+  display: flex;
+}
+.rct-node {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.rct-icons-checkbox-tree-icons {
+  .rct-collapse-btn {
+    padding: 0
+  }
+  .rct-text {
+    label {
+      display: flex;
+      align-items: center;
+    }
+  }
+}
 
 
 //@import "~nprogress/nprogress";

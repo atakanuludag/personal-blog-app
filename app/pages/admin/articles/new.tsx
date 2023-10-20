@@ -63,8 +63,10 @@ import useCategoryQuery from '@/hooks/queries/useCategoryQuery'
 // ** components
 import Editor from '@/components/editor'
 import DialogFileBrowser from '@/components/file-browser/DialogFileBrowser'
-import TagAutocomplete from '@/components/admin/articles/TagAutocomplete'
+import TagChipAutocomplete from '@/components/admin/articles/TagChipAutocomplete'
 import AsyncAutocomplete from '@/components/AsyncAutocomplete'
+import CategoryTree from '@/components/admin/shared/CategoryTree'
+import Divider from '@mui/material/Divider'
 
 const CoverImageBox = styled(Box)(({ theme }) => ({
   cursor: 'pointer',
@@ -111,7 +113,7 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
   const [categorySearchText, setCategorySearchText] = useState('')
   const [imageBrowserOpen, setImageBrowserOpen] = useState(false)
   const [tagSelect, setTagSelect] = useState<(string | TagModel)[]>([])
-  console.log('tagSelect', tagSelect)
+  //console.log('tagSelect', tagSelect)
   const initialValues: ArticleFormModel = {
     title: '',
     shortDescription: '',
@@ -202,7 +204,7 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
     },
   })
 
-  console.log('values', values)
+  // console.log('values', values)
 
   useEffect(() => {
     if (values._id && initialValues.guid === values.guid) {
@@ -377,15 +379,25 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
             </Card>
 
             <Card>
-              <StyledCardHeader title="Kategori & Etiketler" />
+              <StyledCardHeader title="Etiketler" />
               <CardContent>
-                <Stack spacing={2}>
-                  <TagAutocomplete
-                    select={tagSelect}
-                    setSelect={setTagSelect}
-                  />
+                <TagChipAutocomplete
+                  selected={values.tags}
+                  setSelected={(data) => setFieldValue('tags', data)}
+                />
+              </CardContent>
+            </Card>
 
-                  {/* <AsyncAutocomplete<CategoryModel[], ArticleFormModel > */}
+            <Card>
+              <StyledCardHeader title="Kategoriler" />
+              <CardContent>
+                <CategoryTree
+                  expanded={[]}
+                  selected={values.categories}
+                  setSelected={(data) => setFieldValue('categories', data)}
+                />
+
+                {/*
                   <AsyncAutocomplete
                     multiple
                     name="categories"
@@ -404,8 +416,7 @@ const AdminArticleNew: NextPageType = ({}: PageProps) => {
                         : null
                     }
                     error={errors.categories ? touched.categories : false}
-                  />
-                </Stack>
+                  /> */}
               </CardContent>
             </Card>
           </Stack>

@@ -106,6 +106,17 @@ export class TagService {
     }
   }
 
+  async getItemByTitle(title: string): Promise<ITag> {
+    try {
+      return await this.serviceModel.findOne({ title }).exec()
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
   async guidExists(guid: string): Promise<boolean> {
     try {
       return await this.serviceModel.exists({ guid })

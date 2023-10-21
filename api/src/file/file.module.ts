@@ -9,10 +9,13 @@ import { IEnv } from '@/common/interfaces/env.interface'
 
 import { FileController } from '@/file/file.controller'
 import { FileService } from '@/file/file.service'
+import { TagService } from '@/tag/tag.service'
+
 import { File, FileSchema } from '@/file/schemas/file.schema'
 
 import { ArticleService } from '@/article/article.service'
 import { Article, ArticleSchema } from '@/article/schemas/article.schema'
+import { Tag, TagSchema } from '@/tag/schemas/tag.schema'
 
 import { PageService } from '@/page/page.service'
 import { Page, PageSchema } from '@/page/schemas/page.schema'
@@ -26,6 +29,7 @@ import { editFileName } from '@/common/utils/edit-file-name.util'
     MongooseModule.forFeature([{ name: File.name, schema: FileSchema }]),
     MongooseModule.forFeature([{ name: Article.name, schema: ArticleSchema }]),
     MongooseModule.forFeature([{ name: Page.name, schema: PageSchema }]),
+    MongooseModule.forFeature([{ name: Tag.name, schema: TagSchema }]),
     MulterModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService<IEnv>) => ({
@@ -55,6 +59,7 @@ import { editFileName } from '@/common/utils/edit-file-name.util'
     ExceptionHelper,
     CoreMessage,
     FileMessage,
+    TagService,
   ],
 })
 export class FileModule {}

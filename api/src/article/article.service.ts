@@ -8,6 +8,8 @@ import { ArticleDto } from '@/article/dto/article.dto'
 import { UpdateArticleDto } from '@/article/dto/update-article.dto'
 import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { CoreMessage } from '@/common/messages'
+import { TagService } from '@/tag/tag.service'
+import { slugifyTR } from '@/common/utils/slugify-tr.util'
 
 @Injectable()
 export class ArticleService {
@@ -15,11 +17,29 @@ export class ArticleService {
     @InjectModel(Article.name)
     private readonly serviceModel: Model<ArticleDocument>,
     private readonly coreMessage: CoreMessage,
+    private readonly tagService: TagService,
   ) {}
 
   async create(data: ArticleDto): Promise<IArticle> {
     try {
-      const create = new this.serviceModel(data)
+      const tags = new Array<ObjectId>()
+
+      for await (const title of data.tags) {
+        const tagTitleSearch = await this.tagService.getItemByTitle(title)
+        if (tagTitleSearch) {
+          tags.push(tagTitleSearch._id)
+        } else {
+          const tagCreate = await this.tagService.create({
+            title,
+            guid: slugifyTR(title),
+          })
+          tags.push(tagCreate._id)
+        }
+      }
+      const create = new this.serviceModel({
+        ...data,
+        tags,
+      })
       return create.save()
     } catch (err) {
       throw new ExceptionHelper(
@@ -175,6 +195,7 @@ export class ArticleService {
     }
   }
 
+  // Etiket silindiğinde o etikete bağlı makalalerdeki etiketlerin kimlik numaralarını sil;
   async tagRemoveByObjectId(id: ObjectId): Promise<void> {
     try {
       await this.serviceModel.updateMany(

@@ -55,6 +55,7 @@ export default function TagChipAutocomplete({
       }}
       renderTags={(value: readonly string[], getTagProps) =>
         value.map((option: string, index: number) => (
+          // eslint-disable-next-line react/jsx-key
           <Chip
             variant="outlined"
             size="small"

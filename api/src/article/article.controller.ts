@@ -22,7 +22,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { ArticleDto } from '@/article/dto/article.dto'
-import { UpdateArticleDto } from '@/article/dto/update-article.dto'
 import { ListResultDto } from '@/common/dto/list-result.dto'
 import { GuidParamsDto, IdParamsDto } from '@/common/dto/params.dto'
 import { DefaultException } from '@/common/dto/default-exception.dto'
@@ -166,7 +165,7 @@ export class ArticleController {
   @ApiBearerAuth('accessToken')
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  async update(@Body() body: UpdateArticleDto, @Param() params: IdParamsDto) {
+  async update(@Body() body: ArticleDto, @Param() params: IdParamsDto) {
     return await this.service.update(body, params.id)
   }
 

@@ -1,3 +1,6 @@
+// ** next
+import { useRouter } from 'next/router'
+
 // ** models
 import NextPageType from '@/models/NextPageType'
 
@@ -10,12 +13,14 @@ import getServerSideProps from '@/utils/AdminServerSideProps'
 // ** components
 import NewEditArticle from '@/components/admin/articles/NewEditArticle'
 
-const AdminArticleNew: NextPageType = () => {
-  return <NewEditArticle />
+const AdminArticleEdit: NextPageType = () => {
+  const router = useRouter()
+  const id = router.query?.id as string
+  return <NewEditArticle id={id} />
 }
 
-AdminArticleNew.layout = LayoutAdminPage
-AdminArticleNew.title = 'Yeni Makale'
-export default AdminArticleNew
+AdminArticleEdit.layout = LayoutAdminPage
+AdminArticleEdit.title = 'Makale Düzenle'
+export default AdminArticleEdit
 
 export { getServerSideProps }

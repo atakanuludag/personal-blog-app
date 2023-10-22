@@ -3,6 +3,7 @@ import {
   useQueryClient,
   useInfiniteQuery,
   useQuery,
+  UseQueryOptions,
 } from 'react-query'
 import { QUERY_NAMES } from '@/core/Constants'
 import ArticleService from '@/services/ArticleService'
@@ -10,14 +11,22 @@ import ListQueryModel from '@/models/ListQueryModel'
 import ListResponseModel from '@/models/ListResponseModel'
 import ArticleModel from '@/models/ArticleModel'
 
-export default function useArticleQuery(params?: ListQueryModel) {
+export default function useArticleQuery() {
   const service = ArticleService
   const queryName = QUERY_NAMES.ARTICLE
 
-  const articleQuery = () =>
+  const articleItemsQuery = (params: ListQueryModel) =>
     useQuery([queryName, params], () => service.getItems(params))
 
-  const articleInfiniteQuery = (enabled: boolean) =>
+  const articleItemQuery = (
+    id: string,
+    options?: Omit<UseQueryOptions<ArticleModel>, 'queryKey' | 'queryFn'>,
+  ) => useQuery([queryName, id], () => service.getItemById(id), options)
+
+  const articleItemsInfiniteQuery = (
+    enabled: boolean,
+    params: ListQueryModel,
+  ) =>
     useInfiniteQuery(
       [queryName],
       ({ pageParam }) =>
@@ -33,20 +42,18 @@ export default function useArticleQuery(params?: ListQueryModel) {
       },
     )
 
-  const articlePrefetchInfiniteQuery = (queryClient: QueryClient) =>
+  const articlePrefetchInfiniteQuery = (
+    queryClient: QueryClient,
+    params: ListQueryModel,
+  ) =>
     queryClient.prefetchInfiniteQuery([queryName], () =>
       service.getItems(params),
     )
 
-  const invalidateArticleQuery = () => {
-    const queryClientHook = useQueryClient()
-    queryClientHook.invalidateQueries(queryName)
-  }
-
   return {
-    articleQuery,
-    articleInfiniteQuery,
+    articleItemsQuery,
+    articleItemQuery,
+    articleItemsInfiniteQuery,
     articlePrefetchInfiniteQuery,
-    invalidateArticleQuery,
   }
 }

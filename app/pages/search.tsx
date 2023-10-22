@@ -43,7 +43,7 @@ const Search: NextPage<SearchProps> = ({ s }: SearchProps) => {
     s,
     sType,
   })
-  const { articleInfiniteQuery } = useArticleQuery(params)
+  const { articleItemsInfiniteQuery } = useArticleQuery()
   const {
     data,
     hasNextPage,
@@ -51,7 +51,7 @@ const Search: NextPage<SearchProps> = ({ s }: SearchProps) => {
     isLoading,
     isFetching,
     isFetchingNextPage,
-  } = articleInfiniteQuery(!s ? false : true)
+  } = articleItemsInfiniteQuery(!s ? false : true, params)
   const loading = isLoading || isFetching || isFetchingNextPage
 
   const articleRef = useRef<HTMLDivElement>(null)
@@ -117,14 +117,15 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   if (!s) return { props: {} }
 
-  const { articlePrefetchInfiniteQuery } = useArticleQuery({
+  const { articlePrefetchInfiniteQuery } = useArticleQuery()
+  const queryParams = {
     paging: 1,
     page: 1,
     pageSize: PAGE_SIZE,
     sType,
     s,
-  })
-  await articlePrefetchInfiniteQuery(queryClient)
+  }
+  await articlePrefetchInfiniteQuery(queryClient, queryParams)
 
   return {
     props: {

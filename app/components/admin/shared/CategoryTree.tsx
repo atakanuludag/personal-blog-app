@@ -60,7 +60,7 @@ export default function CategoryTree({
   )
 
   const [searchText, setSearchText] = useState<string>('')
-  const [expanded, setExpanded] = useState<string[]>(_expanded)
+  const [expanded, setExpanded] = useState<string[]>([])
 
   const { categoriesQuery } = useCategoryQuery()
   const categories = categoriesQuery()
@@ -83,6 +83,10 @@ export default function CategoryTree({
 
     return filtered
   }
+
+  useEffect(() => {
+    setExpanded(_expanded)
+  }, [_expanded])
 
   useEffect(() => {
     const categoriesData = categories.data as CategoryModel[]
@@ -126,6 +130,7 @@ export default function CategoryTree({
           onClick={() => {}}
           nodes={searchText !== '' ? filteredItems : items}
           checked={selected}
+          checkModel="all"
           expanded={expanded}
           onCheck={(checked) => setSelected(checked)}
           onExpand={(expanded) => setExpanded(expanded)}

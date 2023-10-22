@@ -52,8 +52,8 @@ const AdminArticleIndex: NextPageType = ({}: PageProps) => {
     pageSize: PAGE_SIZE,
   })
   const [customLoading, setCustomLoading] = useState(false)
-  const { articleQuery } = useArticleQuery(params)
-  const { data, isLoading, isFetching } = articleQuery()
+  const { articleItemsQuery } = useArticleQuery()
+  const { data, isLoading, isFetching } = articleItemsQuery(params)
   const items = data as ListResponseModel<ArticleModel[]>
   const loading = isLoading || isFetching || customLoading
 
@@ -63,7 +63,7 @@ const AdminArticleIndex: NextPageType = ({}: PageProps) => {
       headerName: 'Başlık',
       width: 450,
       renderCell: ({ row }: GridRenderCellParams<any, ArticleModel, any>) => (
-        <Link component={NextLink} href="/">
+        <Link component={NextLink} href={`/admin/articles/${row._id}`}>
           {row.title}
         </Link>
       ),
@@ -98,7 +98,12 @@ const AdminArticleIndex: NextPageType = ({}: PageProps) => {
             <Typography variant="h5" fontWeight={500}>
               Makaleler
             </Typography>
-            <Button variant="contained" size="small">
+            <Button
+              variant="contained"
+              size="small"
+              component={NextLink}
+              href="/admin/articles/new"
+            >
               Yeni ekle
             </Button>
           </Stack>
@@ -131,6 +136,7 @@ const AdminArticleIndex: NextPageType = ({}: PageProps) => {
 }
 
 AdminArticleIndex.layout = LayoutAdminPage
+AdminArticleIndex.title = 'Makaleler'
 export default AdminArticleIndex
 
 export { getServerSideProps }

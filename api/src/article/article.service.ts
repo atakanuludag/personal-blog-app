@@ -5,7 +5,6 @@ import { IArticle } from '@/article/interfaces/article.interface'
 import { IListQueryResponse, IQuery } from '@/common/interfaces/query.interface'
 import { Article, ArticleDocument } from '@/article/schemas/article.schema'
 import { ArticleDto } from '@/article/dto/article.dto'
-import { UpdateArticleDto } from '@/article/dto/update-article.dto'
 import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { CoreMessage } from '@/common/messages'
 import { TagService } from '@/tag/tag.service'
@@ -20,22 +19,28 @@ export class ArticleService {
     private readonly tagService: TagService,
   ) {}
 
+  async getTags(tagItems: string[]) {
+    const tags = new Array<ObjectId>()
+    for await (const title of tagItems) {
+      const tagTitleSearch = await this.tagService.getItemByTitle(title)
+      if (tagTitleSearch) {
+        tags.push(tagTitleSearch._id)
+      } else {
+        const tagCreate = await this.tagService.create({
+          title,
+          guid: slugifyTR(title),
+        })
+        tags.push(tagCreate._id)
+      }
+    }
+
+    return tags
+  }
+
   async create(data: ArticleDto): Promise<IArticle> {
     try {
-      const tags = new Array<ObjectId>()
+      const tags = await this.getTags(data.tags)
 
-      for await (const title of data.tags) {
-        const tagTitleSearch = await this.tagService.getItemByTitle(title)
-        if (tagTitleSearch) {
-          tags.push(tagTitleSearch._id)
-        } else {
-          const tagCreate = await this.tagService.create({
-            title,
-            guid: slugifyTR(title),
-          })
-          tags.push(tagCreate._id)
-        }
-      }
       const create = new this.serviceModel({
         ...data,
         tags,
@@ -49,18 +54,24 @@ export class ArticleService {
     }
   }
 
-  async update(body: UpdateArticleDto, id: ObjectId): Promise<IArticle> {
+  async update(data: ArticleDto, id: ObjectId): Promise<IArticle> {
     try {
+      const tags = await this.getTags(data.tags)
+
       return await this.serviceModel.findByIdAndUpdate(
         id,
         {
-          $set: body,
+          $set: {
+            ...data,
+            tags,
+          },
         },
         {
           new: true,
         },
       )
     } catch (err) {
+      console.log(err)
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
         HttpStatus.BAD_REQUEST,

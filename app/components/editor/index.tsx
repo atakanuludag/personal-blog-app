@@ -121,7 +121,7 @@ export default function Editor({ value, setValue }: EditorProps) {
       <MDEditor
         value={value}
         onChange={(value) => setValue(value || '')}
-        height={550}
+        height={800}
         components={{
           toolbar: (command, disabled, executeCommand, index) => {
             const props = { command, disabled, index }

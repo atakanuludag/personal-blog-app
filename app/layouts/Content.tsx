@@ -47,7 +47,7 @@ export default function Content({ children, layoutPageType }: ContentProps) {
   )
 
   return (
-    <Container component="main" maxWidth="lg" fixed className={containerCSS}>
+    <Container component="main" maxWidth={false} className={containerCSS}>
       {children}
       <Footer />
     </Container>

@@ -73,7 +73,7 @@ const CoverImageBox = styled(Box)(({ theme }) => ({
     color: theme.palette.grey[300],
     position: 'absolute',
     top: '5vw',
-    left: '5vw',
+    left: '8vw',
   },
   '&:hover': {
     borderColor: theme.palette.grey[500],

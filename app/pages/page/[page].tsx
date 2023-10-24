@@ -42,14 +42,9 @@ const Page: NextPage<PageProps> = ({ currentPage, data }: PageProps) => {
 
       <Box component="section">
         <Pagination
+          routerUrl={`page`}
           totalPages={data.totalPages}
           currentPage={currentPage}
-          routerQuery={[
-            {
-              path: 'routerUrl',
-              query: 'page',
-            },
-          ]}
         />
       </Box>
     </Fragment>

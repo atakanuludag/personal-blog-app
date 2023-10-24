@@ -19,23 +19,28 @@ import Pagination from '@/components/Pagination'
 
 // ** models
 import PageProps from '@/models/AppPropsModel'
-
-// ** config
-import { PAGE_SIZE, REVALIDATE_SECONDS } from '@/config'
 import ArticleModel from '@/models/ArticleModel'
 import ListResponseModel from '@/models/ListResponseModel'
 import TagModel from '@/models/TagModel'
+
+// ** config
+import { PAGE_SIZE, REVALIDATE_SECONDS } from '@/config'
 
 type StaticPathParams = {
   guid: string
 }
 
 type TagGuidProps = {
+  guid: string
   data: ListResponseModel<ArticleModel[]>
   tagData: TagModel
 } & PageProps
 
-const TagGuid: NextPage<TagGuidProps> = ({ data, tagData }: TagGuidProps) => {
+const TagGuid: NextPage<TagGuidProps> = ({
+  guid,
+  data,
+  tagData,
+}: TagGuidProps) => {
   return (
     <Fragment>
       <Paper
@@ -57,18 +62,9 @@ const TagGuid: NextPage<TagGuidProps> = ({ data, tagData }: TagGuidProps) => {
 
       <Box component="section">
         <Pagination
+          routerUrl={`tag/${guid}/page`}
           totalPages={data.totalPages}
           currentPage={data.currentPage}
-          routerQuery={[
-            {
-              path: 'routerUrl',
-              query: 'tag',
-            },
-            {
-              path: 'guid',
-              query: tagData.guid,
-            },
-          ]}
         />
       </Box>
     </Fragment>
@@ -100,6 +96,7 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
   }
   return {
     props: {
+      guid: params?.guid,
       data: articleData,
       tagData,
     },

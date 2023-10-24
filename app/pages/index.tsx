@@ -37,14 +37,9 @@ const Home: NextPage<HomeIndexProps> = ({ data }: HomeIndexProps) => {
 
       <Box component="section">
         <Pagination
+          routerUrl={`page`}
           totalPages={data.totalPages}
           currentPage={data.currentPage}
-          routerQuery={[
-            {
-              path: 'routerUrl',
-              query: 'page',
-            },
-          ]}
         />
       </Box>
     </Fragment>

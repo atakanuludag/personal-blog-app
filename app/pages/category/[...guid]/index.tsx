@@ -19,28 +19,39 @@ import Pagination from '@/components/Pagination'
 
 // ** models
 import PageProps from '@/models/AppPropsModel'
-
-// ** config
-import { PAGE_SIZE, REVALIDATE_SECONDS } from '@/config'
 import ArticleModel from '@/models/ArticleModel'
 import ListResponseModel from '@/models/ListResponseModel'
 import CategoryModel from '@/models/CategoryModel'
 
+// ** config
+import { PAGE_SIZE, REVALIDATE_SECONDS } from '@/config'
+
+// ** utils
+import {
+  getLatestParam,
+  getPageParam,
+  getUrlByRemovePageParam,
+  isPagingParams,
+} from '@/utils/ParamsOperation'
+
 // Todo: category ve tags gibi sayfalarda next-seo ayarları yapılacak.
 
 type StaticPathParams = {
-  guid: string
+  guid: string[]
 }
 
 type CategoryGuidProps = {
+  guid: string[]
   data: ListResponseModel<ArticleModel[]>
   categoryData: CategoryModel
 } & PageProps
 
 const CategoryGuid: NextPage<CategoryGuidProps> = ({
+  guid,
   data,
   categoryData,
 }: CategoryGuidProps) => {
+  console.log(guid)
   return (
     <Fragment>
       <Paper
@@ -67,22 +78,30 @@ const CategoryGuid: NextPage<CategoryGuidProps> = ({
 
       <Box component="section">
         <Pagination
+          routerUrl={`category/${guid.join('/')}/page`}
           totalPages={data.totalPages}
           currentPage={data.currentPage}
-          routerQuery={[
-            {
-              path: 'routerUrl',
-              query: 'category',
-            },
-            {
-              path: 'guid',
-              query: categoryData.guid,
-            },
-          ]}
         />
       </Box>
     </Fragment>
   )
+}
+
+const generateGuidUrls = (
+  data: CategoryModel[],
+  parent: string,
+  guid: string,
+  arr: string[],
+): string[] => {
+  const find = data.find((p) => p._id === parent)
+  if (!find) {
+    arr.push(guid)
+    return arr
+  }
+
+  arr.unshift(find.guid)
+
+  return generateGuidUrls(data, find.parent?._id as string, guid, arr)
 }
 
 export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
@@ -94,11 +113,13 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
     }
   }
 
-  const categoryData = await CategoryService.getItemByGuid(params?.guid)
+  const isPaging = isPagingParams(params?.guid)
+  const latestGuid = getLatestParam(isPaging, params.guid)
+  const categoryData = await CategoryService.getItemByGuid(latestGuid)
 
   const articleData = (await ArticleService.getItems({
     category: categoryData._id,
-    page: 1,
+    page: getPageParam(isPaging, params?.guid),
     pageSize: PAGE_SIZE,
     paging: 1,
   })) as ListResponseModel<ArticleModel[]>
@@ -112,6 +133,7 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
     props: {
       data: articleData,
       categoryData,
+      guid: getUrlByRemovePageParam(isPaging, params?.guid),
     },
     revalidate: REVALIDATE_SECONDS,
   }
@@ -122,10 +144,51 @@ export const getStaticPaths: GetStaticPaths<StaticPathParams> = async () => {
     paging: 0,
   })) as CategoryModel[]
 
-  const paths = categories.map((item) => ({
-    params: { guid: item.guid },
-  }))
+  let paths: {
+    params: StaticPathParams
+  }[] = []
 
-  return { paths, fallback: false }
+  for await (const item of categories) {
+    const guidUrls = generateGuidUrls(
+      categories,
+      item.parent?._id as string,
+      item.guid,
+      [],
+    )
+
+    const articlePaging = (await ArticleService.getItems({
+      category: item._id,
+      paging: 1,
+      page: 1,
+      pageSize: PAGE_SIZE,
+    })) as ListResponseModel<ArticleModel[]>
+
+    paths.push({
+      params: {
+        guid: guidUrls,
+      },
+    })
+
+    if (articlePaging.totalPages > 1) {
+      ;[...Array(articlePaging.totalPages)].forEach((_, i) => {
+        //String(i + 1)
+        paths.push({
+          params: { guid: [...guidUrls, 'page', String(i + 1)] },
+        })
+      })
+    }
+  }
+
+  //const isPaging = paths.some((p) => p.params.guid.includes('page'))
+
+  paths = paths.filter(
+    (item) =>
+      item.params.guid.length > (item.params.guid.includes('page') ? 3 : 1),
+  )
+
+  return {
+    paths,
+    fallback: false,
+  }
 }
 export default CategoryGuid

@@ -162,7 +162,10 @@ PersonalBlogApp.getInitialProps = async (appContext: AppContext) => {
     if (process.env.NODE_ENV === 'development') userIpAdress = '127.0.0.1'
   }
 
-  const categories = await CategoryService.getItems()
+  const categories = await CategoryService.getItems({
+    sType: 'parent',
+    s: 'null',
+  })
 
   const navbarPageIds = NAVBAR_PAGE_IDS?.split(',') || []
   const navbarPages = new Array<PageModel>()

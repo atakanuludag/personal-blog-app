@@ -19,23 +19,26 @@ import Pagination from '@/components/Pagination'
 
 // ** models
 import PageProps from '@/models/AppPropsModel'
-
-// ** config
-import { PAGE_SIZE, REVALIDATE_SECONDS } from '@/config'
 import ArticleModel from '@/models/ArticleModel'
 import ListResponseModel from '@/models/ListResponseModel'
 import TagModel from '@/models/TagModel'
 
+// ** config
+import { PAGE_SIZE, REVALIDATE_SECONDS } from '@/config'
+
 type StaticPathParams = {
-  params: string[]
+  guid: string
+  page: string
 }
 
 type TagParamsProps = {
+  guid: string
   data: ListResponseModel<ArticleModel[]>
   tagData: TagModel
 } & PageProps
 
 const TagParams: NextPage<TagParamsProps> = ({
+  guid,
   data,
   tagData,
 }: TagParamsProps) => {
@@ -60,18 +63,9 @@ const TagParams: NextPage<TagParamsProps> = ({
 
       <Box component="section">
         <Pagination
+          routerUrl={`tag/${guid}/page`}
           totalPages={data.totalPages}
           currentPage={data.currentPage}
-          routerQuery={[
-            {
-              path: 'routerUrl',
-              query: 'tag',
-            },
-            {
-              path: 'guid',
-              query: tagData.guid,
-            },
-          ]}
         />
       </Box>
     </Fragment>
@@ -81,18 +75,15 @@ const TagParams: NextPage<TagParamsProps> = ({
 export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
   params,
 }) => {
-  const _params = params?.params
-
-  if (!_params || _params?.length <= 0) {
+  if (!params) {
     return {
       notFound: true,
     }
   }
 
-  const tagGuid = _params[0]
-  const page = _params[1]
+  const { guid, page } = params
 
-  const tagData = await TagService.getItemByGuid(tagGuid)
+  const tagData = await TagService.getItemByGuid(guid)
 
   const articleData = (await ArticleService.getItems({
     tag: tagData._id,
@@ -108,6 +99,7 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
   }
   return {
     props: {
+      guid,
       data: articleData,
       tagData,
     },
@@ -136,16 +128,14 @@ export const getStaticPaths: GetStaticPaths<StaticPathParams> = async () => {
     })
   }
   const paths: {
-    params: {
-      params: string[]
-    }
+    params: StaticPathParams
   }[] = []
 
   for (const tag of tagGuidTotalPages) {
     if (tag.totalPages <= 1) continue
     ;[...Array(tag.totalPages)].forEach((_, i) => {
       paths.push({
-        params: { params: [tag.guid, String(i + 1)] },
+        params: { guid: tag.guid, page: String(i + 1) },
       })
     })
   }

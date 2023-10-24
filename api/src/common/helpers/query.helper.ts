@@ -2,7 +2,7 @@ import { Query } from '@nestjs/common'
 import { ListQueryDto } from '@/common/dto/list-query.dto'
 import { IQuery } from '@/common/interfaces/query.interface'
 import { OrderType } from '@/common/interfaces/enums'
-import { FilterQuery } from 'mongoose'
+import { FilterQuery, isValidObjectId } from 'mongoose'
 export class QueryHelper {
   public constructor() {}
 
@@ -10,15 +10,23 @@ export class QueryHelper {
     let searchQuery: FilterQuery<any> = {}
 
     if (query?.s && query?.sType) {
-      const sTypeArr = query?.sType.split(',').map((s) => s.trim())
-      searchQuery = {
-        $or: [],
-      }
-      sTypeArr.forEach((s) => {
-        searchQuery['$or'].push({
-          [s]: { $regex: `${query.s.toLocaleLowerCase()}`, $options: '$i' },
+      const isObjectId = isValidObjectId(query?.s)
+
+      if (query.s === 'null') {
+        searchQuery = { [query.sType]: null }
+      } else if (isObjectId) {
+        searchQuery = { [query.sType]: query?.s }
+      } else {
+        const sTypeArr = query?.sType.split(',').map((s) => s.trim())
+        searchQuery = {
+          $or: [],
+        }
+        sTypeArr.forEach((s) => {
+          searchQuery['$or'].push({
+            [s]: { $regex: `${query.s.toLocaleLowerCase()}`, $options: '$i' },
+          })
         })
-      })
+      }
     }
 
     const orderName = query.order || 'createdAt'

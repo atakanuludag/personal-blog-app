@@ -3,6 +3,7 @@ import { ChangeEvent, Dispatch, Fragment, SetStateAction } from 'react'
 
 // ** next
 import { useRouter } from 'next/router'
+import { default as NextLink } from 'next/link'
 
 // ** third party
 import { FetchNextPageOptions, InfiniteQueryObserverResult } from 'react-query'
@@ -10,21 +11,17 @@ import { FetchNextPageOptions, InfiniteQueryObserverResult } from 'react-query'
 // ** mui
 import Box from '@mui/material/Box'
 import Pagination from '@mui/material/Pagination'
+import PaginationItem from '@mui/material/PaginationItem'
 import LoadingButton from '@mui/lab/LoadingButton'
 
 // ** models
 import ListQueryModel from '@/models/ListQueryModel'
 
-type RouterQueryProps = {
-  path: string
-  query: string
-}
-
 type PaginationComponentProps = {
+  routerUrl?: string
   type?: 'moreButtonServerSide' | 'normal' | 'normalServerSide'
   totalPages?: number
   currentPage?: number
-  routerQuery?: RouterQueryProps[]
   params?: ListQueryModel
   setParams?: Dispatch<SetStateAction<ListQueryModel>>
   fetchNextPage?: (
@@ -34,10 +31,10 @@ type PaginationComponentProps = {
 }
 
 export default function PaginationComponent({
+  routerUrl,
   type = 'normal',
   totalPages = 1,
   currentPage = 1,
-  routerQuery,
   params,
   setParams,
   fetchNextPage,
@@ -45,21 +42,7 @@ export default function PaginationComponent({
 }: PaginationComponentProps) {
   const router = useRouter()
 
-  const handlePaginationClick = (e: ChangeEvent<unknown>, page: number) => {
-    if (!routerQuery) return
-
-    let query: any = {}
-
-    routerQuery.forEach((q) => {
-      query[q.path] = q.query
-    })
-
-    const generatePathName = routerQuery.map((r) => `[${r.path}]`).join('/')
-    router.push({
-      pathname: `/${generatePathName}/[page]`,
-      query: { ...query, page },
-    })
-  }
+  const getPaginationUrl = (page: number | null) => `/${routerUrl}/${page}`
 
   const handleServerSideClickPage = (page?: number) => {
     if (!setParams || !params) return
@@ -94,9 +77,13 @@ export default function PaginationComponent({
 
       {type === 'normal' && (
         <Pagination
+          renderItem={(item) => (
+            <NextLink href={getPaginationUrl(item.page)}>
+              <PaginationItem {...item} />
+            </NextLink>
+          )}
           count={totalPages}
           page={currentPage}
-          onChange={handlePaginationClick}
           disabled={loading}
         />
       )}

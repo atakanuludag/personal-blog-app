@@ -19,26 +19,30 @@ import Pagination from '@/components/Pagination'
 
 // ** models
 import PageProps from '@/models/AppPropsModel'
-
-// ** config
-import { PAGE_SIZE, REVALIDATE_SECONDS } from '@/config'
 import ArticleModel from '@/models/ArticleModel'
 import ListResponseModel from '@/models/ListResponseModel'
 import CategoryModel from '@/models/CategoryModel'
 
+// ** config
+import { PAGE_SIZE, REVALIDATE_SECONDS } from '@/config'
+
+// Todo: category ve tags gibi sayfalarda next-seo ayarları yapılacak.
+
 type StaticPathParams = {
-  params: string[]
+  guid: string
 }
 
-type CategoryParamsProps = {
+type CategoryGuidProps = {
+  guid: string
   data: ListResponseModel<ArticleModel[]>
   categoryData: CategoryModel
 } & PageProps
 
-const CategoryParams: NextPage<CategoryParamsProps> = ({
+const CategoryGuid: NextPage<CategoryGuidProps> = ({
+  guid,
   data,
   categoryData,
-}: CategoryParamsProps) => {
+}: CategoryGuidProps) => {
   return (
     <Fragment>
       <Paper
@@ -65,18 +69,9 @@ const CategoryParams: NextPage<CategoryParamsProps> = ({
 
       <Box component="section">
         <Pagination
+          routerUrl={`category/${guid}/page`}
           totalPages={data.totalPages}
           currentPage={data.currentPage}
-          routerQuery={[
-            {
-              path: 'routerUrl',
-              query: 'category',
-            },
-            {
-              path: 'guid',
-              query: categoryData.guid,
-            },
-          ]}
         />
       </Box>
     </Fragment>
@@ -86,22 +81,17 @@ const CategoryParams: NextPage<CategoryParamsProps> = ({
 export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
   params,
 }) => {
-  const _params = params?.params
-
-  if (!_params || _params?.length <= 0) {
+  if (!params?.guid) {
     return {
       notFound: true,
     }
   }
 
-  const categoryGuid = _params[0]
-  const page = _params[1]
-
-  const categoryData = await CategoryService.getItemByGuid(categoryGuid)
+  const categoryData = await CategoryService.getItemByGuid(params?.guid)
 
   const articleData = (await ArticleService.getItems({
     category: categoryData._id,
-    page: Number(page),
+    page: 1,
     pageSize: PAGE_SIZE,
     paging: 1,
   })) as ListResponseModel<ArticleModel[]>
@@ -113,6 +103,7 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
   }
   return {
     props: {
+      guid: params?.guid,
       data: articleData,
       categoryData,
     },
@@ -123,38 +114,14 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
 export const getStaticPaths: GetStaticPaths<StaticPathParams> = async () => {
   const categories = (await CategoryService.getItems({
     paging: 0,
+    sType: 'parent',
+    s: 'null',
   })) as CategoryModel[]
 
-  let categoryGuidTotalPages = []
-
-  for await (const category of categories) {
-    const articlePaging = (await ArticleService.getItems({
-      category: category._id,
-      paging: 1,
-      page: 1,
-      pageSize: PAGE_SIZE,
-    })) as ListResponseModel<ArticleModel[]>
-
-    categoryGuidTotalPages.push({
-      guid: category.guid,
-      totalPages: articlePaging.totalPages,
-    })
-  }
-  const paths: {
-    params: {
-      params: string[]
-    }
-  }[] = []
-
-  for (const category of categoryGuidTotalPages) {
-    if (category.totalPages <= 1) continue
-    ;[...Array(category.totalPages)].forEach((_, i) => {
-      paths.push({
-        params: { params: [category.guid, String(i + 1)] },
-      })
-    })
-  }
+  const paths = categories.map((item) => ({
+    params: { guid: item.guid },
+  }))
 
   return { paths, fallback: false }
 }
-export default CategoryParams
+export default CategoryGuid

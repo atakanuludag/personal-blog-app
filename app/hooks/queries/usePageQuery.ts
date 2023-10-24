@@ -1,22 +1,27 @@
-import { useQuery } from 'react-query'
+import { UseQueryOptions, useQuery } from 'react-query'
 import { QUERY_NAMES } from '@/core/Constants'
 import PageService from '@/services/PageService'
 import ListQueryModel from '@/models/ListQueryModel'
+import PageModel from '@/models/PageModel'
 
 export default function usePageQuery() {
   const service = PageService
   const queryName = QUERY_NAMES.PAGE
 
-  const pageQuery = (enabled: boolean = true, params?: ListQueryModel) =>
-    useQuery([queryName, params], () => service.getItems(params), {
-      enabled,
-    })
+  const pageItemsQuery = (params?: ListQueryModel) =>
+    useQuery([queryName, params], () => service.getItems(params))
+
+  const pageItemQuery = (
+    id: string,
+    options?: Omit<UseQueryOptions<PageModel>, 'queryKey' | 'queryFn'>,
+  ) => useQuery([queryName, id], () => service.getItemById(id), options)
 
   const pageGetByGuidQuery = (guid: string) =>
     useQuery([queryName], () => service.getItemByGuid(guid))
 
   return {
-    pageQuery,
+    pageItemsQuery,
+    pageItemQuery,
     pageGetByGuidQuery,
   }
 }

@@ -23,6 +23,7 @@ import ListItemText from '@mui/material/ListItemText'
 
 // ** icons
 import DashboardIcon from '@mui/icons-material/Dashboard'
+import AutoStoriesIcon from '@mui/icons-material/AutoStories'
 import ArticleIcon from '@mui/icons-material/Article'
 import CategoryIcon from '@mui/icons-material/Category'
 import TagIcon from '@mui/icons-material/Tag'
@@ -91,6 +92,11 @@ export default function NavigationAdmin() {
       title: 'Dashboard',
       path: '/admin',
       icon: <DashboardIcon />,
+    },
+    {
+      title: 'Sayfalar',
+      path: '/admin/pages',
+      icon: <AutoStoriesIcon />,
     },
     {
       title: 'Makaleler',

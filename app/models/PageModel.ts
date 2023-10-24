@@ -10,3 +10,13 @@ export default interface PageModel {
   readonly createdAt: Date
   readonly updatedAt: Date
 }
+
+export type PageFormModel = {
+  readonly _id?: string | null
+  readonly title: string
+  readonly shortDescription: string
+  readonly content: string
+  readonly guid: string
+  readonly publishingDate: Date
+  readonly isShow: boolean
+}

@@ -21,7 +21,7 @@ import ArticleService from '@/services/ArticleService'
 
 // ** models
 import PageProps from '@/models/AppPropsModel'
-import ArticleModel from '@/models/ArticleModel'
+import PageModel from '@/models/PageModel'
 import ListQueryModel from '@/models/ListQueryModel'
 import ListResponseModel from '@/models/ListResponseModel'
 import NextPageType from '@/models/NextPageType'
@@ -33,7 +33,7 @@ import LayoutAdminPage from '@/layouts/LayoutAdminPage'
 import getServerSideProps from '@/utils/AdminServerSideProps'
 
 // ** hooks
-import useArticleQuery from '@/hooks/queries/useArticleQuery'
+import usePageQuery from '@/hooks/queries/usePageQuery'
 
 // ** components
 import DataGrid from '@/components/datagrid'
@@ -45,15 +45,15 @@ import { QUERY_NAMES } from '@/core/Constants'
 // ** config
 import { PAGE_SIZE } from '@/config'
 
-const AdminArticleIndex: NextPageType = ({}: PageProps) => {
+const AdminPageIndex: NextPageType = ({}: PageProps) => {
   const [params, setParams] = useState<ListQueryModel>({
     page: 1,
     pageSize: PAGE_SIZE,
   })
   const [customLoading, setCustomLoading] = useState(false)
-  const { articleItemsQuery } = useArticleQuery()
-  const { data, isLoading, isFetching } = articleItemsQuery(params)
-  const items = data as ListResponseModel<ArticleModel[]>
+  const { pageItemsQuery } = usePageQuery()
+  const { data, isLoading, isFetching } = pageItemsQuery(params)
+  const items = data as ListResponseModel<PageModel[]>
   const loading = isLoading || isFetching || customLoading
 
   const columns: GridColDef[] = [
@@ -61,8 +61,8 @@ const AdminArticleIndex: NextPageType = ({}: PageProps) => {
       field: 'title',
       headerName: 'Başlık',
       width: 450,
-      renderCell: ({ row }: GridRenderCellParams<any, ArticleModel, any>) => (
-        <Link component={NextLink} href={`/admin/articles/${row._id}`}>
+      renderCell: ({ row }: GridRenderCellParams<any, PageModel, any>) => (
+        <Link component={NextLink} href={`/admin/pages/${row._id}`}>
           {row.title}
         </Link>
       ),
@@ -71,15 +71,8 @@ const AdminArticleIndex: NextPageType = ({}: PageProps) => {
       field: 'publishingDate',
       headerName: 'Tarih',
       width: 200,
-      renderCell: ({ row }: GridRenderCellParams<any, ArticleModel, any>) =>
+      renderCell: ({ row }: GridRenderCellParams<any, PageModel, any>) =>
         moment(new Date(row.publishingDate)).format('DD/MM/YYYY - HH:mm'),
-    },
-    {
-      field: 'categories',
-      headerName: 'Kategoriler',
-      width: 410,
-      renderCell: ({ row }: GridRenderCellParams<any, ArticleModel, any>) =>
-        row.categories.map((v) => v.title).join(', '),
     },
   ]
 
@@ -95,13 +88,13 @@ const AdminArticleIndex: NextPageType = ({}: PageProps) => {
         <Grid item md={9} xs={12} display="flex" alignItems="center">
           <Stack direction="row" spacing={1}>
             <Typography variant="h5" fontWeight={500}>
-              Makaleler
+              Sayfalar
             </Typography>
             <Button
               variant="contained"
               size="small"
               component={NextLink}
-              href="/admin/articles/new"
+              href="/admin/pages/new"
             >
               Yeni ekle
             </Button>
@@ -134,8 +127,8 @@ const AdminArticleIndex: NextPageType = ({}: PageProps) => {
   )
 }
 
-AdminArticleIndex.layout = LayoutAdminPage
-AdminArticleIndex.title = 'Makaleler'
-export default AdminArticleIndex
+AdminPageIndex.layout = LayoutAdminPage
+AdminPageIndex.title = 'Sayfalar'
+export default AdminPageIndex
 
 export { getServerSideProps }

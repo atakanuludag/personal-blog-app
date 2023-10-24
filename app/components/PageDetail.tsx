@@ -1,5 +1,12 @@
+// ** next
+import dynamic from 'next/dynamic'
+
 // ** third party
 import moment from 'moment'
+const MarkdownPreview = dynamic(
+  () => import('@uiw/react-markdown-preview').then((mod) => mod.default),
+  { ssr: false },
+)
 
 // ** mui
 import { styled } from '@mui/material/styles'
@@ -8,7 +15,7 @@ import Stack from '@mui/material/Stack'
 import Divider from '@mui/material/Divider'
 
 // ** models
-import IPage from '@/models/PageModel'
+import IPage from '@/models/PageModel' // todo: IPage gibi başında I olan model tiplemeleri düzeltilecek.
 
 type PageDetailProps = {
   data: IPage
@@ -58,8 +65,8 @@ export default function PageDetail({ data }: PageDetailProps) {
           </Stack>
         </Grid>
 
-        <Grid item>
-          <Content dangerouslySetInnerHTML={{ __html: data.content }}></Content>
+        <Grid item xs={12} width="100%">
+          <MarkdownPreview source={data.content} />
         </Grid>
       </Grid>
     </Page>

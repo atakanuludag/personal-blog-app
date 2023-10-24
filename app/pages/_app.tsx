@@ -173,8 +173,10 @@ PersonalBlogApp.getInitialProps = async (appContext: AppContext) => {
   const navbarPages = new Array<PageModel>()
 
   for await (const pageId of navbarPageIds) {
-    const page = await PageService.getItemById(pageId)
-    if (page) navbarPages.push(page)
+    try {
+      const page = await PageService.getItemById(pageId)
+      if (page) navbarPages.push(page)
+    } catch (err) {} //todo
   }
 
   const themeMode: PaletteMode = getCookie(COOKIE_NAMES.THEME_MODE)

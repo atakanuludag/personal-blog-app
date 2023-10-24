@@ -1,6 +1,5 @@
 import {
   QueryClient,
-  useQueryClient,
   useInfiniteQuery,
   useQuery,
   UseQueryOptions,

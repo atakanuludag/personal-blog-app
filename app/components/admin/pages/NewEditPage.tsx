@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react'
 
 // ** next
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 
 // ** third party
@@ -34,51 +33,29 @@ import Tooltip from '@mui/material/Tooltip'
 import FormHelperText from '@mui/material/FormHelperText'
 
 // ** icons
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import WarningIcon from '@mui/icons-material/Warning'
 import DoneIcon from '@mui/icons-material/Done'
 
 // ** models
-import FileModel from '@/models/FileModel'
-import { ArticleFormModel } from '@/models/ArticleModel'
+import { PageFormModel } from '@/models/PageModel'
 
 // ** utils
-import generateFileUrl from '@/utils/GenerateFileUrl'
 import slugify from '@/utils/Slugify'
 
 // ** services
+import PageService from '@/services/PageService'
 import ArticleService from '@/services/ArticleService'
 
 // ** hooks
-import useArticleQuery from '@/hooks/queries/useArticleQuery'
+import usePageQuery from '@/hooks/queries/usePageQuery'
 
 // ** components
 import Editor from '@/components/editor'
-import DialogFileBrowser from '@/components/file-browser/DialogFileBrowser'
-import TagChipAutocomplete from '@/components/admin/articles/TagChipAutocomplete'
-import CategoryTree from '@/components/admin/shared/CategoryTree'
 import SkeletonLoading from '@/components/admin/shared/SkeletonLoading'
 
 // ** core
 import { QUERY_NAMES } from '@/core/Constants'
 
-const CoverImageBox = styled(Box)(({ theme }) => ({
-  cursor: 'pointer',
-  position: 'relative',
-  border: `1px dashed ${theme.palette.grey[800]}`,
-  height: 250,
-  width: '100%',
-  '& .MuiSvgIcon-root': {
-    fontSize: '50px',
-    color: theme.palette.grey[300],
-    position: 'absolute',
-    top: '5vw',
-    left: '8vw',
-  },
-  '&:hover': {
-    borderColor: theme.palette.grey[500],
-  },
-}))
 const StyledCardHeader = styled(CardHeader)(({ theme }) => ({
   paddingBottom: theme.spacing(0.5),
   '& .MuiTypography-root': {
@@ -86,38 +63,30 @@ const StyledCardHeader = styled(CardHeader)(({ theme }) => ({
   },
 }))
 
-type NewEditArticleProps = {
+type NewEditPageProps = {
   id?: string
 }
 
-export default function NewEditArticle({ id: editId }: NewEditArticleProps) {
+export default function NewEditPage({ id: editId }: NewEditPageProps) {
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
-  const { articleItemQuery } = useArticleQuery()
+  const { pageItemQuery } = usePageQuery()
   const queryClient = useQueryClient()
 
   const [id, setId] = useState<string | null>(null)
-  const [categoryTreeExpanded, setCategoryTreeExpanded] = useState(
-    new Array<string>(),
-  )
   const [guidExistsLoading, setGuidExistsLoading] = useState(false)
   const [guidExists, setGuidExists] = useState<boolean | null>(null)
-  const [selectCoverImage, setSelectCoverImage] = useState({} as FileModel)
-  const [imageBrowserOpen, setImageBrowserOpen] = useState(false)
 
-  const [initialValues, setInitialValues] = useState<ArticleFormModel>({
+  const [initialValues, setInitialValues] = useState<PageFormModel>({
     title: '',
     shortDescription: '',
     content: '',
     guid: '',
     publishingDate: new Date(),
-    categories: [],
-    tags: [],
-    coverImage: '',
     isShow: true,
   })
 
-  const editArticleItem = articleItemQuery(id || '', {
+  const editPageItem = pageItemQuery(id || '', {
     enabled: !id ? false : true,
   })
 
@@ -128,16 +97,7 @@ export default function NewEditArticle({ id: editId }: NewEditArticleProps) {
     content: Yup.mixed().required('Zorunlu alan'),
     guid: Yup.string().required('Zorunlu alan'),
     publishingDate: Yup.date().required('Zorunlu alan'),
-    categories: Yup.array().min(1, 'Zorunlu alan').required('Zorunlu alan'),
-    tags: Yup.array().min(1, 'Zorunlu alan').required('Zorunlu alan'),
   })
-
-  const handleSelectCoverImage = () => setImageBrowserOpen(true)
-
-  const selectImageConfirm = () => {
-    setFieldValue('coverImage', selectCoverImage?._id)
-    setImageBrowserOpen(false)
-  }
 
   const {
     errors,
@@ -149,24 +109,24 @@ export default function NewEditArticle({ id: editId }: NewEditArticleProps) {
     setValues,
     values,
     isValid,
-  } = useFormik<ArticleFormModel>({
+  } = useFormik<PageFormModel>({
     initialValues,
     validationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         if (values._id || id) {
-          await ArticleService.patchItem(values)
+          await PageService.patchItem(values)
         } else {
-          await ArticleService.postItem(values)
+          await PageService.postItem(values)
         }
-        enqueueSnackbar('Makale başarıyla kaydedildi.', {
+        enqueueSnackbar('Sayfa başarıyla kaydedildi.', {
           variant: 'success',
         })
-        queryClient.invalidateQueries([QUERY_NAMES.ARTICLE])
-        router.push('/admin/articles')
+        queryClient.invalidateQueries([QUERY_NAMES.PAGE])
+        router.push('/admin/pages')
       } catch (err) {
         console.log(err)
-        enqueueSnackbar('Makale kayıt edilirken bir hata oluştu.', {
+        enqueueSnackbar('Sayfa kayıt edilirken bir hata oluştu.', {
           variant: 'error',
         })
       }
@@ -181,21 +141,15 @@ export default function NewEditArticle({ id: editId }: NewEditArticleProps) {
   }, [editId])
 
   useEffect(() => {
-    if (!editArticleItem.data) return
-    const data = editArticleItem.data
-    const categories = data.categories.map((c) => c._id)
+    if (!editPageItem.data) return
+    const data = editPageItem.data
 
-    const form: ArticleFormModel = {
+    const form: PageFormModel = {
       ...data,
-      categories,
-      tags: data.tags.map((t) => t.title),
-      coverImage: data.coverImage._id,
     }
-    setSelectCoverImage(data.coverImage)
-    setCategoryTreeExpanded(categories)
     setInitialValues(form)
     setValues(form)
-  }, [editArticleItem.data])
+  }, [editPageItem.data])
 
   useEffect(() => {
     if (values.title !== initialValues.title && !initialValues._id) {
@@ -213,6 +167,7 @@ export default function NewEditArticle({ id: editId }: NewEditArticleProps) {
     const delayDebounceFn = setTimeout(async () => {
       if (values.guid) {
         setGuidExistsLoading(true)
+        // ** Article servisteki guid exists endpointi hem page hem article için kontrol yapıyor.
         const response = await ArticleService.guidExists(values.guid)
         setTimeout(() => {
           setGuidExistsLoading(false)
@@ -224,15 +179,12 @@ export default function NewEditArticle({ id: editId }: NewEditArticleProps) {
     return () => clearTimeout(delayDebounceFn)
   }, [values.guid])
 
-  const handleSelectImageChange = (data: FileModel[]) =>
-    setSelectCoverImage(data[data.length - 1])
-
   const handleChangeSetContent = (text: string) => {
     setFieldValue('content', text)
   }
 
   const loading =
-    editArticleItem.isLoading || editArticleItem.isRefetching || isSubmitting
+    editPageItem.isLoading || editPageItem.isRefetching || isSubmitting
 
   if (loading) return <SkeletonLoading />
 
@@ -363,56 +315,9 @@ export default function NewEditArticle({ id: editId }: NewEditArticleProps) {
                 </Stack>
               </CardContent>
             </Card>
-
-            <Card>
-              <StyledCardHeader title="Öne Çıkan Görsel" />
-              <CardContent>
-                <CoverImageBox onClick={handleSelectCoverImage}>
-                  {values.coverImage === '' ? (
-                    <AddPhotoAlternateIcon />
-                  ) : (
-                    <Image
-                      fill
-                      src={generateFileUrl(selectCoverImage)}
-                      alt=""
-                    />
-                  )}
-                </CoverImageBox>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <StyledCardHeader title="Etiketler" />
-              <CardContent>
-                <TagChipAutocomplete
-                  selected={values.tags}
-                  setSelected={(data) => setFieldValue('tags', data)}
-                />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <StyledCardHeader title="Kategoriler" />
-              <CardContent>
-                <CategoryTree
-                  expanded={categoryTreeExpanded}
-                  selected={values.categories}
-                  setSelected={(data) => setFieldValue('categories', data)}
-                />
-              </CardContent>
-            </Card>
           </Stack>
         </Grid>
       </Grid>
-
-      <DialogFileBrowser
-        enableSelectedFiles
-        open={imageBrowserOpen}
-        setOpen={setImageBrowserOpen}
-        selectedFiles={[selectCoverImage]}
-        handleSelectFilesChange={handleSelectImageChange}
-        handleConfirmFunction={selectImageConfirm}
-      />
     </form>
   )
 }

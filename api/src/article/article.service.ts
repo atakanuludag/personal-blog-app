@@ -169,6 +169,7 @@ export class ArticleService {
     }
   }
 
+  // todo: hem article hem pages'da guid exists kontrol edilecek.
   async guidExists(guid: string): Promise<boolean> {
     try {
       return await this.serviceModel.exists({ guid })

@@ -83,6 +83,11 @@ const Categories: NextPageType = ({}: PageProps) => {
       width: 200,
     },
     {
+      field: 'order',
+      headerName: 'Sıra',
+      width: 100,
+    },
+    {
       field: 'createdAt',
       headerName: 'Oluşturma Tarihi',
       width: 200,

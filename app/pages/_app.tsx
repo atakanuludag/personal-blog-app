@@ -41,7 +41,7 @@ import CategoryService from '@/services/CategoryService'
 import PageService from '@/services/PageService'
 
 // ** models
-import { PaletteMode } from '@/models/enums'
+import { OrderType, PaletteMode } from '@/models/enums'
 import TokenModel from '@/models/TokenModel'
 import PageModel from '@/models/PageModel'
 import PageWithLayoutType from '@/models/PageWithLayoutType'
@@ -165,6 +165,8 @@ PersonalBlogApp.getInitialProps = async (appContext: AppContext) => {
   const categories = await CategoryService.getItems({
     sType: 'parent',
     s: 'null',
+    order: 'order',
+    orderBy: OrderType.DESC,
   })
 
   const navbarPageIds = NAVBAR_PAGE_IDS?.split(',') || []

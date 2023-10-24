@@ -60,6 +60,7 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
     description: '',
     guid: '',
     parent: null,
+    order: 0,
   })
 
   const [guidExistsLoading, setGuidExistsLoading] = useState(false)
@@ -79,6 +80,7 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
     description: Yup.string().required('Zorunlu alan'),
     guid: Yup.string().required('Zorunlu alan'),
     parent: Yup.string().optional().nullable(),
+    order: Yup.number().optional().nullable(),
   })
 
   const {
@@ -99,11 +101,15 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         let text = ''
-        if (values._id) {
-          await CategoryService.patchItem(values)
+        const newValues: CategoryFormModel = {
+          ...values,
+          order: Number(values.order),
+        }
+        if (newValues._id) {
+          await CategoryService.patchItem(newValues)
           text = 'Kayıt başarıyla düzenlendi.'
         } else {
-          await CategoryService.postItem(values)
+          await CategoryService.postItem(newValues)
           text = 'Kayıt başarıyla eklendi.'
         }
         enqueueSnackbar(text, {
@@ -279,6 +285,17 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
         loading={categories.isLoading}
         helperText={errors.parent && touched.parent ? errors.parent : null}
         error={errors.parent ? touched.parent : false}
+      />
+
+      <TextField
+        fullWidth
+        label="Sıralama"
+        variant="outlined"
+        size="small"
+        disabled={isSubmitting}
+        {...getFieldProps('order')}
+        helperText={errors.order && touched.order ? errors.order : null}
+        error={errors.order ? touched.order : false}
       />
     </Stack>
   )

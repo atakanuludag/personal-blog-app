@@ -23,6 +23,9 @@ export class Category {
     default: null,
   })
   parent: ObjectId
+
+  @Prop({ required: true })
+  order: number
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category)

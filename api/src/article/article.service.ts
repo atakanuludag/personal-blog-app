@@ -172,7 +172,8 @@ export class ArticleService {
   // todo: hem article hem pages'da guid exists kontrol edilecek.
   async guidExists(guid: string): Promise<boolean> {
     try {
-      return await this.serviceModel.exists({ guid })
+      const exists = await this.serviceModel.exists({ guid })
+      return exists?._id ? true : false
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -259,10 +260,11 @@ export class ArticleService {
 
   async searchByIpAndGuid(guid: string, ip: string): Promise<boolean> {
     try {
-      return await this.serviceModel.exists({
+      const exists = await this.serviceModel.exists({
         guid,
         likedIPs: { $in: [ip] },
       })
+      return exists?._id ? true : false
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -273,9 +275,10 @@ export class ArticleService {
 
   async searchContent(text: string): Promise<boolean> {
     try {
-      return await this.serviceModel.exists({
+      const exists = await this.serviceModel.exists({
         content: { $regex: text, $options: 'i' },
       })
+      return exists?._id ? true : false
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -286,9 +289,10 @@ export class ArticleService {
 
   async searchCoverImage(fileId: ObjectId): Promise<boolean> {
     try {
-      return await this.serviceModel.exists({
+      const exists = await this.serviceModel.exists({
         coverImage: fileId,
       })
+      return exists?._id ? true : false
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

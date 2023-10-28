@@ -119,7 +119,8 @@ export class TagService {
 
   async guidExists(guid: string): Promise<boolean> {
     try {
-      return await this.serviceModel.exists({ guid })
+      const exists = await this.serviceModel.exists({ guid })
+      return exists?._id ? true : false
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

@@ -170,7 +170,7 @@ export class FileService {
         const checkFolder = await this.serviceModel.exists({
           folderId: item._id,
         })
-        return checkFolder
+        return checkFolder?._id ? true : false
       }
 
       const articleSearchCoverImage =

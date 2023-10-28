@@ -32,7 +32,7 @@ export type ArticleFormModel = {
   readonly publishingDate: Date
   readonly categories: string[]
   readonly tags: string[]
-  readonly coverImage: string
+  readonly coverImage: string | null
   readonly isShow: boolean
 }
 

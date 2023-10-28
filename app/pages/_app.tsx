@@ -162,9 +162,25 @@ PersonalBlogApp.getInitialProps = async (appContext: AppContext) => {
     if (process.env.NODE_ENV === 'development') userIpAdress = '127.0.0.1'
   }
 
+  // console.log('appContext.router.query', appContext.router.query)
+  // console.log('appContext.router', appContext.router.route)
+
+  let parentCategory = 'null'
+
+  if (appContext.router.route.includes('/category')) {
+    const categoryGuidQuery = appContext?.router?.query?.guid
+    const categoryGuid = Array.isArray(categoryGuidQuery)
+      ? categoryGuidQuery[categoryGuidQuery.length - 1]
+      : categoryGuidQuery
+    const categoryData = await CategoryService.getItemByGuid(
+      categoryGuid as string,
+    )
+    parentCategory = categoryData?._id
+  }
+
   const categories = await CategoryService.getItems({
     sType: 'parent',
-    s: 'null',
+    s: parentCategory,
     order: 'order',
     orderBy: OrderType.DESC,
   })

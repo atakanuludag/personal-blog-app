@@ -4,10 +4,9 @@ import dynamic from 'next/dynamic'
 
 // ** third party
 import moment from 'moment'
-const MarkdownPreview = dynamic(
-  () => import('@uiw/react-markdown-preview').then((mod) => mod.default),
-  { ssr: false },
-)
+import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
+import rehypeHighlight from 'rehype-highlight'
+
 // ** mui
 import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
@@ -25,6 +24,10 @@ import ArticleLikeButton from '@/components/ArticleLikeButton'
 import generateFileUrl from '@/utils/GenerateFileUrl'
 
 type ArticleDetailProps = {
+  content: MDXRemoteSerializeResult<
+    Record<string, unknown>,
+    Record<string, unknown>
+  >
   data: ArticleModel
   currentIpAdressIsLiked: boolean
 }
@@ -53,6 +56,7 @@ const StackItem = styled('p')(({ theme }) => ({
 }))
 
 export default function ArticleDetail({
+  content,
   data,
   currentIpAdressIsLiked,
 }: ArticleDetailProps) {
@@ -104,15 +108,11 @@ export default function ArticleDetail({
             <StackItem>{`${data.likedCount} beğeni`}</StackItem>
           </Stack>
         </Grid>
-
-        {coverImage && (
-          <Grid item>
-            <Image src={coverImage} alt={data.title} />
-          </Grid>
-        )}
-
+        {/* https://nextjs.org/blog/markdown */}
         <Grid item xs={12} width="100%">
-          <MarkdownPreview source={data.content} />
+          {/* <div dangerouslySetInnerHTML={{ __html: content }} /> */}
+          <MDXRemote {...content} />
+          {/* <MarkdownPreview source={data.content} /> */}
         </Grid>
 
         <Grid item xs={12}>

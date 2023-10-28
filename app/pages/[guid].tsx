@@ -6,6 +6,13 @@ import { GetStaticPaths, GetStaticProps, NextPage } from 'next/types'
 
 // ** third party
 import { NextSeo } from 'next-seo'
+import { serialize } from 'next-mdx-remote/serialize'
+import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
+import rehypeHighlight from 'rehype-highlight'
+import javascript from 'highlight.js/lib/languages/javascript'
+import typescript from 'highlight.js/lib/languages/typescript'
+import bash from 'highlight.js/lib/languages/bash'
+import shell from 'highlight.js/lib/languages/shell'
 
 // ** services
 import ArticleService from '@/services/ArticleService'
@@ -25,6 +32,10 @@ import IPage from '@/models/PageModel'
 import { APP_URL, SITE_TITLE } from '@/config'
 
 type GuidProps = {
+  content: MDXRemoteSerializeResult<
+    Record<string, unknown>,
+    Record<string, unknown>
+  >
   currentIpAdressIsLiked: boolean
   data: ArticleModel | IPage
   dataType: 'article' | 'page'
@@ -35,6 +46,7 @@ type StaticPathParams = {
 }
 
 const Guid: NextPage<GuidProps> = ({
+  content,
   userIpAdress,
   currentIpAdressIsLiked,
   data,
@@ -67,6 +79,7 @@ const Guid: NextPage<GuidProps> = ({
       {dataType === 'article' ? (
         <ArticleDetail
           data={data as ArticleModel}
+          content={content}
           currentIpAdressIsLiked={currentIpAdressIsLiked}
         />
       ) : (
@@ -106,8 +119,24 @@ export const getStaticProps: GetStaticProps<any, StaticPathParams> = async ({
       notFound: true,
     }
   }
+
+  const content = await serialize(data.content, {
+    mdxOptions: {
+      remarkPlugins: [],
+      rehypePlugins: [
+        [
+          rehypeHighlight as any,
+          { languages: { javascript, typescript, shell, bash } },
+        ],
+      ],
+    },
+  })
+
+  console.log(content)
+
   return {
     props: {
+      content,
       data,
       dataType,
       guid,

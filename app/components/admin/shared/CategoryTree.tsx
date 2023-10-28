@@ -29,6 +29,7 @@ type CategoryTreeModel = {
 }
 
 type CategoryTreeProps = {
+  checkModel?: 'leaf' | 'all'
   selected: string[]
   setSelected: (data: string[]) => void
   expanded: string[]
@@ -53,7 +54,9 @@ export default function CategoryTree({
   selected,
   setSelected,
   expanded: _expanded,
+  checkModel = 'all',
 }: CategoryTreeProps) {
+  const [stateSelected, setStateSelected] = useState(new Array<string>())
   const [items, setItems] = useState(new Array<CategoryTreeModel>())
   const [filteredItems, setFilteredItems] = useState(
     new Array<CategoryTreeModel>(),
@@ -89,9 +92,14 @@ export default function CategoryTree({
   }, [_expanded])
 
   useEffect(() => {
+    setStateSelected(selected)
+  }, [selected])
+
+  useEffect(() => {
     const categoriesData = categories.data as CategoryModel[]
     if (!categoriesData) return
     setItems(convertTreeData(categoriesData, null))
+    //setStateSelected(selected)
   }, [categories.data])
 
   useEffect(() => {
@@ -125,12 +133,11 @@ export default function CategoryTree({
         sx={{ overflowY: 'scroll' }}
       >
         <CheckboxTree
-          expandOnClick
           showNodeIcon={false}
           onClick={() => {}}
           nodes={searchText !== '' ? filteredItems : items}
-          checked={selected}
-          checkModel="all"
+          checked={stateSelected}
+          checkModel={checkModel}
           expanded={expanded}
           onCheck={(checked) => setSelected(checked)}
           onExpand={(expanded) => setExpanded(expanded)}

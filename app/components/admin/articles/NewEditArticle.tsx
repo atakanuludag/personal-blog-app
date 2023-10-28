@@ -113,7 +113,7 @@ export default function NewEditArticle({ id: editId }: NewEditArticleProps) {
     publishingDate: new Date(),
     categories: [],
     tags: [],
-    coverImage: '',
+    coverImage: null,
     isShow: true,
   })
 
@@ -189,9 +189,9 @@ export default function NewEditArticle({ id: editId }: NewEditArticleProps) {
       ...data,
       categories,
       tags: data.tags.map((t) => t.title),
-      coverImage: data.coverImage._id,
+      coverImage: data?.coverImage?._id || null,
     }
-    setSelectCoverImage(data.coverImage)
+    if (data.coverImage) setSelectCoverImage(data.coverImage)
     setCategoryTreeExpanded(categories)
     setInitialValues(form)
     setValues(form)
@@ -368,7 +368,7 @@ export default function NewEditArticle({ id: editId }: NewEditArticleProps) {
               <StyledCardHeader title="Öne Çıkan Görsel" />
               <CardContent>
                 <CoverImageBox onClick={handleSelectCoverImage}>
-                  {values.coverImage === '' ? (
+                  {values.coverImage === null ? (
                     <AddPhotoAlternateIcon />
                   ) : (
                     <Image

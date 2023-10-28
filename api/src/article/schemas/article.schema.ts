@@ -33,8 +33,13 @@ export class Article {
   @Prop({ required: true, type: [mongoose.Schema.Types.ObjectId], ref: 'Tag' })
   tags: ObjectId[]
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'File', default: null })
-  coverImage: ObjectId
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'File',
+    default: null,
+    required: false,
+  })
+  coverImage?: ObjectId
 
   @Prop({ default: true })
   isShow: boolean

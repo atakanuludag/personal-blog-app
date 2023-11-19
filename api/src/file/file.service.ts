@@ -26,13 +26,13 @@ export class FileService {
 
   async getItems(
     query: IQuery,
-    folderId: ObjectId,
+    folderId: any,
   ): Promise<IListQueryResponse<IFile[]> | IFile[]> {
     try {
       const { pagination, searchQuery, order, paging } = query
       const newSearchQuery: FilterQuery<FileDocument> = {
         ...searchQuery,
-        folderId,
+        folderId: folderId === 'null' ? null : folderId,
       }
       if (paging) {
         const { page, pageSize, skip } = pagination
@@ -62,6 +62,7 @@ export class FileService {
       }
       return await this.serviceModel.find(newSearchQuery).sort(order).exec()
     } catch (err) {
+      console.log(err)
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
         HttpStatus.BAD_REQUEST,

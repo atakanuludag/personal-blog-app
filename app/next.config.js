@@ -1,54 +1,47 @@
+// const createMDX = require("@next/mdx")();
+// const remarkGfm = require("remark-gfm")();
+const path = require("path");
+
 /** @type {import('next').NextConfig} */
-
-const webpack = require('webpack')
-const path = require('path')
-const distDir = process.env.APP_BUILD_DIR
-
-module.exports = {
-  distDir,
+const nextConfig = {
+  compiler: {
+    styledComponents: true,
+  },
   reactStrictMode: true,
   sassOptions: {
-    includePaths: [path.join(__dirname, 'styles')],
+    includePaths: [path.join(__dirname, "styles")],
   },
-  transpilePackages: ['@mui/material', '@mui/system'],
-  webpack: (config, { dev }) => {
-    const fileLoaderRule = config.module.rules.find((rule) =>
-      rule.test?.test?.('.svg'),
-    )
-
-    config.module.rules.push(
-      // Reapply the existing rule, but only for svg imports ending in ?url
-      {
-        ...fileLoaderRule,
-        test: /\.svg$/i,
-        resourceQuery: /url/, // *.svg?url
-      },
-      // Convert all other *.svg imports to React components
-      {
-        test: /\.svg$/i,
-        issuer: /\.[jt]sx?$/,
-        resourceQuery: { not: /url/ }, // exclude if *.svg?url
-        use: ['@svgr/webpack'],
-      },
-    )
-    fileLoaderRule.exclude = /\.svg$/i
-
-    config.plugins.push(
-      new webpack.ProvidePlugin({
-        $: 'jquery',
-        jQuery: 'jquery',
-      }),
-    )
-    return config
+  swcMinify: true,
+  modularizeImports: {
+    "@mui/icons-material": {
+      transform: "@mui/icons-material/{{member}}",
+    },
   },
+  //pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '5051',
-        pathname: '/**',
+        protocol: "http",
+        hostname: "localhost",
+        port: "5051",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.atakanuludag.com",
+        port: "",
+        pathname: "/**",
       },
     ],
   },
-}
+};
+
+// const withMDX = createMDX({
+//   // Add markdown plugins here, as desired
+//   options: {
+//     remarkPlugins: [remarkGfm],
+//     rehypePlugins: [],
+//   },
+// });
+
+module.exports = nextConfig;

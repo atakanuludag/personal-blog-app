@@ -23,12 +23,11 @@ export class QueryHelper {
         }
         sTypeArr.forEach((s) => {
           searchQuery['$or'].push({
-            [s]: { $regex: `${query.s.toLocaleLowerCase()}`, $options: '$i' },
+            [s]: { $regex: `${query.s.toLocaleLowerCase()}`, $options: 'i' },
           })
         })
       }
     }
-
     const orderName = query.order || 'createdAt'
     const orderType =
       typeof query.orderBy !== 'undefined' && query.orderBy.toString() !== ''

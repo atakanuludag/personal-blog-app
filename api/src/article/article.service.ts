@@ -90,7 +90,6 @@ export class ArticleService {
       let filter: FilterQuery<ArticleDocument> = {
         ...searchQuery,
       }
-
       if (category) filter.categories = category
       if (tag) filter.tags = tag
 
@@ -130,6 +129,7 @@ export class ArticleService {
         .populate('coverImage')
         .exec()
     } catch (err) {
+      console.log('err', err)
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
         HttpStatus.BAD_REQUEST,

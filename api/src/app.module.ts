@@ -50,10 +50,11 @@ moment.locale('tr')
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService<IEnv>) => ({
-        uri: configService.get<string>('MONGODB_URI'),
-        useNewUrlParser: true,
+        uri: 'mongodb://localhost:27017/personal-blog',
+        // useNewUrlParser: true,
         socketTimeoutMS: 0,
         connectTimeoutMS: 0,
+        serverSelectionTimeoutMS: 0,
         // useCreateIndex: true,
         // useFindAndModify: false,
       }),

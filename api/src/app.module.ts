@@ -18,7 +18,6 @@ import { UserModule } from '@/user/user.module'
 import { TagModule } from '@/tag/tag.module'
 import { ArticleModule } from '@/article/article.module'
 import { FileModule } from '@/file/file.module'
-import { SettingsModule } from '@/settings/settings.module'
 import { PageModule } from '@/page/page.module'
 import { ReportModule } from '@/report/report.module'
 import { ServeStaticConfigurationModule } from '@/serve-static-config/serve-static-config.module'
@@ -51,12 +50,13 @@ moment.locale('tr')
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService<IEnv>) => ({
-        uri: configService.get<string>('MONGODB_URI'),
-        useNewUrlParser: true,
+        uri: 'mongodb://localhost:27017/personal-blog',
+        // useNewUrlParser: true,
         socketTimeoutMS: 0,
         connectTimeoutMS: 0,
-        useCreateIndex: true,
-        useFindAndModify: false,
+        serverSelectionTimeoutMS: 0,
+        // useCreateIndex: true,
+        // useFindAndModify: false,
       }),
       inject: [ConfigService],
     }),
@@ -66,7 +66,6 @@ moment.locale('tr')
     TagModule,
     ArticleModule,
     FileModule,
-    SettingsModule,
     PageModule,
     ReportModule,
   ],

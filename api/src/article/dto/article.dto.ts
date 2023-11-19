@@ -56,12 +56,12 @@ export class ArticleDto {
   categories: ObjectId[]
 
   @ApiProperty({
-    description: 'Tag ids',
+    description: 'Tags',
   })
   @IsNotEmpty()
   @IsArray()
   @ArrayMinSize(1)
-  tags: ObjectId[]
+  tags: string[]
 
   @ApiProperty({
     type: String,

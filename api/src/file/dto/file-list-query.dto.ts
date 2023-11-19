@@ -10,6 +10,5 @@ export class FileListQueryDto extends ListQueryDto {
     required: false,
   })
   @IsOptional()
-  @IsMongoId()
   folderId: ObjectId
 }

@@ -22,23 +22,24 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 import { ArticleDto } from '@/article/dto/article.dto'
-import { UpdateArticleDto } from '@/article/dto/update-article.dto'
 import { ListResultDto } from '@/common/dto/list-result.dto'
 import { GuidParamsDto, IdParamsDto } from '@/common/dto/params.dto'
-import { ListQueryDto } from '@/common/dto/list-query.dto'
 import { DefaultException } from '@/common/dto/default-exception.dto'
 import { ArticleService } from '@/article/article.service'
+import { PageService } from '@/page/page.service'
 import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { QueryHelper } from '@/common/helpers/query.helper'
 import { CoreMessage, ArticleMessage } from '@/common/messages'
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
 import { IpAddress } from '@/common/decorators/ip.decorator'
+import { ArticleListQueryDto } from '@/article/dto/article-list-query.dto'
 
 @ApiTags('Article')
 @Controller('article')
 export class ArticleController {
   constructor(
     private readonly service: ArticleService,
+    private readonly pageService: PageService,
     private readonly coreMessage: CoreMessage,
     private readonly articleMessage: ArticleMessage,
     private readonly queryHelper: QueryHelper,
@@ -56,9 +57,9 @@ export class ArticleController {
     type: ListResultDto,
   })
   @Get()
-  async list(@Query() query: ListQueryDto) {
+  async list(@Query() query: ArticleListQueryDto) {
     const q = this.queryHelper.instance(query)
-    return await this.service.getItems(q)
+    return await this.service.getItems(q, query.category, query.tag)
   }
 
   @ApiOperation({
@@ -124,13 +125,29 @@ export class ArticleController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() body: ArticleDto) {
-    const exists = await this.service.guidExists(body.guid)
-    if (exists)
+    const articleGuidExists = await this.service.guidExists(body.guid)
+    const pageGuidExists = await this.pageService.guidExists(body.guid)
+
+    if (articleGuidExists || pageGuidExists)
       throw new ExceptionHelper(
         this.articleMessage.EXISTING_GUID,
         HttpStatus.BAD_REQUEST,
       )
     return await this.service.create(body)
+  }
+
+  @ApiOperation({
+    summary:
+      'Sayfa ve makalelerde guid bilgisinin daha önce kullanılıp kullanılmadığını kontrol eder.',
+  })
+  @ApiParam({ name: 'guid', type: String, required: true })
+  // @ApiBearerAuth('accessToken')
+  // @UseGuards(JwtAuthGuard)
+  @Get(`/guidExists/:guid`)
+  async getGuidExists(@Param() params: GuidParamsDto) {
+    const articleGuidExists = await this.service.guidExists(params.guid)
+    const pageGuidExists = await this.pageService.guidExists(params.guid)
+    return { exists: articleGuidExists || pageGuidExists }
   }
 
   @ApiOperation({
@@ -148,7 +165,7 @@ export class ArticleController {
   @ApiBearerAuth('accessToken')
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  async update(@Body() body: UpdateArticleDto, @Param() params: IdParamsDto) {
+  async update(@Body() body: ArticleDto, @Param() params: IdParamsDto) {
     return await this.service.update(body, params.id)
   }
 

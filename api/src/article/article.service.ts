@@ -1,13 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model, ObjectId } from 'mongoose'
+import { FilterQuery, Model, ObjectId } from 'mongoose'
 import { IArticle } from '@/article/interfaces/article.interface'
 import { IListQueryResponse, IQuery } from '@/common/interfaces/query.interface'
 import { Article, ArticleDocument } from '@/article/schemas/article.schema'
 import { ArticleDto } from '@/article/dto/article.dto'
-import { UpdateArticleDto } from '@/article/dto/update-article.dto'
 import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { CoreMessage } from '@/common/messages'
+import { TagService } from '@/tag/tag.service'
+import { slugifyTR } from '@/common/utils/slugify-tr.util'
 
 @Injectable()
 export class ArticleService {
@@ -15,11 +16,35 @@ export class ArticleService {
     @InjectModel(Article.name)
     private readonly serviceModel: Model<ArticleDocument>,
     private readonly coreMessage: CoreMessage,
+    private readonly tagService: TagService,
   ) {}
+
+  async getTags(tagItems: string[]) {
+    const tags = new Array<ObjectId>()
+    for await (const title of tagItems) {
+      const tagTitleSearch = await this.tagService.getItemByTitle(title)
+      if (tagTitleSearch) {
+        tags.push(tagTitleSearch._id)
+      } else {
+        const tagCreate = await this.tagService.create({
+          title,
+          guid: slugifyTR(title),
+        })
+        tags.push(tagCreate._id)
+      }
+    }
+
+    return tags
+  }
 
   async create(data: ArticleDto): Promise<IArticle> {
     try {
-      const create = new this.serviceModel(data)
+      const tags = await this.getTags(data.tags)
+
+      const create = new this.serviceModel({
+        ...data,
+        tags,
+      })
       return create.save()
     } catch (err) {
       throw new ExceptionHelper(
@@ -29,12 +54,24 @@ export class ArticleService {
     }
   }
 
-  async update(body: UpdateArticleDto, id: ObjectId): Promise<IArticle> {
+  async update(data: ArticleDto, id: ObjectId): Promise<IArticle> {
     try {
-      return await this.serviceModel.findByIdAndUpdate(id, {
-        $set: body,
-      })
+      const tags = await this.getTags(data.tags)
+
+      return await this.serviceModel.findByIdAndUpdate(
+        id,
+        {
+          $set: {
+            ...data,
+            tags,
+          },
+        },
+        {
+          new: true,
+        },
+      )
     } catch (err) {
+      console.log(err)
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
         HttpStatus.BAD_REQUEST,
@@ -44,13 +81,22 @@ export class ArticleService {
 
   async getItems(
     query: IQuery,
+    category: ObjectId,
+    tag: ObjectId,
   ): Promise<IListQueryResponse<IArticle[]> | IArticle[]> {
     try {
       const { pagination, searchQuery, order, paging } = query
+
+      let filter: FilterQuery<ArticleDocument> = {
+        ...searchQuery,
+      }
+      if (category) filter.categories = category
+      if (tag) filter.tags = tag
+
       if (paging) {
         const { page, pageSize, skip } = pagination
         const items = await this.serviceModel
-          .find(searchQuery)
+          .find(filter)
           .limit(pageSize)
           .sort(order)
           .skip(skip)
@@ -59,7 +105,7 @@ export class ArticleService {
           .populate('coverImage')
           .exec()
 
-        const count = await this.serviceModel.find(searchQuery).countDocuments()
+        const count = await this.serviceModel.find(filter).countDocuments()
 
         const totalPages = Math.ceil(count / pageSize)
 
@@ -76,13 +122,14 @@ export class ArticleService {
       }
 
       return await this.serviceModel
-        .find(searchQuery)
+        .find(filter)
         .sort(order)
         .populate('categories')
         .populate('tags')
         .populate('coverImage')
         .exec()
     } catch (err) {
+      console.log('err', err)
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
         HttpStatus.BAD_REQUEST,
@@ -122,9 +169,11 @@ export class ArticleService {
     }
   }
 
+  // todo: hem article hem pages'da guid exists kontrol edilecek.
   async guidExists(guid: string): Promise<boolean> {
     try {
-      return await this.serviceModel.exists({ guid })
+      const exists = await this.serviceModel.exists({ guid })
+      return exists?._id ? true : false
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -159,6 +208,7 @@ export class ArticleService {
     }
   }
 
+  // Etiket silindiğinde o etikete bağlı makalalerdeki etiketlerin kimlik numaralarını sil;
   async tagRemoveByObjectId(id: ObjectId): Promise<void> {
     try {
       await this.serviceModel.updateMany(
@@ -210,13 +260,39 @@ export class ArticleService {
 
   async searchByIpAndGuid(guid: string, ip: string): Promise<boolean> {
     try {
-      const find = await this.serviceModel
-        .findOne({
-          guid,
-          likedIPs: { $in: [ip] },
-        })
-        .exec()
-      return find ? true : false
+      const exists = await this.serviceModel.exists({
+        guid,
+        likedIPs: { $in: [ip] },
+      })
+      return exists?._id ? true : false
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  async searchContent(text: string): Promise<boolean> {
+    try {
+      const exists = await this.serviceModel.exists({
+        content: { $regex: text, $options: 'i' },
+      })
+      return exists?._id ? true : false
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  async searchCoverImage(fileId: ObjectId): Promise<boolean> {
+    try {
+      const exists = await this.serviceModel.exists({
+        coverImage: fileId,
+      })
+      return exists?._id ? true : false
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

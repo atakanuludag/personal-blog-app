@@ -30,9 +30,15 @@ export class TagService {
 
   async update(body: UpdateTagDto, id: ObjectId): Promise<ITag> {
     try {
-      return await this.serviceModel.findByIdAndUpdate(id, {
-        $set: body,
-      })
+      return await this.serviceModel.findByIdAndUpdate(
+        id,
+        {
+          $set: body,
+        },
+        {
+          new: true,
+        },
+      )
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -100,9 +106,21 @@ export class TagService {
     }
   }
 
+  async getItemByTitle(title: string): Promise<ITag> {
+    try {
+      return await this.serviceModel.findOne({ title }).exec()
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
   async guidExists(guid: string): Promise<boolean> {
     try {
-      return await this.serviceModel.exists({ guid })
+      const exists = await this.serviceModel.exists({ guid })
+      return exists?._id ? true : false
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

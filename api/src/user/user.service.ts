@@ -76,7 +76,10 @@ export class UserService {
     email: string | undefined,
   ): Promise<boolean> {
     try {
-      return await this.serviceModel.exists({ $or: [{ userName }, { email }] })
+      const exists = await this.serviceModel.exists({
+        $or: [{ userName }, { email }],
+      })
+      return exists?._id ? true : false
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.INTERNAL_SERVER_ERROR,

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator'
+import { IsNotEmpty, IsString, IsOptional, IsNumber } from 'class-validator'
 import { ObjectId } from 'mongoose'
 
 export class CategoryDto {
@@ -31,4 +31,11 @@ export class CategoryDto {
   @IsOptional()
   @IsString()
   parent?: ObjectId
+
+  @ApiProperty({
+    description: 'Sıralama',
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  order: number
 }

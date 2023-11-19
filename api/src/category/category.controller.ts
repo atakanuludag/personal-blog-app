@@ -178,6 +178,8 @@ export class CategoryController {
       'Kategoride guid bilgisinin daha önce kullanılıp kullanılmadığını kontrol eder.',
   })
   @ApiParam({ name: 'guid', type: String, required: true })
+  @ApiBearerAuth('accessToken')
+  @UseGuards(JwtAuthGuard)
   @Get(`/guidExists/:guid`)
   async getGuidExists(@Param() params: GuidParamsDto) {
     const exists = await this.service.guidExists(params.guid)

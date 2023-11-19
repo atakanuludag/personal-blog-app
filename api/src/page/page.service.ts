@@ -31,9 +31,15 @@ export class PageService {
 
   async update(body: UpdatePageDto, id: ObjectId): Promise<IPage> {
     try {
-      return await this.serviceModel.findByIdAndUpdate(id, {
-        $set: body,
-      })
+      return await this.serviceModel.findByIdAndUpdate(
+        id,
+        {
+          $set: body,
+        },
+        {
+          new: true,
+        },
+      )
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -107,7 +113,8 @@ export class PageService {
 
   async guidExists(guid: string): Promise<boolean> {
     try {
-      return await this.serviceModel.exists({ guid })
+      const exists = await this.serviceModel.exists({ guid })
+      return exists?._id ? true : false
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
@@ -135,6 +142,20 @@ export class PageService {
           $addToSet: { viewIPs: ip },
         },
       )
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  async searchContent(text: string): Promise<boolean> {
+    try {
+      const exists = await this.serviceModel.exists({
+        content: { $regex: text, $options: 'i' },
+      })
+      return exists?._id ? true : false
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

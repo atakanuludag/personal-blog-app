@@ -6,27 +6,33 @@ import { IFile } from '@/file/interfaces/file.interface'
 import { File, FileDocument } from '@/file/schemas/file.schema'
 //import { CreateCategoryDto } from './dto/create-category.dto';
 //import { UpdateCategoryDto } from './dto/update-category.dto';
+import { UpdateFileDto } from '@/file/dto/update-file.dto'
 import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { CoreMessage } from '@/common/messages'
 import { IListQueryResponse, IQuery } from '@/common/interfaces/query.interface'
 import { IEnv } from '@/common/interfaces/env.interface'
+import { ArticleService } from '@/article/article.service'
+import { PageService } from '@/page/page.service'
+
 @Injectable()
 export class FileService {
   constructor(
     @InjectModel(File.name) private readonly serviceModel: Model<FileDocument>,
     private readonly coreMessage: CoreMessage,
     private configService: ConfigService<IEnv>,
+    private articleService: ArticleService,
+    private pageService: PageService,
   ) {}
 
   async getItems(
     query: IQuery,
-    folderId: ObjectId,
+    folderId: any,
   ): Promise<IListQueryResponse<IFile[]> | IFile[]> {
     try {
       const { pagination, searchQuery, order, paging } = query
       const newSearchQuery: FilterQuery<FileDocument> = {
         ...searchQuery,
-        folderId,
+        folderId: folderId === 'null' ? null : folderId,
       }
       if (paging) {
         const { page, pageSize, skip } = pagination
@@ -56,6 +62,7 @@ export class FileService {
       }
       return await this.serviceModel.find(newSearchQuery).sort(order).exec()
     } catch (err) {
+      console.log(err)
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,
         HttpStatus.BAD_REQUEST,
@@ -106,6 +113,85 @@ export class FileService {
   async getFolderByPath(path: string): Promise<IFile> {
     try {
       return await this.serviceModel.findOne({ isFolder: true, path }).exec()
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  async update(body: UpdateFileDto, id: ObjectId): Promise<IFile> {
+    try {
+      return await this.serviceModel.findByIdAndUpdate(
+        id,
+        {
+          $set: body,
+        },
+        {
+          new: true,
+        },
+      )
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  async delete(id: ObjectId): Promise<void> {
+    try {
+      await this.serviceModel.findByIdAndDelete(id)
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.INTERNAL_SERVER_ERROR,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      )
+    }
+  }
+
+  async getItemById(_id: ObjectId): Promise<IFile> {
+    try {
+      return await this.serviceModel
+        .findOne({ _id })
+        .populate('folderId')
+        .exec()
+    } catch (err) {
+      throw new ExceptionHelper(
+        this.coreMessage.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+  }
+
+  async checkFile(item: IFile): Promise<boolean> {
+    try {
+      if (item.isFolder) {
+        const checkFolder = await this.serviceModel.exists({
+          folderId: item._id,
+        })
+        return checkFolder?._id ? true : false
+      }
+
+      const articleSearchCoverImage =
+        await this.articleService.searchCoverImage(item._id)
+      const articleSearchContentText = await this.articleService.searchContent(
+        item.filename,
+      )
+      const pageSearchContentText = await this.pageService.searchContent(
+        item.filename,
+      )
+
+      console.log('articleSearchCoverImage', articleSearchCoverImage)
+      console.log('articleSearchContentText', articleSearchContentText)
+      console.log('pageSearchContentText', pageSearchContentText)
+
+      return (
+        articleSearchCoverImage ||
+        articleSearchContentText ||
+        pageSearchContentText
+      )
     } catch (err) {
       throw new ExceptionHelper(
         this.coreMessage.BAD_REQUEST,

@@ -26,6 +26,7 @@ import { GuidParamsDto, IdParamsDto } from '@/common/dto/params.dto'
 import { ListQueryDto } from '@/common/dto/list-query.dto'
 import { DefaultException } from '@/common/dto/default-exception.dto'
 import { PageService } from '@/page/page.service'
+import { ArticleService } from '@/article/article.service'
 import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { QueryHelper } from '@/common/helpers/query.helper'
 import { CoreMessage, PageMessage } from '@/common/messages'
@@ -37,6 +38,7 @@ import { IpAddress } from '@/common/decorators/ip.decorator'
 export class PageController {
   constructor(
     private readonly service: PageService,
+    private readonly articleService: ArticleService,
     private readonly coreMessage: CoreMessage,
     private readonly pageMessage: PageMessage,
     private readonly queryHelper: QueryHelper,
@@ -121,8 +123,9 @@ export class PageController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() body: PageDto) {
-    const exists = await this.service.guidExists(body.guid)
-    if (exists)
+    const articleGuidExists = await this.articleService.guidExists(body.guid)
+    const pageGuidExists = await this.service.guidExists(body.guid)
+    if (articleGuidExists || pageGuidExists)
       throw new ExceptionHelper(
         this.pageMessage.EXISTING_GUID,
         HttpStatus.BAD_REQUEST,

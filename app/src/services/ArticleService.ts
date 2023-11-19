@@ -1,13 +1,18 @@
-"use client";
-
+// ** service
 import service from "@/services";
+
+// ** models
 import ArticleModel, {
   ArticleFormModel,
   ArticleListQueryModel,
 } from "@/models/ArticleModel";
 import ListResponseModel from "@/models/ListResponseModel";
-import { EndpointUrls } from "@/config";
+
+// ** utils
 import { objectToParams } from "@/utils/params";
+
+// ** config
+import { EndpointUrls } from "@/config";
 
 const ArticleService = {
   getItems: async (

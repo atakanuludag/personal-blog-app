@@ -1,1 +1,1 @@
-app/layouts/Theme.tsx
+app/src/theme/index.ts

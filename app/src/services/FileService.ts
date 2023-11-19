@@ -1,9 +1,16 @@
+// ** service
 import service from "@/services";
+
+// ** models
 import ListResponseModel from "@/models/ListResponseModel";
 import FileModel, { FileListQueryModel, FileForm } from "@/models/FileModel";
 import { BaseServiceErrorModel } from "@/models/ServiceBaseModel";
-import { EndpointUrls } from "@/config";
+
+// ** utils
 import { objectToParams } from "@/utils/params";
+
+// ** config
+import { EndpointUrls } from "@/config";
 
 //todo: BaseServiceErrorModel her yere eklenecek.
 

@@ -1,8 +1,15 @@
+// ** service
 import service from "@/services";
+
+// ** models
 import CategoryModel, { CategoryFormModel } from "@/models/CategoryModel";
 import ListQueryModel from "@/models/ListQueryModel";
 import ListResponseModel from "@/models/ListResponseModel";
+
+// ** utils
 import { objectToParams } from "@/utils/params";
+
+// ** config
 import { EndpointUrls } from "@/config";
 
 const CategoryService = {

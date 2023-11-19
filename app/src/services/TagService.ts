@@ -1,9 +1,16 @@
+// ** service
 import service from "@/services";
+
+// ** models
 import ListQueryModel from "@/models/ListQueryModel";
 import ListResponseModel from "@/models/ListResponseModel";
 import TagModel, { TagFormModel } from "@/models/TagModel";
-import { EndpointUrls } from "@/config";
+
+// ** utils
 import { objectToParams } from "@/utils/params";
+
+// ** config
+import { EndpointUrls } from "@/config";
 
 const TagService = {
   getItems: async (

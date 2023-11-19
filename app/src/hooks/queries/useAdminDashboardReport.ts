@@ -1,8 +1,13 @@
 "use client";
 
+// ** third party
 import { useQuery } from "react-query";
-import { QUERY_NAMES } from "@/config";
+
+// ** services
 import ReportService from "@/services/ReportService";
+
+// ** config
+import { QUERY_NAMES } from "@/config";
 
 export default function useAdminDashboardReport() {
   const service = ReportService;

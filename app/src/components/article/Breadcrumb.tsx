@@ -1,5 +1,4 @@
 // ** next
-//import { useRouter } from 'next/router'
 import { default as NextLink } from "next/link";
 
 // ** mui
@@ -23,9 +22,6 @@ export default function Breadcrumb({
   isShowHome = true,
   ...props
 }: BreadcrumbProps) {
-  //const router = useRouter()
-  //Todo: Auto generate breadcrumb function will be added
-
   return (
     <Box
       display="flex"

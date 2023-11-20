@@ -12,7 +12,7 @@ import Footer from "@/layouts/Footer";
 // ** components
 import DarkModeToggle from "@/components/DarkModeToggle";
 
-export default async function Template({ children }: { children: ReactNode }) {
+export default function Template({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

@@ -1,10 +1,17 @@
 "use client";
 
+// ** third party
 import { UseQueryOptions, useQuery } from "react-query";
-import { QUERY_NAMES } from "@/config";
+
+// ** services
 import PageService from "@/services/PageService";
+
+// ** models
 import ListQueryModel from "@/models/ListQueryModel";
 import PageModel from "@/models/PageModel";
+
+// ** config
+import { QUERY_NAMES } from "@/config";
 
 export default function usePageQuery() {
   const service = PageService;

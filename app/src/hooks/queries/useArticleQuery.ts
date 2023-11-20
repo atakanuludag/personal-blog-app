@@ -1,16 +1,17 @@
 "use client";
 
-import {
-  QueryClient,
-  useInfiniteQuery,
-  useQuery,
-  UseQueryOptions,
-} from "react-query";
-import { QUERY_NAMES } from "@/config";
+// ** third party
+import { useQuery, UseQueryOptions } from "react-query";
+
+// ** services
 import ArticleService from "@/services/ArticleService";
+
+// ** models
 import ListQueryModel from "@/models/ListQueryModel";
-import ListResponseModel from "@/models/ListResponseModel";
 import ArticleModel from "@/models/ArticleModel";
+
+// ** config
+import { QUERY_NAMES } from "@/config";
 
 export default function useArticleQuery() {
   const service = ArticleService;
@@ -23,33 +24,6 @@ export default function useArticleQuery() {
     id: string,
     options?: Omit<UseQueryOptions<ArticleModel>, "queryKey" | "queryFn">
   ) => useQuery([queryName, id], () => service.getItemById(id), options);
-
-  // const articleItemsInfiniteQuery = (
-  //   enabled: boolean,
-  //   params: ListQueryModel
-  // ) =>
-  //   useInfiniteQuery(
-  //     [queryName],
-  //     ({ pageParam }) =>
-  //       service.getItems({
-  //         ...params,
-  //         page: pageParam,
-  //       }) as any,
-  //     {
-  //       enabled,
-  //       getNextPageParam: (lastPage: ListResponseModel<ArticleModel[]>) => {
-  //         return lastPage.hasNextPage;
-  //       },
-  //     }
-  //   );
-
-  // const articlePrefetchInfiniteQuery = (
-  //   queryClient: QueryClient,
-  //   params: ListQueryModel
-  // ) =>
-  //   queryClient.prefetchInfiniteQuery([queryName], () =>
-  //     service.getItems(params)
-  //   );
 
   return {
     useArticleItemsQuery,

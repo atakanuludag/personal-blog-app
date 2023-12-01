@@ -50,7 +50,12 @@ moment.locale('tr')
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService<IEnv>) => ({
-        uri: 'mongodb://localhost:27017/personal-blog',
+        uri: configService.get('MONGODB_URI'),
+        dbName: configService.get('MONGODB_DB_NAME'),
+        auth: {
+          username: configService.get('MONGODB_DB_USER'),
+          password: configService.get('MONGODB_DB_PASS'),
+        },
         // useNewUrlParser: true,
         socketTimeoutMS: 0,
         connectTimeoutMS: 0,

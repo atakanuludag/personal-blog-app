@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 // ** third party
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -124,7 +124,9 @@ export default function NewEditPage({ id: editId }: NewEditPageProps) {
         enqueueSnackbar("Sayfa başarıyla kaydedildi.", {
           variant: "success",
         });
-        queryClient.invalidateQueries([QUERY_NAMES.PAGE]);
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_NAMES.PAGE],
+        });
         router.push("/admin/pages");
       } catch (err) {
         console.log(err);

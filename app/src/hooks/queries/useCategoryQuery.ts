@@ -1,7 +1,7 @@
 "use client";
 
 // ** third party
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 // ** services
 import CategoryService from "@/services/CategoryService";
@@ -17,7 +17,11 @@ export default function useCategoryQuery(params?: ListQueryModel) {
   const queryName = QUERY_NAMES.CATEGORY;
 
   const useCategoriesQuery = (enabled: boolean = true) =>
-    useQuery([queryName, params], () => service.getItems(params), { enabled });
+    useQuery({
+      queryKey: [queryName, params],
+      queryFn: () => service.getItems(params),
+      enabled,
+    });
 
   return {
     useCategoriesQuery,

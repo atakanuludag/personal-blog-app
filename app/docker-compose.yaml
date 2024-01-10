@@ -1,0 +1,38 @@
+# Docker Compose Configuration
+# visit https://docs.docker.com/compose/
+
+version: "3.8"
+services:
+  # app service for your backend
+  app:
+    image: personal-blog-app
+    container_name: personal-blog-app
+    restart: always
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
+      NEXT_PUBLIC_VERSION: ${NEXT_PUBLIC_VERSION}
+      PORT: ${PORT}
+      HOSTNAME: ${HOSTNAME}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+      NEXT_PUBLIC_UPLOAD_PATH_URL: ${NEXT_PUBLIC_UPLOAD_PATH_URL}
+      NEXT_PUBLIC_REVALIDATE_SECRET: ${NEXT_PUBLIC_REVALIDATE_SECRET}
+      NEXT_PUBLIC_REVALIDATE_HOURS: ${NEXT_PUBLIC_REVALIDATE_HOURS}
+      NEXT_PUBLIC_SITE_TITLE: ${NEXT_PUBLIC_SITE_TITLE}
+      NEXT_PUBLIC_SITE_DESCRIPTION: ${NEXT_PUBLIC_SITE_DESCRIPTION}
+      NEXT_PUBLIC_PERSONAL_DESCRIPTION: ${NEXT_PUBLIC_PERSONAL_DESCRIPTION}
+      NEXT_PUBLIC_PERSONAL_TWITTER_URL: ${NEXT_PUBLIC_PERSONAL_TWITTER_URL}
+      NEXT_PUBLIC_PERSONAL_INSTAGRAM_URL: ${NEXT_PUBLIC_PERSONAL_INSTAGRAM_URL}
+      NEXT_PUBLIC_PERSONAL_GITHUB_URL: ${NEXT_PUBLIC_PERSONAL_GITHUB_URL}
+      NEXT_PUBLIC_PERSONAL_LINKEDIN_URL: ${NEXT_PUBLIC_PERSONAL_LINKEDIN_URL}
+      NEXT_PUBLIC_PERSONAL_EMAIL: ${NEXT_PUBLIC_PERSONAL_EMAIL}
+      NEXT_PUBLIC_PAGE_SIZE: ${NEXT_PUBLIC_PAGE_SIZE}
+      NEXT_PUBLIC_NAVBAR_PAGE_IDS: ${NEXT_PUBLIC_NAVBAR_PAGE_IDS}
+    ports:
+      - "${PORT}:${PORT}"
+    # depends_on:
+    #   personal-blog-api:
+    #     condition: service_completed_successfully

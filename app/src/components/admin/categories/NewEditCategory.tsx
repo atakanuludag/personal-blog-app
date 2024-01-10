@@ -23,7 +23,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 // ** models
 import CategoryModel, { CategoryFormModel } from "@/models/CategoryModel";
@@ -54,7 +54,7 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
   const { formDrawer, handleFormDrawerClose, setFormDrawerData } =
     useComponentContext();
   const { enqueueSnackbar } = useSnackbar();
-  const queryClientHook = useQueryClient();
+  const queryClient = useQueryClient();
 
   const [parentSearchText, setParentSearchText] = useState("");
   const [parentValue, setParentValue] = useState<CategoryModel | null>(null);
@@ -75,6 +75,7 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
     });
 
   const { useCategoriesQuery } = useCategoryQuery(parentAutocompleteParams);
+  //const { useCategoriesQuery } = useCategoryQuery(parentAutocompleteParams);
   const categories = useCategoriesQuery(parentSearchText === "" ? false : true);
 
   // form validate
@@ -117,7 +118,12 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
         enqueueSnackbar(text, {
           variant: "success",
         });
-        queryClientHook.invalidateQueries(QUERY_NAMES.CATEGORY);
+        // queryClient.removeQueries({
+        //   queryKey: [QUERY_NAMES.CATEGORY],
+        // });
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_NAMES.CATEGORY],
+        });
       } catch (err) {
         enqueueSnackbar(
           "Kayıt eklenirken veya güncellenirken bir hata oluştu.",
@@ -213,10 +219,10 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
     return [values.parent as string];
   };
 
-  console.log("values.parent ", handleCategoryParentSelected());
+  //console.log("values.parent ", handleCategoryParentSelected());
 
   const handleCategoryParentSetSelected = (a: any) => {
-    console.log("a", a);
+    // console.log("a", a);
   };
 
   return (

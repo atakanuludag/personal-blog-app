@@ -22,7 +22,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 // ** models
 import { TagFormModel } from "@/models/TagModel";
@@ -47,7 +47,7 @@ export default function NewEditTag({ data }: NewEditTagProps) {
   const { formDrawer, handleFormDrawerClose, setFormDrawerData } =
     useComponentContext();
   const { enqueueSnackbar } = useSnackbar();
-  const queryClientHook = useQueryClient();
+  const queryClient = useQueryClient();
 
   const [initialValues, setInitialValues] = useState<TagFormModel>({
     title: "",
@@ -90,7 +90,9 @@ export default function NewEditTag({ data }: NewEditTagProps) {
         enqueueSnackbar(text, {
           variant: "success",
         });
-        queryClientHook.invalidateQueries(QUERY_NAMES.TAG);
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_NAMES.TAG],
+        });
       } catch (err) {
         enqueueSnackbar(
           "Kayıt eklenirken veya güncellenirken bir hata oluştu.",

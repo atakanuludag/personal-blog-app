@@ -23,12 +23,24 @@ const nextConfig = {
       {
         protocol: "http",
         hostname: "localhost",
-        port: "5051",
+        port: "4000",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "www.atakanuludag.com",
+        hostname: "atakanuludag.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "api.atakanuludag.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "api.atakanuludag.com",
         port: "",
         pathname: "/**",
       },

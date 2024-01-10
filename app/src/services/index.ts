@@ -5,20 +5,18 @@ import { API_URL, COOKIE_NAMES } from "@/config";
 import Cookies from "js-cookie";
 
 interface ServiceRequestInit extends RequestInit {
-  body?: any;
+  readonly body?: any;
+  readonly isLocalApi?: boolean;
+  readonly isFormData?: boolean;
 }
 
 const localeApiUrl = `/api`;
 
-const service = async (
-  url: string,
-  init?: ServiceRequestInit | undefined,
-  localApi: boolean = false
-) => {
+const service = async (url: string, init?: ServiceRequestInit | undefined) => {
   let headers: Record<string, any> = {
-    ...init?.headers,
-    "Content-Type": "application/json",
+    // "Content-Type": "application/json",
     Accept: "application/json",
+    ...init?.headers,
   };
   const token = Cookies.get(COOKIE_NAMES.TOKEN);
 
@@ -26,13 +24,17 @@ const service = async (
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${localApi ? localeApiUrl : API_URL}/${url}`, {
-    ...init,
-    body: JSON.stringify(init?.body),
-    headers,
-  });
-  if (!res.ok) return null;
-  return res.json();
+  const res = await fetch(
+    `${init?.isLocalApi ? localeApiUrl : API_URL}/${url}`,
+    {
+      body: !init?.isFormData ? JSON.stringify(init?.body) : init?.body,
+      headers,
+      ...init,
+    }
+  );
+
+  if (!res.ok || init?.method === "DELETE") return null;
+  return res?.json();
 };
 
 export default service;

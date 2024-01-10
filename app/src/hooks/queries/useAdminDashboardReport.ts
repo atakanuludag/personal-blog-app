@@ -1,7 +1,7 @@
 "use client";
 
 // ** third party
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 // ** services
 import ReportService from "@/services/ReportService";
@@ -14,7 +14,10 @@ export default function useAdminDashboardReport() {
   const queryName = QUERY_NAMES.ADMIN_DASHBOARD_REPORT;
 
   const useAdminDashboardReportQuery = () =>
-    useQuery([queryName], () => service.getAdminDashboardReport());
+    useQuery({
+      queryKey: [QUERY_NAMES],
+      queryFn: service.getAdminDashboardReport,
+    });
 
   return {
     useAdminDashboardReportQuery,

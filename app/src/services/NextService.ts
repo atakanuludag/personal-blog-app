@@ -6,22 +6,16 @@ import LoginFormModel from "@/models/LoginFormModel";
 
 const NextService = {
   login: async (body: LoginFormModel): Promise<string> =>
-    service(
-      `login`,
-      {
-        method: "POST",
-        body,
-      },
-      true
-    ),
+    service(`login`, {
+      method: "POST",
+      body,
+      isLocalApi: true,
+    }),
   logout: async (): Promise<void> =>
-    service(
-      `logout`,
-      {
-        method: "POST",
-      },
-      true
-    ),
+    service(`logout`, {
+      method: "POST",
+      isLocalApi: true,
+    }),
 };
 
 Object.freeze(NextService);

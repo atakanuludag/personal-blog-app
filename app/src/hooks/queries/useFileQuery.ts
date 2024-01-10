@@ -1,5 +1,5 @@
 // ** third party
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 // ** services
 import FileService from "@/services/FileService";
@@ -15,7 +15,10 @@ export default function useFileQuery(params?: FileListQueryModel) {
   const queryName = QUERY_NAMES.FILES;
 
   const useFilesQuery = () =>
-    useQuery([queryName, params], () => service.getItems(params));
+    useQuery({
+      queryKey: [queryName, params],
+      queryFn: () => service.getItems(params),
+    });
 
   return {
     useFilesQuery,

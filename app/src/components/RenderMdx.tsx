@@ -24,6 +24,7 @@ export default function RenderMdx({ content, theme }: RenderMdxProps) {
 
   const components: MDXComponents = {
     code({ node, inline, className, children, ...props }: any) {
+      //todo: any
       const match = /language-(\w+)/.exec(className || "");
       return !inline && match ? (
         <SyntaxHighlighter

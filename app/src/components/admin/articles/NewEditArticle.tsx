@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 // ** third party
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -164,7 +164,9 @@ export default function NewEditArticle({ id: editId }: NewEditArticleProps) {
         enqueueSnackbar("Makale başarıyla kaydedildi.", {
           variant: "success",
         });
-        queryClient.invalidateQueries([QUERY_NAMES.ARTICLE]);
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_NAMES.ARTICLE],
+        });
         router.push("/admin/articles");
       } catch (err) {
         console.log(err);

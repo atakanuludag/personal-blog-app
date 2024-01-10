@@ -4,9 +4,9 @@
 version: '3.8'
 services:
   # app service for your backend
-  app:
+  api:
     image: personal-blog-api
-    container_name: personal-blog-api-container
+    container_name: personal-blog-api
     restart: always
     build:
       context: ./
@@ -34,6 +34,11 @@ services:
     restart: always
     ports:
       - '27017:27017'
+    volumes:
+      - mongodata:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGODB_DB_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_DB_PASS}
+
+volumes:
+  mongodata:

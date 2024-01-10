@@ -130,6 +130,7 @@ export class FileController {
       })
       return this.service.saveFile(data)
     } catch (err) {
+      console.log(err)
       throw new ExceptionHelper(
         this.fileMessage.UPLOAD_ERROR,
         HttpStatus.BAD_REQUEST,

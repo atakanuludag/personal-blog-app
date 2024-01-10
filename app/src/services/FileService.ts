@@ -4,22 +4,18 @@ import service from "@/services";
 // ** models
 import ListResponseModel from "@/models/ListResponseModel";
 import FileModel, { FileListQueryModel, FileForm } from "@/models/FileModel";
-import { BaseServiceErrorModel } from "@/models/ServiceBaseModel";
-
 // ** utils
 import { objectToParams } from "@/utils/params";
 
 // ** config
 import { EndpointUrls } from "@/config";
 
-//todo: BaseServiceErrorModel her yere eklenecek.
-
 const FileService = {
   getItems: async (
     params?: FileListQueryModel
   ): Promise<ListResponseModel<FileModel[]> | FileModel[]> =>
     service(`${EndpointUrls.file}${objectToParams(params)}`),
-  deleteItem: async (id: string): Promise<void | BaseServiceErrorModel> =>
+  deleteItem: async (id: string): Promise<void> =>
     service(`${EndpointUrls.file}/${id}`, { method: "DELETE" }),
   createFolder: async (title: string, path: string | null): Promise<void> =>
     service(`${EndpointUrls.file}/folder`, {
@@ -40,9 +36,7 @@ const FileService = {
       const res = await service(`${EndpointUrls.file}`, {
         method: "POST",
         body: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        isFormData: true,
       });
       return res || [];
     } catch (err) {

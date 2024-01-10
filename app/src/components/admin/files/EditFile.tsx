@@ -14,7 +14,7 @@ import Typography from "@mui/material/Typography";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 // ** models
 import FileModel, { FileForm } from "@/models/FileModel";
@@ -40,7 +40,7 @@ export default function EditFile({ data, isFolder }: EditFileProps) {
   const { formDrawer, handleFormDrawerClose, setFormDrawerData } =
     useComponentContext();
   const { enqueueSnackbar } = useSnackbar();
-  const queryClientHook = useQueryClient();
+  const queryClient = useQueryClient();
 
   const [initialValues, setInitialValues] = useState<FileForm>({
     _id: "",
@@ -60,10 +60,8 @@ export default function EditFile({ data, isFolder }: EditFileProps) {
     isSubmitting,
     handleSubmit,
     getFieldProps,
-    setFieldValue,
     setValues,
     isValid,
-    values,
   } = useFormik<FileForm>({
     initialValues,
     validationSchema,
@@ -74,7 +72,9 @@ export default function EditFile({ data, isFolder }: EditFileProps) {
         enqueueSnackbar(`Dosya başarıyla güncellendi.`, {
           variant: "success",
         });
-        queryClientHook.invalidateQueries(QUERY_NAMES.FILES);
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_NAMES.FILES],
+        });
       } catch (err) {
         enqueueSnackbar(
           "Kayıt eklenirken veya güncellenirken bir hata oluştu.",

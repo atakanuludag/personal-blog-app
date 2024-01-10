@@ -5,9 +5,7 @@ import { useState } from "react";
 
 // ** mui
 import TextField from "@mui/material/TextField";
-import Autocomplete, {
-  AutocompleteChangeReason,
-} from "@mui/material/Autocomplete";
+import Autocomplete from "@mui/material/Autocomplete";
 import Chip from "@mui/material/Chip";
 
 type TagChipAutocompleteProps = {
@@ -22,11 +20,7 @@ export default function TagChipAutocomplete({
 }: TagChipAutocompleteProps) {
   const [inputValue, setInputValue] = useState("");
 
-  const handleChange = (
-    e: any,
-    val: string[],
-    reason: AutocompleteChangeReason
-  ) => {
+  const handleChange = (e: any, val: string[]) => {
     setSelected([...val]);
   };
 

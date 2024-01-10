@@ -33,7 +33,7 @@ import useSettingsContext from "@/hooks/useSettingsContext";
 
 // ** config
 import { THEME_SETTINGS } from "@/config";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 
 const StyledMenuButton = styled(IconButton)(({ theme }) => ({
   marginRight: theme.spacing(2),
@@ -70,7 +70,8 @@ const HeaderContent = () => {
   );
   const userMenuOpen = Boolean(userMenuAnchorEl);
 
-  const { mutate: logout, isLoading } = useMutation(NextService.logout, {
+  const { mutate: logout, isPending: isLoading } = useMutation({
+    mutationFn: NextService.logout,
     onSuccess: () => {
       router.push("/admin/login");
       handleUserMenuClose();

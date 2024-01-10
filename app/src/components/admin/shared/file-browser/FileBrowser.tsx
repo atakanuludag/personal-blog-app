@@ -7,7 +7,7 @@ import { Fragment, useState, MouseEvent, ChangeEvent, useEffect } from "react";
 import Image from "next/image";
 
 // ** third party
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { DropTargetMonitor, useDrop } from "react-dnd";
 import { NativeTypes } from "react-dnd-html5-backend";
 import { useSnackbar } from "notistack";
@@ -162,7 +162,7 @@ export default function FileBrowser({
 
   const [{ canDrop, isOver }, drop] = useDrop({
     accept: [NativeTypes.FILE],
-    canDrop(item) {
+    canDrop() {
       return true;
     },
     collect: (monitor: DropTargetMonitor) => {
@@ -222,7 +222,9 @@ export default function FileBrowser({
       ...params,
       page: 1,
     });
-    queryClient.invalidateQueries(QUERY_NAMES.FILES);
+    queryClient.invalidateQueries({
+      queryKey: [QUERY_NAMES.FILES],
+    });
   };
 
   const handleBreadcrumbClick = (folder: FileModel | null) => {
@@ -306,7 +308,10 @@ export default function FileBrowser({
     handleMenuClose();
     await FileService.deleteItem(contextMenuData._id);
 
-    queryClient.invalidateQueries(QUERY_NAMES.FILES);
+    queryClient.invalidateQueries({
+      queryKey: [QUERY_NAMES.FILES],
+    });
+
     enqueueSnackbar(
       `Seçtiğiniz ${
         contextMenuData.isFolder ? "klasör" : "dosya"
@@ -332,7 +337,9 @@ export default function FileBrowser({
       ...params,
       page: 1,
     });
-    queryClient.invalidateQueries(QUERY_NAMES.FILES);
+    queryClient.invalidateQueries({
+      queryKey: [QUERY_NAMES.FILES],
+    });
   };
 
   const handleItemClick = (item: FileModel) => {

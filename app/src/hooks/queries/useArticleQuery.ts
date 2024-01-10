@@ -1,7 +1,7 @@
 "use client";
 
 // ** third party
-import { useQuery, UseQueryOptions } from "react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 // ** services
 import ArticleService from "@/services/ArticleService";
@@ -18,12 +18,20 @@ export default function useArticleQuery() {
   const queryName = QUERY_NAMES.ARTICLE;
 
   const useArticleItemsQuery = (params: ListQueryModel) =>
-    useQuery([queryName, params], () => service.getItems(params));
+    useQuery({
+      queryKey: [queryName, params],
+      queryFn: () => service.getItems(params),
+    });
 
   const useArticleItemQuery = (
     id: string,
     options?: Omit<UseQueryOptions<ArticleModel>, "queryKey" | "queryFn">
-  ) => useQuery([queryName, id], () => service.getItemById(id), options);
+  ) =>
+    useQuery({
+      queryKey: [queryName, id],
+      queryFn: () => service.getItemById(id),
+      ...options,
+    });
 
   return {
     useArticleItemsQuery,

@@ -1,7 +1,7 @@
 "use client";
 
 // ** third party
-import { useQuery, UseQueryOptions } from "react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 // ** services
 import TagService from "@/services/TagService";
@@ -25,7 +25,12 @@ export default function useTagQuery(params?: ListQueryModel) {
       ListResponseModel<TagModel[]> | TagModel[] | null,
       any
     >
-  ) => useQuery([queryName, params], () => service.getItems(params), options);
+  ) =>
+    useQuery({
+      queryKey: [queryName, params],
+      queryFn: () => service.getItems(params),
+      ...options,
+    });
 
   return {
     useTagItemsQuery,

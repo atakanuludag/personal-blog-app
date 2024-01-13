@@ -58,7 +58,7 @@ const ArticleService = {
     }),
   guidExists: async (guid: string): Promise<boolean> =>
     service(`${EndpointUrls.article}/guidExists/${guid}`, {
-      method: "DELETE",
+      method: "GET",
     }).then((res) => res.data.exists),
 };
 

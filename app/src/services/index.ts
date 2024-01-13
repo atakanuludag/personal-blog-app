@@ -14,9 +14,9 @@ const localeApiUrl = `/api`;
 
 const service = async (url: string, init?: ServiceRequestInit | undefined) => {
   let headers: Record<string, any> = {
-    // "Content-Type": "application/json",
-    Accept: "application/json",
     ...init?.headers,
+    "Content-Type": "application/json",
+    Accept: "application/json",
   };
   const token = Cookies.get(COOKIE_NAMES.TOKEN);
 
@@ -24,12 +24,14 @@ const service = async (url: string, init?: ServiceRequestInit | undefined) => {
     headers.Authorization = `Bearer ${token}`;
   }
 
+  if (init?.isFormData) delete headers["Content-Type"];
+
   const res = await fetch(
     `${init?.isLocalApi ? localeApiUrl : API_URL}/${url}`,
     {
-      body: !init?.isFormData ? JSON.stringify(init?.body) : init?.body,
-      headers,
       ...init,
+      body: init?.isFormData ? init?.body : JSON.stringify(init?.body),
+      headers,
     }
   );
 

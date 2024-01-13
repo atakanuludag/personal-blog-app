@@ -42,8 +42,8 @@ export default function AdminLogin() {
   const { enqueueSnackbar } = useSnackbar();
 
   const initialValues: LoginFormModel = {
-    username: "atakanuludag",
-    password: "123456",
+    username: "",
+    password: "",
   };
 
   // form validate

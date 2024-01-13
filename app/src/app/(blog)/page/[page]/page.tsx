@@ -18,6 +18,7 @@ import ArticleService from "@/services/ArticleService";
 // ** models
 import ArticleModel from "@/models/ArticleModel";
 import ListResponseModel from "@/models/ListResponseModel";
+import { OrderType } from "@/models/enums";
 
 // ** config
 import { PAGE_SIZE } from "@/config";
@@ -35,6 +36,8 @@ export default async function BlogPaging({ params }: BlogPagingProps) {
   const data = (await ArticleService.getItems({
     page: currentPage,
     pageSize: PAGE_SIZE,
+    order: "publishingDate",
+    orderBy: OrderType.ASC,
   })) as ListResponseModel<ArticleModel[]>;
 
   if (!data) return notFound();

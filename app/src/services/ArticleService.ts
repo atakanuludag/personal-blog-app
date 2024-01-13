@@ -50,16 +50,16 @@ const ArticleService = {
     service(`${EndpointUrls.article}/like/${id}`, {
       method: "POST",
     }).then((res) => {
-      return typeof res.data !== "undefined" ? res.data : 0;
+      return typeof res !== "undefined" ? res : 0;
     }),
   deleteItem: async (id: string): Promise<void> =>
     service(`${EndpointUrls.article}/${id}`, {
       method: "DELETE",
     }),
   guidExists: async (guid: string): Promise<boolean> =>
-    service(`${EndpointUrls.article}/guidExists/${guid}`, {
-      method: "GET",
-    }).then((res) => res.data.exists),
+    service(`${EndpointUrls.article}/guidExists/${guid}`).then(
+      (res) => res?.exists
+    ),
 };
 
 Object.freeze(ArticleService);

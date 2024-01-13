@@ -101,7 +101,7 @@ export default function ArticleDetail({ data }: ArticleDetailProps) {
         </Grid>
 
         <Grid item xs={12}>
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
             {data.tags.map((tag) => (
               <Chip
                 key={tag._id}

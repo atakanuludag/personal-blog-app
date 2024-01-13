@@ -25,6 +25,7 @@ import ArticleService from "@/services/ArticleService";
 import ArticleModel from "@/models/ArticleModel";
 import ListQueryModel from "@/models/ListQueryModel";
 import ListResponseModel from "@/models/ListResponseModel";
+import { OrderType } from "@/models/enums";
 
 // ** hooks
 import useArticleQuery from "@/hooks/queries/useArticleQuery";
@@ -40,6 +41,8 @@ export default function AdminArticleIndex() {
   const [params, setParams] = useState<ListQueryModel>({
     page: 1,
     pageSize: PAGE_SIZE,
+    order: "publishingDate",
+    orderBy: OrderType.ASC,
   });
   const [customLoading, setCustomLoading] = useState(false);
   const { useArticleItemsQuery } = useArticleQuery();

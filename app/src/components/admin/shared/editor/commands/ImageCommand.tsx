@@ -56,8 +56,7 @@ export default function ImageCommandComponent({
       keyCommand: "customImage",
       execute: (state, api) => {
         const html = selectImages.map(
-          (item) =>
-            `<img src="${generateFileUrl(item)}" alt="image" width="100%" />`
+          (item) => `<img src="${generateFileUrl(item)}" alt="image" />`
         );
         api.replaceSelection(html.join("<br/>"));
       },

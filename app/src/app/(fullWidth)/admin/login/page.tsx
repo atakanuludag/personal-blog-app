@@ -26,7 +26,8 @@ import NextService from "@/services/NextService";
 const LoginBox = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(5),
-  width: "20vw",
+  width: "100%",
+  maxWidth: "360px",
   display: "flex",
   justifyContent: "center",
 }));

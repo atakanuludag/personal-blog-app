@@ -21,6 +21,6 @@ export class TransformInterceptor<T>
   ): Observable<Response<T>> {
     return next
       .handle()
-      .pipe(map((data) => ({ data, isError: false, message: 'success' })))
+      .pipe(map((data) => ({ data, hasError: false, message: 'success' })))
   }
 }

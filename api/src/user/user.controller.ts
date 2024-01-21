@@ -4,11 +4,13 @@ import {
   Post,
   UseGuards,
   Request,
-  HttpStatus,
   HttpCode,
+  Get,
+  Patch,
 } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiOkResponse,
@@ -21,10 +23,10 @@ import { LoginUserDto } from '@/user/dto/login-user.dto'
 import { UserDto } from '@/user/dto/user.dto'
 import { TokenDto } from '@/user/dto/token.dto'
 import { PasswordHelper } from '@/common/helpers/password.helper'
-import { ExceptionHelper } from '@/common/helpers/exception.helper'
-import { CoreMessage } from '@/common/messages/core.message'
 import { UserMessage } from '@/common/messages'
 import { DefaultException } from '@/common/dto/default-exception.dto'
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
+import { UpdateProfileDto } from '@/user/dto/update-profile.dto'
 
 @ApiTags('User')
 @Controller('user')
@@ -33,7 +35,6 @@ export class UserController {
     private readonly service: UserService,
     private passwordHelper: PasswordHelper,
     private readonly userMessage: UserMessage,
-    private readonly coreMessage: CoreMessage,
   ) {}
 
   @ApiOperation({
@@ -62,13 +63,42 @@ export class UserController {
   })
   @Post('register')
   async create(@Body() body: UserDto) {
-    const userCheck = await this.service.findUser(body.userName, body.email)
-    if (userCheck)
-      throw new ExceptionHelper(
-        this.userMessage.EXISTING_USER,
-        HttpStatus.BAD_REQUEST,
-      )
-    body.password = await this.passwordHelper.passwordHash(body.password)
-    await this.service.register(body)
+    return this.passwordHelper.passwordHash(body.password)
+    // const userCheck = await this.service.findUser(body.userName, body.email)
+    // if (userCheck)
+    //   throw new ExceptionHelper(
+    //     this.userMessage.EXISTING_USER,
+    //     HttpStatus.BAD_REQUEST,
+    //   )
+    // body.password = await this.passwordHelper.passwordHash(body.password)
+    // await this.service.register(body)
+  }
+
+  @ApiOperation({
+    summary: 'Profile',
+  })
+  @ApiOkResponse({
+    type: UserDto,
+  })
+  @ApiBearerAuth('accessToken')
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  async getProfile(@Request() req) {
+    return this.service.findUserById(req.user.userId)
+  }
+
+  @ApiOperation({
+    summary: 'Profile Update',
+  })
+  @ApiOkResponse({
+    type: UserDto,
+  })
+  @ApiBearerAuth('accessToken')
+  @UseGuards(JwtAuthGuard)
+  @Patch('profile')
+  async updateProfile(@Request() req, @Body() body: UpdateProfileDto) {
+    if (body.password && body.password !== '')
+      body.password = await this.passwordHelper.passwordHash(body.password)
+    return this.service.update(body, req.user.userId)
   }
 }

@@ -3,12 +3,12 @@ import {
   Controller,
   Get,
   Param,
-  HttpStatus,
   Post,
   UseGuards,
   Patch,
   Delete,
   Query,
+  BadRequestException,
 } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -27,9 +27,8 @@ import { ListQueryDto } from '@/common/dto/list-query.dto'
 import { DefaultException } from '@/common/dto/default-exception.dto'
 import { PageService } from '@/page/page.service'
 import { ArticleService } from '@/article/article.service'
-import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { QueryHelper } from '@/common/helpers/query.helper'
-import { CoreMessage, PageMessage } from '@/common/messages'
+import { PageMessage } from '@/common/messages'
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
 import { IpAddress } from '@/common/decorators/ip.decorator'
 
@@ -39,7 +38,6 @@ export class PageController {
   constructor(
     private readonly service: PageService,
     private readonly articleService: ArticleService,
-    private readonly coreMessage: CoreMessage,
     private readonly pageMessage: PageMessage,
     private readonly queryHelper: QueryHelper,
   ) {}
@@ -58,7 +56,7 @@ export class PageController {
   @Get()
   async list(@Query() query: ListQueryDto) {
     const q = this.queryHelper.instance(query)
-    return await this.service.getItems(q)
+    return this.service.getItems(q)
   }
 
   @ApiOperation({
@@ -75,13 +73,7 @@ export class PageController {
   @ApiParam({ name: 'id', type: String, required: true })
   @Get('getById/:id')
   async getItemById(@Param() params: IdParamsDto) {
-    const data = await this.service.getItemById(params.id)
-    if (!data)
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
-    return data
+    return this.service.getItemById(params.id)
   }
 
   @ApiOperation({
@@ -99,12 +91,7 @@ export class PageController {
   @Get('getByGuid/:guid')
   async getItemByGuid(@Param() params: GuidParamsDto, @IpAddress() ipAddress) {
     const data = await this.service.getItemByGuid(params.guid)
-    if (!data)
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
-    await this.service.updateIPViewByGuid(params.guid, ipAddress)
+    if (data) await this.service.updateIPViewByGuid(params.guid, ipAddress)
     return data
   }
 
@@ -126,11 +113,8 @@ export class PageController {
     const articleGuidExists = await this.articleService.guidExists(body.guid)
     const pageGuidExists = await this.service.guidExists(body.guid)
     if (articleGuidExists || pageGuidExists)
-      throw new ExceptionHelper(
-        this.pageMessage.EXISTING_GUID,
-        HttpStatus.BAD_REQUEST,
-      )
-    return await this.service.create(body)
+      throw new BadRequestException(this.pageMessage.EXISTING_GUID)
+    return this.service.create(body)
   }
 
   @ApiOperation({
@@ -149,7 +133,7 @@ export class PageController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Body() body: UpdatePageDto, @Param() params: IdParamsDto) {
-    return await this.service.update(body, params.id)
+    return this.service.update(body, params.id)
   }
 
   @ApiOperation({

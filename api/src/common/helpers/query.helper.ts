@@ -35,7 +35,7 @@ export class QueryHelper {
         : OrderType.DESC
     const order = { [orderName]: orderType }
 
-    let q: IQuery = {
+    const q: IQuery = {
       paging: false,
       searchQuery,
       order: order,

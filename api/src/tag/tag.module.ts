@@ -8,8 +8,7 @@ import { Tag, TagSchema } from '@/tag/schemas/tag.schema'
 import { ArticleService } from '@/article/article.service'
 import { Article, ArticleSchema } from '@/article/schemas/article.schema'
 
-import { CoreMessage, TagMessage } from '@/common/messages'
-import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { TagMessage } from '@/common/messages'
 
 @Module({
   imports: [
@@ -17,12 +16,6 @@ import { ExceptionHelper } from '@/common/helpers/exception.helper'
     MongooseModule.forFeature([{ name: Article.name, schema: ArticleSchema }]),
   ],
   controllers: [TagController],
-  providers: [
-    ExceptionHelper,
-    CoreMessage,
-    TagMessage,
-    TagService,
-    ArticleService,
-  ],
+  providers: [TagMessage, TagService, ArticleService],
 })
 export class TagModule {}

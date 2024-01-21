@@ -1,9 +1,9 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
   Patch,
   Post,
@@ -27,9 +27,8 @@ import * as fs from 'fs'
 import { FilesInterceptor } from '@nestjs/platform-express'
 import { ConfigService } from '@nestjs/config'
 import { FileService } from '@/file/file.service'
-import { CoreMessage, FileMessage } from '@/common/messages'
+import { FileMessage } from '@/common/messages'
 import { File } from '@/file/schemas/file.schema'
-import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
 import { ListResultDto } from '@/common/dto/list-result.dto'
 import { FileDto } from '@/file/dto/file.dto'
@@ -46,7 +45,6 @@ import { IdParamsDto } from '@/common/dto/params.dto'
 export class FileController {
   constructor(
     private readonly service: FileService,
-    private readonly coreMessage: CoreMessage,
     private readonly fileMessage: FileMessage,
     private readonly queryHelper: QueryHelper,
     private configService: ConfigService<IEnv>,
@@ -70,7 +68,7 @@ export class FileController {
   @Get()
   async list(@Query() query: FileListQueryDto) {
     const q = this.queryHelper.instance(query)
-    return await this.service.getItems(q, query.folderId)
+    return this.service.getItems(q, query.folderId)
   }
 
   @ApiOperation({
@@ -130,11 +128,7 @@ export class FileController {
       })
       return this.service.saveFile(data)
     } catch (err) {
-      console.log(err)
-      throw new ExceptionHelper(
-        this.fileMessage.UPLOAD_ERROR,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(`${this.fileMessage.UPLOAD_ERROR}: ${err}`)
     }
   }
 
@@ -169,7 +163,7 @@ export class FileController {
     }${folderTitle}`
 
     await fs.promises.mkdir(uploadFolderDir, { recursive: true })
-    return await this.service.createFolder(title, newPath, folderId)
+    return this.service.createFolder(title, newPath, folderId)
   }
 
   @ApiOperation({
@@ -188,7 +182,7 @@ export class FileController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Body() body: UpdateFileDto, @Param() params: IdParamsDto) {
-    return await this.service.update(body, params.id)
+    return this.service.update(body, params.id)
   }
 
   @ApiOperation({
@@ -202,25 +196,21 @@ export class FileController {
     description: 'Success',
   })
   @ApiParam({ name: 'id', type: String })
-  // @ApiBearerAuth('accessToken')
-  // @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('accessToken')
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async delete(@Param() params: IdParamsDto) {
     const item = await this.service.getItemById(params.id)
-    if (!item) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
-    }
+    if (!item) throw new BadRequestException()
+
     const exists = await this.service.checkFile(item)
     if (exists)
-      throw new ExceptionHelper(
+      throw new BadRequestException(
         item.isFolder
           ? this.fileMessage.EXISTING_FOLDER
           : this.fileMessage.EXISTING_FILE,
-        HttpStatus.BAD_REQUEST,
       )
+
     await this.service.delete(params.id)
     if (item.isFolder)
       await fs.promises.rmdir(

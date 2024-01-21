@@ -1,12 +1,14 @@
-import { HttpStatus, Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { FilterQuery, Model, ObjectId } from 'mongoose'
 import { IArticle } from '@/article/interfaces/article.interface'
 import { IListQueryResponse, IQuery } from '@/common/interfaces/query.interface'
 import { Article, ArticleDocument } from '@/article/schemas/article.schema'
 import { ArticleDto } from '@/article/dto/article.dto'
-import { ExceptionHelper } from '@/common/helpers/exception.helper'
-import { CoreMessage } from '@/common/messages'
 import { TagService } from '@/tag/tag.service'
 import { slugifyTR } from '@/common/utils/slugify-tr.util'
 
@@ -15,7 +17,6 @@ export class ArticleService {
   constructor(
     @InjectModel(Article.name)
     private readonly serviceModel: Model<ArticleDocument>,
-    private readonly coreMessage: CoreMessage,
     private readonly tagService: TagService,
   ) {}
 
@@ -47,10 +48,7 @@ export class ArticleService {
       })
       return create.save()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      throw new InternalServerErrorException(err)
     }
   }
 
@@ -58,7 +56,7 @@ export class ArticleService {
     try {
       const tags = await this.getTags(data.tags)
 
-      return await this.serviceModel.findByIdAndUpdate(
+      return this.serviceModel.findByIdAndUpdate(
         id,
         {
           $set: {
@@ -72,10 +70,7 @@ export class ArticleService {
       )
     } catch (err) {
       console.log(err)
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -87,7 +82,7 @@ export class ArticleService {
     try {
       const { pagination, searchQuery, order, paging } = query
 
-      let filter: FilterQuery<ArticleDocument> = {
+      const filter: FilterQuery<ArticleDocument> = {
         ...searchQuery,
       }
       if (category) filter.categories = category
@@ -121,7 +116,7 @@ export class ArticleService {
         return data
       }
 
-      return await this.serviceModel
+      return this.serviceModel
         .find(filter)
         .sort(order)
         .populate('categories')
@@ -129,43 +124,33 @@ export class ArticleService {
         .populate('coverImage')
         .exec()
     } catch (err) {
-      console.log('err', err)
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
   async getItemById(_id: ObjectId): Promise<IArticle> {
     try {
-      return await this.serviceModel
+      return this.serviceModel
         .findOne({ _id })
         .populate('categories')
         .populate('tags')
         .populate('coverImage')
         .exec()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
   async getItemByGuid(guid: string): Promise<IArticle> {
     try {
-      return await this.serviceModel
+      return this.serviceModel
         .findOne({ guid })
         .populate('categories')
         .populate('tags')
         .populate('coverImage')
         .exec()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -175,10 +160,7 @@ export class ArticleService {
       const exists = await this.serviceModel.exists({ guid })
       return exists?._id ? true : false
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -186,10 +168,7 @@ export class ArticleService {
     try {
       await this.serviceModel.findByIdAndDelete(id)
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -201,10 +180,7 @@ export class ArticleService {
         { multi: true },
       )
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      throw new InternalServerErrorException(err)
     }
   }
 
@@ -217,10 +193,7 @@ export class ArticleService {
         { multi: true },
       )
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      throw new InternalServerErrorException(err)
     }
   }
 
@@ -233,10 +206,7 @@ export class ArticleService {
         },
       )
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -251,10 +221,7 @@ export class ArticleService {
       const data = await this.serviceModel.findById(_id).exec()
       return data.likedIPs.length
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -266,10 +233,7 @@ export class ArticleService {
       })
       return exists?._id ? true : false
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -280,10 +244,7 @@ export class ArticleService {
       })
       return exists?._id ? true : false
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -294,10 +255,7 @@ export class ArticleService {
       })
       return exists?._id ? true : false
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 }

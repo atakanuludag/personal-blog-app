@@ -1,14 +1,14 @@
-import { HttpStatus, Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { FilterQuery, Model, ObjectId } from 'mongoose'
 import { ConfigService } from '@nestjs/config'
 import { IFile } from '@/file/interfaces/file.interface'
 import { File, FileDocument } from '@/file/schemas/file.schema'
-//import { CreateCategoryDto } from './dto/create-category.dto';
-//import { UpdateCategoryDto } from './dto/update-category.dto';
 import { UpdateFileDto } from '@/file/dto/update-file.dto'
-import { ExceptionHelper } from '@/common/helpers/exception.helper'
-import { CoreMessage } from '@/common/messages'
 import { IListQueryResponse, IQuery } from '@/common/interfaces/query.interface'
 import { IEnv } from '@/common/interfaces/env.interface'
 import { ArticleService } from '@/article/article.service'
@@ -18,7 +18,6 @@ import { PageService } from '@/page/page.service'
 export class FileService {
   constructor(
     @InjectModel(File.name) private readonly serviceModel: Model<FileDocument>,
-    private readonly coreMessage: CoreMessage,
     private configService: ConfigService<IEnv>,
     private articleService: ArticleService,
     private pageService: PageService,
@@ -60,25 +59,17 @@ export class FileService {
         }
         return data
       }
-      return await this.serviceModel.find(newSearchQuery).sort(order).exec()
+      return this.serviceModel.find(newSearchQuery).sort(order).exec()
     } catch (err) {
-      console.log(err)
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
   async saveFile(data: File[]): Promise<IFile[]> {
     try {
-      const createItems = await this.serviceModel.insertMany(data)
-      return createItems
+      return this.serviceModel.insertMany(data)
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      throw new InternalServerErrorException(err)
     }
   }
 
@@ -103,27 +94,21 @@ export class FileService {
       })
       return create.save()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      throw new InternalServerErrorException(err)
     }
   }
 
   async getFolderByPath(path: string): Promise<IFile> {
     try {
-      return await this.serviceModel.findOne({ isFolder: true, path }).exec()
+      return this.serviceModel.findOne({ isFolder: true, path }).exec()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
   async update(body: UpdateFileDto, id: ObjectId): Promise<IFile> {
     try {
-      return await this.serviceModel.findByIdAndUpdate(
+      return this.serviceModel.findByIdAndUpdate(
         id,
         {
           $set: body,
@@ -133,10 +118,7 @@ export class FileService {
         },
       )
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -144,24 +126,15 @@ export class FileService {
     try {
       await this.serviceModel.findByIdAndDelete(id)
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      throw new BadRequestException(err)
     }
   }
 
   async getItemById(_id: ObjectId): Promise<IFile> {
     try {
-      return await this.serviceModel
-        .findOne({ _id })
-        .populate('folderId')
-        .exec()
+      return this.serviceModel.findOne({ _id }).populate('folderId').exec()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -183,20 +156,13 @@ export class FileService {
         item.filename,
       )
 
-      console.log('articleSearchCoverImage', articleSearchCoverImage)
-      console.log('articleSearchContentText', articleSearchContentText)
-      console.log('pageSearchContentText', pageSearchContentText)
-
       return (
         articleSearchCoverImage ||
         articleSearchContentText ||
         pageSearchContentText
       )
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 }

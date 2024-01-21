@@ -20,8 +20,7 @@ import { Tag, TagSchema } from '@/tag/schemas/tag.schema'
 import { PageService } from '@/page/page.service'
 import { Page, PageSchema } from '@/page/schemas/page.schema'
 
-import { CoreMessage, FileMessage } from '@/common/messages'
-import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { FileMessage } from '@/common/messages'
 import { editFileName } from '@/common/utils/edit-file-name.util'
 
 @Module({
@@ -56,8 +55,6 @@ import { editFileName } from '@/common/utils/edit-file-name.util'
     FileService,
     ArticleService,
     PageService,
-    ExceptionHelper,
-    CoreMessage,
     FileMessage,
     TagService,
   ],

@@ -1,10 +1,11 @@
 import { NestFactory } from '@nestjs/core'
 import { ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import * as bodyParser from 'body-parser'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { AppModule } from '@/app.module'
 import { IEnv } from '@/common/interfaces/env.interface'
+import { TransformInterceptor } from './common/interceptor/transform.interceptor'
+import { HttpExceptionFilter } from './common/filters/http-exception.filter'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -12,9 +13,6 @@ async function bootstrap() {
     //logger: console,
     bufferLogs: true,
   })
-
-  //app.use(express.static(join(__dirname, '..', 'client')))
-  //app.use(bodyParser.urlencoded({ extended: true }));
 
   const configService = app.get<ConfigService<IEnv>>(ConfigService)
   const apiPrefix = configService.get<string>('API_PREFIX')
@@ -47,18 +45,18 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup(swaggerUrl, app, document)
 
+  app.useGlobalFilters(new HttpExceptionFilter())
+
   app.setGlobalPrefix(apiPrefix)
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
-      // transformOptions: {
-      //   enableImplicitConversion: true,
-      // },
     }),
   )
-  // app.use(bodyParser.json({ limit: '50mb' }))
-  // app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
+
   app.enableCors()
+  app.useGlobalInterceptors(new TransformInterceptor())
+
   await app.listen(apiPort)
   const appUrl = await app.getUrl()
   console.log(`Application is running on: ${appUrl}`)

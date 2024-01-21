@@ -11,8 +11,7 @@ import { TagService } from '@/tag/tag.service'
 import { Article, ArticleSchema } from '@/article/schemas/article.schema'
 import { Tag, TagSchema } from '@/tag/schemas/tag.schema'
 
-import { CoreMessage, CategoryMessage } from '@/common/messages'
-import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { CategoryMessage } from '@/common/messages'
 
 @Module({
   imports: [
@@ -23,13 +22,6 @@ import { ExceptionHelper } from '@/common/helpers/exception.helper'
     MongooseModule.forFeature([{ name: Tag.name, schema: TagSchema }]),
   ],
   controllers: [CategoryController],
-  providers: [
-    ExceptionHelper,
-    CoreMessage,
-    CategoryMessage,
-    CategoryService,
-    ArticleService,
-    TagService,
-  ],
+  providers: [CategoryMessage, CategoryService, ArticleService, TagService],
 })
 export class CategoryModule {}

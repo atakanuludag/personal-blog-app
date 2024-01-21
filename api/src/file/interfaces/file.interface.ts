@@ -1,4 +1,4 @@
-import { Document, ObjectId } from 'mongoose'
+import { Document, ObjectId, PopulatedDoc } from 'mongoose'
 
 export interface IFile extends Document {
   readonly isFolder: boolean
@@ -6,7 +6,7 @@ export interface IFile extends Document {
   readonly description: string
   readonly filename: string
   readonly path: string
-  readonly folderId: ObjectId //todo: populate fonksiyonu kullanıldığı için tüm objectidleri çevireceğiz.
+  readonly folderId: ObjectId | PopulatedDoc<IFile>
   readonly mimetype: string
   readonly size: number
 }

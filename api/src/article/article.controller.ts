@@ -3,13 +3,13 @@ import {
   Controller,
   Get,
   Param,
-  HttpStatus,
   Post,
   UseGuards,
   Patch,
   Delete,
   Query,
   HttpCode,
+  BadRequestException,
 } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -27,9 +27,8 @@ import { GuidParamsDto, IdParamsDto } from '@/common/dto/params.dto'
 import { DefaultException } from '@/common/dto/default-exception.dto'
 import { ArticleService } from '@/article/article.service'
 import { PageService } from '@/page/page.service'
-import { ExceptionHelper } from '@/common/helpers/exception.helper'
 import { QueryHelper } from '@/common/helpers/query.helper'
-import { CoreMessage, ArticleMessage } from '@/common/messages'
+import { ArticleMessage } from '@/common/messages'
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
 import { IpAddress } from '@/common/decorators/ip.decorator'
 import { ArticleListQueryDto } from '@/article/dto/article-list-query.dto'
@@ -40,7 +39,6 @@ export class ArticleController {
   constructor(
     private readonly service: ArticleService,
     private readonly pageService: PageService,
-    private readonly coreMessage: CoreMessage,
     private readonly articleMessage: ArticleMessage,
     private readonly queryHelper: QueryHelper,
   ) {}
@@ -59,7 +57,7 @@ export class ArticleController {
   @Get()
   async list(@Query() query: ArticleListQueryDto) {
     const q = this.queryHelper.instance(query)
-    return await this.service.getItems(q, query.category, query.tag)
+    return this.service.getItems(q, query.category, query.tag)
   }
 
   @ApiOperation({
@@ -76,13 +74,7 @@ export class ArticleController {
   @ApiParam({ name: 'id', type: String })
   @Get('getById/:id')
   async getItemById(@Param() params: IdParamsDto) {
-    const data = await this.service.getItemById(params.id)
-    if (!data)
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
-    return data
+    return this.service.getItemById(params.id)
   }
 
   @ApiOperation({
@@ -100,13 +92,7 @@ export class ArticleController {
   @Get('getByGuid/:guid')
   async getItemByGuid(@Param() params: GuidParamsDto, @IpAddress() ipAddress) {
     const data = await this.service.getItemByGuid(params.guid)
-    if (!data)
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
-
-    await this.service.updateIPViewByGuid(params.guid, ipAddress)
+    if (data) await this.service.updateIPViewByGuid(params.guid, ipAddress)
     return data
   }
 
@@ -129,11 +115,8 @@ export class ArticleController {
     const pageGuidExists = await this.pageService.guidExists(body.guid)
 
     if (articleGuidExists || pageGuidExists)
-      throw new ExceptionHelper(
-        this.articleMessage.EXISTING_GUID,
-        HttpStatus.BAD_REQUEST,
-      )
-    return await this.service.create(body)
+      throw new BadRequestException(this.articleMessage.EXISTING_GUID)
+    return this.service.create(body)
   }
 
   @ApiOperation({
@@ -141,8 +124,8 @@ export class ArticleController {
       'Sayfa ve makalelerde guid bilgisinin daha önce kullanılıp kullanılmadığını kontrol eder.',
   })
   @ApiParam({ name: 'guid', type: String, required: true })
-  // @ApiBearerAuth('accessToken')
-  // @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('accessToken')
+  @UseGuards(JwtAuthGuard)
   @Get(`/guidExists/:guid`)
   async getGuidExists(@Param() params: GuidParamsDto) {
     const articleGuidExists = await this.service.guidExists(params.guid)
@@ -166,7 +149,7 @@ export class ArticleController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Body() body: ArticleDto, @Param() params: IdParamsDto) {
-    return await this.service.update(body, params.id)
+    return this.service.update(body, params.id)
   }
 
   @ApiOperation({
@@ -202,7 +185,7 @@ export class ArticleController {
   @Post('/like/:id')
   @HttpCode(200)
   async likeItemById(@Param() params: IdParamsDto, @IpAddress() ipAddress) {
-    return await this.service.updateIPLikeById(params.id, ipAddress)
+    return this.service.updateIPLikeById(params.id, ipAddress)
   }
 
   /*
@@ -227,6 +210,6 @@ export class ArticleController {
     @Param() params: GuidParamsDto,
     @Query() query: { ip: string },
   ) {
-    return await this.service.searchByIpAndGuid(params.guid, query.ip)
+    return this.service.searchByIpAndGuid(params.guid, query.ip)
   }
 }

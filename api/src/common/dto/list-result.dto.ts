@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-export class ListResultDto {
+export class ListResultDto<T> {
   @ApiProperty({
     description: 'Total item results',
   })
@@ -28,7 +28,6 @@ export class ListResultDto {
 
   @ApiProperty({
     description: 'Items',
-    type: Object,
   })
-  results: Object
+  results: T
 }

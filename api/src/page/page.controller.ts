@@ -31,6 +31,7 @@ import { QueryHelper } from '@/common/helpers/query.helper'
 import { PageMessage } from '@/common/messages'
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
 import { IpAddress } from '@/common/decorators/ip.decorator'
+import { IPage } from '@/page/interfaces/page.interface'
 
 @ApiTags('Page')
 @Controller('page')
@@ -51,7 +52,7 @@ export class PageController {
   })
   @ApiOkResponse({
     description: 'Success',
-    type: ListResultDto,
+    type: ListResultDto<IPage[]>,
   })
   @Get()
   async list(@Query() query: ListQueryDto) {

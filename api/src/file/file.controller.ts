@@ -40,6 +40,7 @@ import { IEnv } from '@/common/interfaces/env.interface'
 import { slugifyTR } from '@/common/utils/slugify-tr.util'
 import { UpdateFileDto } from '@/file/dto/update-file.dto'
 import { IdParamsDto } from '@/common/dto/params.dto'
+import { IFile } from '@/file/interfaces/file.interface'
 @ApiTags('File')
 @Controller('file')
 export class FileController {
@@ -61,7 +62,7 @@ export class FileController {
   })
   @ApiOkResponse({
     description: 'Success',
-    type: ListResultDto,
+    type: ListResultDto<IFile[]>,
   })
   @ApiBearerAuth('accessToken')
   @UseGuards(JwtAuthGuard)

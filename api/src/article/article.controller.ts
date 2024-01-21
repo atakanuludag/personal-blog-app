@@ -32,6 +32,7 @@ import { ArticleMessage } from '@/common/messages'
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
 import { IpAddress } from '@/common/decorators/ip.decorator'
 import { ArticleListQueryDto } from '@/article/dto/article-list-query.dto'
+import { IArticle } from '@/article/interfaces/article.interface'
 
 @ApiTags('Article')
 @Controller('article')
@@ -52,7 +53,7 @@ export class ArticleController {
   })
   @ApiOkResponse({
     description: 'Success',
-    type: ListResultDto,
+    type: ListResultDto<IArticle[]>,
   })
   @Get()
   async list(@Query() query: ArticleListQueryDto) {

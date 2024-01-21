@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsNotEmpty } from 'class-validator'
+import { IsString, IsNotEmpty } from 'class-validator'
 import { ObjectId } from 'mongoose'
 
 export class IdParamsDto {

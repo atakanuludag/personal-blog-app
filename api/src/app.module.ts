@@ -2,15 +2,8 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { AppController } from '@/app.controller'
 import { MongooseModule } from '@nestjs/mongoose'
-import {
-  ServeStaticModule,
-  ServeStaticModuleAsyncOptions,
-  ServeStaticModuleOptions,
-} from '@nestjs/serve-static'
-import { join } from 'path'
-
+import { ServeStaticModule } from '@nestjs/serve-static'
 import { IEnv } from '@/common/interfaces/env.interface'
-
 // ** modules
 import { GlobalModule } from '@/global.module'
 import { CategoryModule } from '@/category/category.module'
@@ -38,15 +31,6 @@ moment.locale('tr')
       imports: [ServeStaticConfigurationModule],
       useExisting: ServeStaticConfigurationService,
     }),
-    // ServeStaticModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   useFactory: (configService: ConfigService<IEnv>) => ({
-    //     rootPath: join(__dirname, '..', 'client'),
-    //     serveRoot: '/client',
-    //     exclude: ['/api*'],
-    //   }) as Promise<ServeStaticModuleOptions[]>| ServeStaticModuleAsyncOptions | ServeStaticModuleOptions,
-    //   inject: [ConfigService],
-    // }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService<IEnv>) => ({

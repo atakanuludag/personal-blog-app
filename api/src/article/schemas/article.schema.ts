@@ -60,7 +60,7 @@ export class Article {
 export const ArticleSchema = SchemaFactory.createForClass(Article)
 
 ArticleSchema.set('toJSON', {
-  transform: function (doc, ret: ArticleDocument, options) {
+  transform: function (doc, ret: ArticleDocument) {
     const data = {
       ...ret,
       viewCount: ret.viewIPs ? ret.viewIPs.length : 0,

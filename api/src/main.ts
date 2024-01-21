@@ -4,8 +4,8 @@ import { ConfigService } from '@nestjs/config'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { AppModule } from '@/app.module'
 import { IEnv } from '@/common/interfaces/env.interface'
-import { TransformInterceptor } from './common/interceptor/transform.interceptor'
-import { HttpExceptionFilter } from './common/filters/http-exception.filter'
+import { TransformInterceptor } from '@/common/interceptor/transform.interceptor'
+import { HttpExceptionFilter } from '@/common/filters/http-exception.filter'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

@@ -24,12 +24,14 @@ import PageService from "@/services/PageService";
 import { NAVBAR_PAGE_IDS } from "@/config";
 
 export default async function Template({ children }: { children: ReactNode }) {
-  const categories = (await CategoryService.getItems({
-    sType: "parent",
-    s: "null",
-    order: "order",
-    orderBy: OrderType.DESC,
-  })) as CategoryModel[];
+  const categories = (
+    await CategoryService.getItems({
+      sType: "parent",
+      s: "null",
+      order: "order",
+      orderBy: OrderType.DESC,
+    })
+  )?.data as CategoryModel[];
 
   const navbarPageIds = NAVBAR_PAGE_IDS?.split(",") || [];
   const navbarPages = new Array<PageModel>();
@@ -37,7 +39,7 @@ export default async function Template({ children }: { children: ReactNode }) {
   for await (const pageId of navbarPageIds) {
     try {
       const page = await PageService.getItemById(pageId);
-      if (page) navbarPages.push(page);
+      if (page?.data) navbarPages.push(page.data);
     } catch (err) {}
   }
 

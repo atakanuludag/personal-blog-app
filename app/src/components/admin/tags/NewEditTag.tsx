@@ -32,9 +32,11 @@ import TagService from "@/services/TagService";
 
 // ** hooks
 import useComponentContext from "@/hooks/useComponentContext";
+import useFetchErrorSnackbar from "@/hooks/useFetchErrorSnackbar";
 
 // ** utils
 import slugify from "@/utils/Slugify";
+import FetchError from "@/utils/fetchError";
 
 // ** config
 import { QUERY_NAMES } from "@/config";
@@ -46,6 +48,8 @@ type NewEditTagProps = {
 export default function NewEditTag({ data }: NewEditTagProps) {
   const { formDrawer, handleFormDrawerClose, setFormDrawerData } =
     useComponentContext();
+  const fetchErrorSnackbar = useFetchErrorSnackbar();
+
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
@@ -94,12 +98,7 @@ export default function NewEditTag({ data }: NewEditTagProps) {
           queryKey: [QUERY_NAMES.TAG],
         });
       } catch (err) {
-        enqueueSnackbar(
-          "Kayıt eklenirken veya güncellenirken bir hata oluştu.",
-          {
-            variant: "error",
-          }
-        );
+        fetchErrorSnackbar(err as FetchError);
       }
       handleFormDrawerClose();
       setSubmitting(false);
@@ -143,7 +142,7 @@ export default function NewEditTag({ data }: NewEditTagProps) {
         const response = await TagService.guidExists(values.guid);
         setTimeout(() => {
           setGuidExistsLoading(false);
-          setGuidExists(response);
+          setGuidExists(typeof response !== "undefined" ? response : true);
         }, 500);
       }
     }, 1000);

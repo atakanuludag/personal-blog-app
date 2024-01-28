@@ -11,41 +11,36 @@ import { objectToParams } from "@/utils/params";
 import { EndpointUrls } from "@/config";
 
 const FileService = {
-  getItems: async (
-    params?: FileListQueryModel
-  ): Promise<ListResponseModel<FileModel[]> | FileModel[]> =>
-    service(`${EndpointUrls.file}${objectToParams(params)}`),
-  deleteItem: async (id: string): Promise<void> =>
+  getItems: async (params?: FileListQueryModel) =>
+    service<ListResponseModel<FileModel[]> | FileModel[]>(
+      `${EndpointUrls.file}${objectToParams(params)}`
+    ),
+  deleteItem: async (id: string) =>
     service(`${EndpointUrls.file}/${id}`, { method: "DELETE" }),
-  createFolder: async (title: string, path: string | null): Promise<void> =>
-    service(`${EndpointUrls.file}/folder`, {
+  createFolder: async (title: string, path: string | null) =>
+    service<FileModel>(`${EndpointUrls.file}/folder`, {
       method: "POST",
       body: {
         title,
         path: path || "/",
       },
     }),
-  uploadFile: async (file: File, path: string | null): Promise<FileModel[]> => {
-    try {
-      const formData = new FormData();
-      // ** Path datası en üstte verilmeli. Yoksa api tarafındaki multer'da sıkıntı çıkartıyor.
+  uploadFile: async (file: File, path: string | null) => {
+    const formData = new FormData();
+    // ** Path datası en üstte verilmeli. Yoksa api tarafındaki multer'da sıkıntı çıkartıyor.
 
-      if (path) formData.append("path", path);
-      formData.append("file", file);
+    if (path) formData.append("path", path);
+    formData.append("file", file);
 
-      const res = await service(`${EndpointUrls.file}`, {
-        method: "POST",
-        body: formData,
-        isFormData: true,
-      });
-      return res || [];
-    } catch (err) {
-      console.log("[FileService] uploadFile() Error: ", err);
-      return [];
-    }
+    const res = await service<FileModel[]>(`${EndpointUrls.file}`, {
+      method: "POST",
+      body: formData,
+      isFormData: true,
+    });
+    return res?.data ?? [];
   },
-  patchItem: async (body: FileForm): Promise<void> =>
-    service(`${EndpointUrls.file}/${body._id}`, {
+  patchItem: async (body: FileForm) =>
+    service<FileModel>(`${EndpointUrls.file}/${body._id}`, {
       method: "PATCH",
       body,
     }),

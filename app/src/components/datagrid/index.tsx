@@ -26,7 +26,7 @@ type MuiDataGridProps = {
   queryName: string;
   loading: boolean;
   setCustomLoading: Dispatch<SetStateAction<boolean>>;
-  deleteService: (id: string) => Promise<void>;
+  deleteService: (id: string) => Promise<unknown>;
   page?: number;
   pageSize?: number;
   totalResults?: number;

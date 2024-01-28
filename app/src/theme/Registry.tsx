@@ -3,6 +3,9 @@
 // ** react
 import { ReactNode } from "react";
 
+// ** third party
+import { SnackbarProvider } from "notistack";
+
 // ** theme
 import ThemeRegistry from "@/theme/ThemeRegistry";
 import EmotionRegistry from "@/theme/EmotionRegistry";
@@ -26,15 +29,17 @@ export default function Registry({
   adminNavigationOpen = true,
 }: RegistryProps) {
   return (
-    <SettingsProvider
-      initialThemeMode={themeMode}
-      initialAdminNavigationOpen={adminNavigationOpen}
-    >
-      <ComponentProvider>
-        <EmotionRegistry>
-          <ThemeRegistry>{children}</ThemeRegistry>
-        </EmotionRegistry>
-      </ComponentProvider>
-    </SettingsProvider>
+    <SnackbarProvider>
+      <SettingsProvider
+        initialThemeMode={themeMode}
+        initialAdminNavigationOpen={adminNavigationOpen}
+      >
+        <ComponentProvider>
+          <EmotionRegistry>
+            <ThemeRegistry>{children}</ThemeRegistry>
+          </EmotionRegistry>
+        </ComponentProvider>
+      </SettingsProvider>
+    </SnackbarProvider>
   );
 }

@@ -35,12 +35,14 @@ export default async function BlogTagGuid({ params }: BlogTagGuidProps) {
 
   const tagData = await TagService.getItemByGuid(params?.guid);
 
-  const data = (await ArticleService.getItems({
-    tag: tagData._id,
-    page: 1,
-    pageSize: PAGE_SIZE,
-    paging: 1,
-  })) as ListResponseModel<ArticleModel[]>;
+  const data = (
+    await ArticleService.getItems({
+      tag: tagData?.data?._id,
+      page: 1,
+      pageSize: PAGE_SIZE,
+      paging: 1,
+    })
+  )?.data as ListResponseModel<ArticleModel[]>;
 
   if (!data) return notFound();
 
@@ -55,7 +57,7 @@ export default async function BlogTagGuid({ params }: BlogTagGuidProps) {
           component="h1"
           variant="subtitle1"
           fontWeight="bold"
-        >{`Etiket: ${tagData.title}`}</Typography>
+        >{`Etiket: ${tagData?.data?.title}`}</Typography>
       </Paper>
       <Box component="section">
         {data?.results?.map((item) => (
@@ -75,9 +77,11 @@ export default async function BlogTagGuid({ params }: BlogTagGuidProps) {
 }
 
 export async function generateStaticParams() {
-  const items = (await TagService.getItems({
-    paging: 0,
-  })) as TagModel[];
+  const items = (
+    await TagService.getItems({
+      paging: 0,
+    })
+  )?.data as TagModel[];
 
   const paths = items.map((item) => ({
     guid: item.guid,
@@ -90,9 +94,9 @@ export async function generateMetadata({
 }: BlogTagGuidProps): Promise<Metadata> {
   const guid = params.guid;
 
-  const item = await TagService.getItemByGuid(guid);
+  const data = await TagService.getItemByGuid(guid);
 
   return {
-    title: `Etiket: ${item?.title}`,
+    title: `Etiket: ${data?.data?.title}`,
   };
 }

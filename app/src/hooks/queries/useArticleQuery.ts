@@ -9,6 +9,7 @@ import ArticleService from "@/services/ArticleService";
 // ** models
 import ListQueryModel from "@/models/ListQueryModel";
 import ArticleModel from "@/models/ArticleModel";
+import { BaseErrorModel, BaseModel } from "@/models/BaseModel";
 
 // ** config
 import { QUERY_NAMES } from "@/config";
@@ -25,7 +26,10 @@ export default function useArticleQuery() {
 
   const useArticleItemQuery = (
     id: string,
-    options?: Omit<UseQueryOptions<ArticleModel>, "queryKey" | "queryFn">
+    options?: Omit<
+      UseQueryOptions<BaseErrorModel | BaseModel<ArticleModel> | null>,
+      "queryKey" | "queryFn"
+    >
   ) =>
     useQuery({
       queryKey: [queryName, id],

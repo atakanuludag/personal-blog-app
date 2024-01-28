@@ -24,9 +24,11 @@ import FileService from "@/services/FileService";
 
 // ** hooks
 import useComponentContext from "@/hooks/useComponentContext";
+import useFetchErrorSnackbar from "@/hooks/useFetchErrorSnackbar";
 
 // ** utils
 import generateFileUrl from "@/utils/GenerateFileUrl";
+import FetchError from "@/utils/fetchError";
 
 // ** config
 import { QUERY_NAMES } from "@/config";
@@ -39,6 +41,7 @@ type EditFileProps = {
 export default function EditFile({ data, isFolder }: EditFileProps) {
   const { formDrawer, handleFormDrawerClose, setFormDrawerData } =
     useComponentContext();
+  const fetchErrorSnackbar = useFetchErrorSnackbar();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
@@ -76,12 +79,7 @@ export default function EditFile({ data, isFolder }: EditFileProps) {
           queryKey: [QUERY_NAMES.FILES],
         });
       } catch (err) {
-        enqueueSnackbar(
-          "Kayıt eklenirken veya güncellenirken bir hata oluştu.",
-          {
-            variant: "error",
-          }
-        );
+        fetchErrorSnackbar(err as FetchError);
       }
       handleFormDrawerClose();
       setSubmitting(false);

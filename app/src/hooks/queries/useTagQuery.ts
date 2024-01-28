@@ -13,17 +13,20 @@ import ListResponseModel from "@/models/ListResponseModel";
 
 // ** config
 import { QUERY_NAMES } from "@/config";
+import { BaseErrorModel, BaseModel } from "@/models/BaseModel";
 
 export default function useTagQuery(params?: ListQueryModel) {
   const service = TagService;
   const queryName = QUERY_NAMES.TAG;
 
   const useTagItemsQuery = (
-    options?: UseQueryOptions<
-      ListResponseModel<TagModel[]> | TagModel[] | null,
-      TagModel,
-      ListResponseModel<TagModel[]> | TagModel[] | null,
-      any
+    options?: Omit<
+      UseQueryOptions<
+        | BaseErrorModel
+        | BaseModel<TagModel[] | ListResponseModel<TagModel[]>>
+        | null
+      >,
+      "queryKey" | "queryFn"
     >
   ) =>
     useQuery({

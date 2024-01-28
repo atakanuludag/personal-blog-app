@@ -50,12 +50,12 @@ export default function ArticleLikeButton({
     isLiked ? <FavoriteIcon {...props} /> : <FavoriteBorderIcon {...props} />;
 
   const handleLikeButtonClick = async () => {
-    if (isLiked) return;
-    setLoading(true);
-    const _count = await ArticleService.likePost(itemId);
-    setCount(_count);
-    setIsLiked(true);
-    setLoading(false);
+    // if (isLiked) return;
+    // setLoading(true);
+    // const _count = await ArticleService.likePost(itemId);
+    // setCount(_count);
+    // setIsLiked(true);
+    // setLoading(false);
   };
 
   return (

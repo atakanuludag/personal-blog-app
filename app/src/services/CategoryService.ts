@@ -13,25 +13,25 @@ import { objectToParams } from "@/utils/params";
 import { EndpointUrls } from "@/config";
 
 const CategoryService = {
-  getItems: async (
-    params?: ListQueryModel
-  ): Promise<ListResponseModel<CategoryModel[]> | CategoryModel[] | null> =>
-    service(`${EndpointUrls.category}${objectToParams(params)}`),
-  getItemByGuid: async (guid: string): Promise<CategoryModel> =>
-    service(`${EndpointUrls.category}/getByGuid/${guid}`),
-  guidExists: async (guid: string): Promise<boolean> =>
-    service(`${EndpointUrls.category}/guidExists/${guid}`).then(
-      (res) => res.exists
+  getItems: async (params?: ListQueryModel) =>
+    service<ListResponseModel<CategoryModel[]> | CategoryModel[] | null>(
+      `${EndpointUrls.category}${objectToParams(params)}`
     ),
-  deleteItem: async (id: string): Promise<void> =>
+  getItemByGuid: async (guid: string) =>
+    service<CategoryModel>(`${EndpointUrls.category}/getByGuid/${guid}`),
+  guidExists: async (guid: string) =>
+    service<{ exists: boolean }>(
+      `${EndpointUrls.category}/guidExists/${guid}`
+    ).then((res) => res?.data?.exists),
+  deleteItem: async (id: string) =>
     service(`${EndpointUrls.category}/${id}`, { method: "DELETE" }),
-  postItem: async (body: CategoryFormModel): Promise<void> =>
-    service(`${EndpointUrls.category}`, {
+  postItem: async (body: CategoryFormModel) =>
+    service<CategoryModel>(`${EndpointUrls.category}`, {
       method: "POST",
       body,
     }),
-  patchItem: async (body: CategoryFormModel): Promise<void> =>
-    service(`${EndpointUrls.category}/${body._id}`, {
+  patchItem: async (body: CategoryFormModel) =>
+    service<CategoryModel>(`${EndpointUrls.category}/${body._id}`, {
       method: "PATCH",
       body,
     }),

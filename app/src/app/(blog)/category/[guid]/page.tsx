@@ -37,12 +37,14 @@ export default async function BlogGuid({ params }: BlogCategoryGuidProps) {
 
   const categoryData = await CategoryService.getItemByGuid(params?.guid);
 
-  const data = (await ArticleService.getItems({
-    category: categoryData._id,
-    page: 1,
-    pageSize: PAGE_SIZE,
-    paging: 1,
-  })) as ListResponseModel<ArticleModel[]>;
+  const data = (
+    await ArticleService.getItems({
+      category: categoryData?.data?._id,
+      page: 1,
+      pageSize: PAGE_SIZE,
+      paging: 1,
+    })
+  )?.data as ListResponseModel<ArticleModel[]>;
 
   if (!data) return notFound();
 
@@ -57,10 +59,10 @@ export default async function BlogGuid({ params }: BlogCategoryGuidProps) {
           component="h1"
           variant="subtitle1"
           fontWeight="bold"
-        >{`Kategori: ${categoryData.title}`}</Typography>
-        {categoryData?.description && (
+        >{`Kategori: ${categoryData?.data?.title}`}</Typography>
+        {categoryData?.data?.description && (
           <Typography component="p" variant="caption" color="gray">
-            {categoryData.description}
+            {categoryData.data?.description}
           </Typography>
         )}
       </Paper>
@@ -82,11 +84,13 @@ export default async function BlogGuid({ params }: BlogCategoryGuidProps) {
 }
 
 export async function generateStaticParams() {
-  const categories = (await CategoryService.getItems({
-    paging: 0,
-    sType: "parent",
-    s: "null",
-  })) as CategoryModel[];
+  const categories = (
+    await CategoryService.getItems({
+      paging: 0,
+      sType: "parent",
+      s: "null",
+    })
+  )?.data as CategoryModel[];
 
   return categories.map((item) => ({
     guid: item.guid,
@@ -100,6 +104,6 @@ export async function generateMetadata({
   const item = await CategoryService.getItemByGuid(guid);
 
   return {
-    title: `Kategori: ${item?.title}`,
+    title: `Kategori: ${item?.data?.title}`,
   };
 }

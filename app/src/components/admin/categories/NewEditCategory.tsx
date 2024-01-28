@@ -35,6 +35,7 @@ import CategoryService from "@/services/CategoryService";
 // ** hooks
 import useComponentContext from "@/hooks/useComponentContext";
 import useCategoryQuery from "@/hooks/queries/useCategoryQuery";
+import useFetchErrorSnackbar from "@/hooks/useFetchErrorSnackbar";
 
 // ** components
 // import AsyncAutocomplete from "@/components/AsyncAutocomplete";
@@ -42,6 +43,7 @@ import CategoryTree from "@/components/admin/shared/CategoryTree";
 
 // ** utils
 import slugify from "@/utils/Slugify";
+import FetchError from "@/utils/fetchError";
 
 // ** config
 import { QUERY_NAMES } from "@/config";
@@ -53,6 +55,7 @@ type NewEditCategoryProps = {
 export default function NewEditCategory({ data }: NewEditCategoryProps) {
   const { formDrawer, handleFormDrawerClose, setFormDrawerData } =
     useComponentContext();
+  const fetchErrorSnackbar = useFetchErrorSnackbar();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
@@ -125,12 +128,7 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
           queryKey: [QUERY_NAMES.CATEGORY],
         });
       } catch (err) {
-        enqueueSnackbar(
-          "Kayıt eklenirken veya güncellenirken bir hata oluştu.",
-          {
-            variant: "error",
-          }
-        );
+        fetchErrorSnackbar(err as FetchError);
       }
       handleFormDrawerClose();
       setSubmitting(false);
@@ -178,7 +176,7 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
         const response = await CategoryService.guidExists(values.guid);
         setTimeout(() => {
           setGuidExistsLoading(false);
-          setGuidExists(response);
+          setGuidExists(typeof response !== "undefined" ? response : true);
         }, 500);
       }
     }, 1000);

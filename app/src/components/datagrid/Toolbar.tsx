@@ -34,7 +34,7 @@ export type MuiToolbarProps = {
   loading: boolean;
   setLoading: Dispatch<SetStateAction<boolean>>;
   selected: string[];
-  deleteService: (id: string) => Promise<void>;
+  deleteService: (id: string) => Promise<unknown>;
   deleteDialogMessage?: string;
 };
 

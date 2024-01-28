@@ -13,8 +13,11 @@ import PageModel from "@/models/PageModel";
 import { APP_URL } from "@/config";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const articles = (await ArticleService.getItems()) as ArticleModel[];
-  const pages = (await PageService.getItems()) as PageModel[];
+  const articlesData = await ArticleService.getItems();
+  const pagesData = await PageService.getItems();
+
+  const articles = articlesData?.data as ArticleModel[];
+  const pages = pagesData?.data as PageModel[];
 
   const articleSitemap: MetadataRoute.Sitemap = articles.map((item) => ({
     url: `${`${APP_URL}/${item.guid}`}`,

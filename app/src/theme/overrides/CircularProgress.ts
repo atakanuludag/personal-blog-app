@@ -9,10 +9,11 @@ export default function CircularProgress(
     MuiCircularProgress: {
       styleOverrides: {
         root: {
-          color:
+          color: `${
             theme.palette.mode === "dark"
               ? theme.palette.common.white
-              : theme.palette.common.black,
+              : theme.palette.common.black
+          } !important`,
         },
       },
     },

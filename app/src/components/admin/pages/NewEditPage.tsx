@@ -43,6 +43,7 @@ import { PageFormModel } from "@/models/PageModel";
 
 // ** utils
 import slugify from "@/utils/Slugify";
+import FetchError from "@/utils/fetchError";
 
 // ** services
 import PageService from "@/services/PageService";
@@ -50,6 +51,7 @@ import ArticleService from "@/services/ArticleService";
 
 // ** hooks
 import usePageQuery from "@/hooks/queries/usePageQuery";
+import useFetchErrorSnackbar from "@/hooks/useFetchErrorSnackbar";
 
 // ** components
 import Editor from "@/components/admin/shared/editor";
@@ -72,6 +74,7 @@ type NewEditPageProps = {
 export default function NewEditPage({ id: editId }: NewEditPageProps) {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const fetchErrorSnackbar = useFetchErrorSnackbar();
   const { usePageItemQuery } = usePageQuery();
   const queryClient = useQueryClient();
 
@@ -129,10 +132,7 @@ export default function NewEditPage({ id: editId }: NewEditPageProps) {
         });
         router.push("/admin/pages");
       } catch (err) {
-        console.log(err);
-        enqueueSnackbar("Sayfa kayıt edilirken bir hata oluştu.", {
-          variant: "error",
-        });
+        fetchErrorSnackbar(err as FetchError);
       }
       setSubmitting(false);
       resetForm();
@@ -145,8 +145,9 @@ export default function NewEditPage({ id: editId }: NewEditPageProps) {
   }, [editId]);
 
   useEffect(() => {
-    if (!editPageItem.data) return;
-    const data = editPageItem.data;
+    const data = editPageItem?.data?.data;
+
+    if (!data) return;
 
     const form: PageFormModel = {
       ...data,
@@ -175,7 +176,7 @@ export default function NewEditPage({ id: editId }: NewEditPageProps) {
         const response = await ArticleService.guidExists(values.guid);
         setTimeout(() => {
           setGuidExistsLoading(false);
-          setGuidExists(response);
+          setGuidExists(typeof response !== "undefined" ? response : true);
         }, 500);
       }
     }, 1000);

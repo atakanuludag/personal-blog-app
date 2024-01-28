@@ -41,12 +41,14 @@ export default async function BlogSearch({ searchParams }: BlogSearchProps) {
   } as ListResponseModel<ArticleModel[]>;
 
   if (s) {
-    data = (await ArticleService.getItems({
-      page: 1,
-      pageSize: PAGE_SIZE,
-      sType: "title,shortDescription,content",
-      s: s as string,
-    })) as ListResponseModel<ArticleModel[]>;
+    data = (
+      await ArticleService.getItems({
+        page: 1,
+        pageSize: PAGE_SIZE,
+        sType: "title,shortDescription,content",
+        s: s as string,
+      })
+    )?.data as ListResponseModel<ArticleModel[]>;
   }
 
   return (

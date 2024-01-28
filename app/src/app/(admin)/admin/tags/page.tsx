@@ -47,7 +47,7 @@ export default function AdminTags() {
   const { setFormDrawerData } = useComponentContext();
 
   const { data, isLoading, isFetching } = useTagItemsQuery();
-  const items = data as ListResponseModel<TagModel[]>;
+  const items = data?.data as ListResponseModel<TagModel[]>;
   const loading = isLoading || isFetching || customLoading;
 
   const columns: GridColDef[] = [

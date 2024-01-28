@@ -44,7 +44,7 @@ export default function AdminPageIndex() {
   const [customLoading, setCustomLoading] = useState(false);
   const { usePageItemsQuery } = usePageQuery();
   const { data, isLoading, isFetching } = usePageItemsQuery(params);
-  const items = data as ListResponseModel<PageModel[]>;
+  const items = data?.data as ListResponseModel<PageModel[]>;
   const loading = isLoading || isFetching || customLoading;
 
   const columns: GridColDef[] = [

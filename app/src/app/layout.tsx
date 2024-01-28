@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { Noto_Sans } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 // ** third party
 import setDefaultOptions from "date-fns/setDefaultOptions";
@@ -19,6 +20,10 @@ import Registry from "@/theme/Registry";
 // ** models
 import { PaletteMode } from "@/models/enums";
 
+// ** utils
+import fetchServerInterceptor from "@/utils/fetchServerInterceptor";
+fetchServerInterceptor();
+
 // ** config
 import {
   REVALIDATE_SECONDS,
@@ -26,6 +31,7 @@ import {
   SITE_TITLE,
   SITE_DESCRIPTION,
   COOKIE_NAMES,
+  GA_ID,
 } from "@/config";
 
 // ** global styles
@@ -65,7 +71,7 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    shortcut: ["/favicon/favicon-16x16.png"],
+    shortcut: ["/favicon-16x16.png"],
     icon: [
       {
         url: "/favicon-32x32.png",
@@ -92,7 +98,7 @@ export const metadata: Metadata = {
 export default async function BlogLayout({
   children,
 }: {
-  children: ReactNode;
+  readonly children: ReactNode;
 }) {
   const cookieStore = cookies();
   const cookieGetTheme = cookieStore.get(COOKIE_NAMES.THEME);
@@ -145,6 +151,7 @@ export default async function BlogLayout({
           </Box>
         </Registry>
       </body>
+      <GoogleAnalytics gaId={GA_ID as string} />
     </html>
   );
 }

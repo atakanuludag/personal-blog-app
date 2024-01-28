@@ -47,7 +47,7 @@ export default function AdminArticleIndex() {
   const [customLoading, setCustomLoading] = useState(false);
   const { useArticleItemsQuery } = useArticleQuery();
   const { data, isLoading, isFetching } = useArticleItemsQuery(params);
-  const items = data as ListResponseModel<ArticleModel[]>;
+  const items = data?.data as ListResponseModel<ArticleModel[]>;
   const loading = isLoading || isFetching || customLoading;
 
   const columns: GridColDef[] = [

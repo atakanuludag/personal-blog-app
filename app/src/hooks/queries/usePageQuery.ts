@@ -9,6 +9,7 @@ import PageService from "@/services/PageService";
 // ** models
 import ListQueryModel from "@/models/ListQueryModel";
 import PageModel from "@/models/PageModel";
+import { BaseErrorModel, BaseModel } from "@/models/BaseModel";
 
 // ** config
 import { QUERY_NAMES } from "@/config";
@@ -25,7 +26,10 @@ export default function usePageQuery() {
 
   const usePageItemQuery = (
     id: string,
-    options?: Omit<UseQueryOptions<PageModel>, "queryKey" | "queryFn">
+    options?: Omit<
+      UseQueryOptions<BaseErrorModel | BaseModel<PageModel> | null>,
+      "queryKey" | "queryFn"
+    >
   ) =>
     useQuery({
       queryKey: [queryName, id],

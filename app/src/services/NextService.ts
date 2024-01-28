@@ -3,15 +3,20 @@ import service from "@/services";
 
 // ** models
 import LoginFormModel from "@/models/LoginFormModel";
+import TokenModel from "@/models/TokenModel";
+
+// string
+
+// void
 
 const NextService = {
-  login: async (body: LoginFormModel): Promise<string> =>
-    service(`login`, {
+  login: async (body: LoginFormModel) =>
+    service<TokenModel>(`login`, {
       method: "POST",
       body,
       isLocalApi: true,
     }),
-  logout: async (): Promise<void> =>
+  logout: async () =>
     service(`logout`, {
       method: "POST",
       isLocalApi: true,

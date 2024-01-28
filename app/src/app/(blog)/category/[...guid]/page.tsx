@@ -46,12 +46,14 @@ export default async function BlogGuid({ params }: BlogCategoriesGuidProps) {
   const latestGuid = getLatestParam(isPaging, guid);
   const categoryData = await CategoryService.getItemByGuid(latestGuid);
 
-  const data = (await ArticleService.getItems({
-    category: categoryData._id,
-    page: getPageParam(isPaging, guid),
-    pageSize: PAGE_SIZE,
-    paging: 1,
-  })) as ListResponseModel<ArticleModel[]>;
+  const data = (
+    await ArticleService.getItems({
+      category: categoryData?.data?._id,
+      page: getPageParam(isPaging, guid),
+      pageSize: PAGE_SIZE,
+      paging: 1,
+    })
+  )?.data as ListResponseModel<ArticleModel[]>;
 
   return (
     <Fragment>
@@ -64,10 +66,10 @@ export default async function BlogGuid({ params }: BlogCategoriesGuidProps) {
           component="h1"
           variant="subtitle1"
           fontWeight="bold"
-        >{`Kategori: ${categoryData.title}`}</Typography>
-        {categoryData?.description && (
+        >{`Kategori: ${categoryData?.data?.title}`}</Typography>
+        {categoryData?.data?.description && (
           <Typography component="p" variant="caption" color="gray">
-            {categoryData.description}
+            {categoryData?.data?.description}
           </Typography>
         )}
       </Paper>
@@ -106,9 +108,11 @@ const generateGuidUrls = (
 };
 
 export async function generateStaticParams() {
-  const categories = (await CategoryService.getItems({
-    paging: 0,
-  })) as CategoryModel[];
+  const categories = (
+    await CategoryService.getItems({
+      paging: 0,
+    })
+  )?.data as CategoryModel[];
 
   const paths: {
     guid: string[];
@@ -122,12 +126,14 @@ export async function generateStaticParams() {
       []
     );
 
-    const articlePaging = (await ArticleService.getItems({
-      category: item._id,
-      paging: 1,
-      page: 1,
-      pageSize: PAGE_SIZE,
-    })) as ListResponseModel<ArticleModel[]>;
+    const articlePaging = (
+      await ArticleService.getItems({
+        category: item._id,
+        paging: 1,
+        page: 1,
+        pageSize: PAGE_SIZE,
+      })
+    )?.data as ListResponseModel<ArticleModel[]>;
 
     paths.push({
       guid: guidUrls,
@@ -158,6 +164,8 @@ export async function generateMetadata({
   const data = await CategoryService.getItemByGuid(latestGuid);
 
   return {
-    title: `Kategori: ${data?.title}${isPaging ? `- Sayfa: ${page}` : ""}`,
+    title: `Kategori: ${data?.data?.title}${
+      isPaging ? `- Sayfa: ${page}` : ""
+    }`,
   };
 }

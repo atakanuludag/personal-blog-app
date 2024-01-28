@@ -33,12 +33,14 @@ export default async function BlogPaging({ params }: BlogPagingProps) {
   const currentPage = Number(page);
   if (isNaN(currentPage) || !currentPage) return notFound();
 
-  const data = (await ArticleService.getItems({
-    page: currentPage,
-    pageSize: PAGE_SIZE,
-    order: "publishingDate",
-    orderBy: OrderType.ASC,
-  })) as ListResponseModel<ArticleModel[]>;
+  const data = (
+    await ArticleService.getItems({
+      page: currentPage,
+      pageSize: PAGE_SIZE,
+      order: "publishingDate",
+      orderBy: OrderType.ASC,
+    })
+  )?.data as ListResponseModel<ArticleModel[]>;
 
   if (!data) return notFound();
 
@@ -62,10 +64,12 @@ export default async function BlogPaging({ params }: BlogPagingProps) {
 }
 
 export async function generateStaticParams() {
-  const items = (await ArticleService.getItems({
-    page: 1,
-    pageSize: PAGE_SIZE,
-  })) as ListResponseModel<ArticleModel[]>;
+  const items = (
+    await ArticleService.getItems({
+      page: 1,
+      pageSize: PAGE_SIZE,
+    })
+  )?.data as ListResponseModel<ArticleModel[]>;
 
   const paths = [...Array(items.totalPages)].map((_, page: number) => ({
     page: (page + 1).toString(),

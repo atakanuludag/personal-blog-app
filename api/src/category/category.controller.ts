@@ -109,7 +109,7 @@ export class CategoryController {
     const exists = await this.service.guidExists(body.guid)
     if (exists)
       throw new BadRequestException(this.categoryMessage.EXISTING_GUID)
-    await this.service.create(body)
+    return this.service.create(body)
   }
 
   @ApiOperation({

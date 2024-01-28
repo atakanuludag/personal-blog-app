@@ -135,7 +135,7 @@ export default function FileBrowser({
   const { useFilesQuery } = useFileQuery(params);
 
   const files = useFilesQuery();
-  const data = files.data as ListResponseModel<FileModel[]>;
+  const data = files.data?.data as ListResponseModel<FileModel[]>;
   const loading = files.isLoading || files.isFetching;
 
   const [path, setPath] = useState<string | null>(null);

@@ -47,7 +47,7 @@ export default function AdminCategories() {
   const { setFormDrawerData } = useComponentContext();
 
   const { data, isLoading, isFetching } = useCategoriesQuery();
-  const items = data as ListResponseModel<CategoryModel[]>;
+  const items = data?.data as ListResponseModel<CategoryModel[]>;
   const loading = isLoading || isFetching || customLoading;
 
   const columns: GridColDef[] = [
@@ -104,6 +104,7 @@ export default function AdminCategories() {
       content: <NewEditCategory data={data} />,
       submitButtonText: "Kaydet",
       submit: false,
+      submitDisabled: true,
     });
 
   return (

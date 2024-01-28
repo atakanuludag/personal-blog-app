@@ -20,12 +20,15 @@ import { OrderType } from "@/models/enums";
 import { PAGE_SIZE } from "@/config";
 
 export default async function BlogIndex() {
-  const data = (await ArticleService.getItems({
-    page: 1,
-    pageSize: PAGE_SIZE,
-    order: "publishingDate",
-    orderBy: OrderType.ASC,
-  })) as ListResponseModel<ArticleModel[]>;
+  const data = (
+    await ArticleService.getItems({
+      page: 1,
+      pageSize: PAGE_SIZE,
+      order: "publishingDate",
+      orderBy: OrderType.ASC,
+    })
+  )?.data as ListResponseModel<ArticleModel[]>;
+
   return (
     <Fragment>
       <Box component="section">

@@ -8,8 +8,8 @@ import AdminDashboardModel from "@/models/AdminDashboardModel";
 import { EndpointUrls } from "@/config";
 
 const ReportService = {
-  getAdminDashboardReport: async (): Promise<AdminDashboardModel> =>
-    service(`${EndpointUrls.report}/dashboard`),
+  getAdminDashboardReport: async () =>
+    service<AdminDashboardModel>(`${EndpointUrls.report}/dashboard`),
 };
 
 Object.freeze(ReportService);

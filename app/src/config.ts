@@ -8,6 +8,7 @@ export const REVALIDATE_SECONDS =
   Number(process.env.NEXT_PUBLIC_REVALIDATE_HOURS) * 120;
 export const SITE_TITLE = process.env.NEXT_PUBLIC_SITE_TITLE;
 export const SITE_DESCRIPTION = process.env.NEXT_PUBLIC_SITE_DESCRIPTION;
+export const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 export const PERSONAL_DESCRIPTION =
   process.env.NEXT_PUBLIC_PERSONAL_DESCRIPTION;
 export const TWITTER_URL = process.env.NEXT_PUBLIC_PERSONAL_TWITTER_URL;
@@ -20,6 +21,10 @@ export const PAGE_SIZE = process.env.NEXT_PUBLIC_PAGE_SIZE
   : 25;
 export const NAVBAR_PAGE_IDS = process.env.NEXT_PUBLIC_NAVBAR_PAGE_IDS;
 
+export const DEFAULT_ERR_MESSAGE =
+  "Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
+
+// TODO: EndpointUrls büyük harfle yazılacak.ç
 export const EndpointUrls = {
   category: `category`,
   user: `user`,
@@ -43,6 +48,7 @@ export const QUERY_NAMES = {
   SETTINGS: "settings",
   FILES: "files",
   ADMIN_DASHBOARD_REPORT: "admin_dashboard_report",
+  USER: "USER",
 };
 
 export const COOKIE_NAMES = {

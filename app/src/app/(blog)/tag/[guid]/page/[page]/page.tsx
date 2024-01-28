@@ -45,12 +45,14 @@ export default async function BlogTagPaging({ params }: BlogTagPagingProps) {
 
   const tagData = await TagService.getItemByGuid(guid);
 
-  const data = (await ArticleService.getItems({
-    tag: tagData._id,
-    page: Number(page),
-    pageSize: PAGE_SIZE,
-    paging: 1,
-  })) as ListResponseModel<ArticleModel[]>;
+  const data = (
+    await ArticleService.getItems({
+      tag: tagData?.data?._id,
+      page: Number(page),
+      pageSize: PAGE_SIZE,
+      paging: 1,
+    })
+  )?.data as ListResponseModel<ArticleModel[]>;
 
   if (!data) return notFound();
 
@@ -65,7 +67,7 @@ export default async function BlogTagPaging({ params }: BlogTagPagingProps) {
           component="h1"
           variant="subtitle1"
           fontWeight="bold"
-        >{`Etiket: ${tagData.title}`}</Typography>
+        >{`Etiket: ${tagData?.data?.title}`}</Typography>
       </Paper>
       <Box component="section">
         {data?.results?.map((item) => (
@@ -85,18 +87,22 @@ export default async function BlogTagPaging({ params }: BlogTagPagingProps) {
 }
 
 export async function generateStaticParams() {
-  const tags = (await TagService.getItems({
-    paging: 0,
-  })) as TagModel[];
+  const tags = (
+    await TagService.getItems({
+      paging: 0,
+    })
+  )?.data as TagModel[];
   let tagGuidTotalPages = [];
 
   for await (const tag of tags) {
-    const articlePaging = (await ArticleService.getItems({
-      tag: tag._id,
-      paging: 1,
-      page: 1,
-      pageSize: PAGE_SIZE,
-    })) as ListResponseModel<ArticleModel[]>;
+    const articlePaging = (
+      await ArticleService.getItems({
+        tag: tag._id,
+        paging: 1,
+        page: 1,
+        pageSize: PAGE_SIZE,
+      })
+    )?.data as ListResponseModel<ArticleModel[]>;
 
     tagGuidTotalPages.push({
       guid: tag.guid,
@@ -125,9 +131,9 @@ export async function generateMetadata({
   const guid = params.guid;
   const page = params.page;
 
-  const item = await TagService.getItemByGuid(guid);
+  const data = await TagService.getItemByGuid(guid);
 
   return {
-    title: `Etiket: ${item?.title} - Sayfa: ${page}`,
+    title: `Etiket: ${data?.data?.title} - Sayfa: ${page}`,
   };
 }

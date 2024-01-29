@@ -74,6 +74,7 @@ export default function EmojiPickerComponent({
         open={open}
         anchorEl={anchorEl}
         onClose={handlePopoverClose}
+        sx={{ zIndex: 99999 }}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "left",

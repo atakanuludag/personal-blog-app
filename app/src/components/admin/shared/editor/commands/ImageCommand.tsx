@@ -90,6 +90,7 @@ export default function ImageCommandComponent({
         onClick={handlePopoverOpenClick}
         key={index}
         tabIndex={index}
+        sx={{ zIndex: 99999 }}
       >
         <ImageIcon fontSize="small" />
       </IconButton>

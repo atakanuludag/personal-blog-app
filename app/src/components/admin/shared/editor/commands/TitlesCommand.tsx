@@ -101,6 +101,7 @@ export default function TitlesCommandComponent({
           vertical: "bottom",
           horizontal: "left",
         }}
+        sx={{ zIndex: 99999 }}
       >
         <List dense disablePadding>
           {commandItems.map((commandItem, commandItemIndex) => (

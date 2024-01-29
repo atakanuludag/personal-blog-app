@@ -5,6 +5,7 @@ import { Fragment } from "react";
 
 // ** next
 import { default as NextLink } from "next/link";
+import Image from "next/image";
 import { Metadata } from "next";
 
 // ** mui
@@ -34,15 +35,18 @@ export default function NotFoundPage() {
         spacing={3}
       >
         <Grid item>
-          <Typography align="center" variant="h1" letterSpacing={2}>
+          <Typography align="center" variant="h1" letterSpacing={10}>
             404
           </Typography>
         </Grid>
 
-        <Grid item>
-          <Typography align="center" variant="h4">
-            Sayfa Bulunamadı 😔
-          </Typography>
+        <Grid item display="flex" justifyContent="center">
+          <Image
+            src="/images/i-dont-know.gif"
+            width={220}
+            height={220}
+            alt="Bilmiyorum xd"
+          />
         </Grid>
 
         <Grid item>

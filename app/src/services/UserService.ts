@@ -7,17 +7,17 @@ import LoginFormModel from "@/models/LoginFormModel";
 import TokenModel from "@/models/TokenModel";
 
 // ** config
-import { EndpointUrls } from "@/config";
+import { ENDPOINT_URLS } from "@/config";
 
 const UserService = {
   login: async (body: LoginFormModel) =>
-    service<TokenModel>(`${EndpointUrls.user}/login`, {
+    service<TokenModel>(`${ENDPOINT_URLS.user}/login`, {
       method: "POST",
       body,
     }),
-  getProfile: async () => service<UserModel>(`${EndpointUrls.user}/profile`),
+  getProfile: async () => service<UserModel>(`${ENDPOINT_URLS.user}/profile`),
   updateProfile: async (body: UserProfileFormModel) =>
-    service<UserModel>(`${EndpointUrls.user}/profile`, {
+    service<UserModel>(`${ENDPOINT_URLS.user}/profile`, {
       method: "PATCH",
       body,
     }),

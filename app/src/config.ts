@@ -24,8 +24,7 @@ export const NAVBAR_PAGE_IDS = process.env.NEXT_PUBLIC_NAVBAR_PAGE_IDS;
 export const DEFAULT_ERR_MESSAGE =
   "Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
 
-// TODO: EndpointUrls büyük harfle yazılacak.ç
-export const EndpointUrls = {
+export const ENDPOINT_URLS = {
   category: `category`,
   user: `user`,
   tag: `tag`,

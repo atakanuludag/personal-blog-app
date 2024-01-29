@@ -5,11 +5,11 @@ import service from "@/services";
 import AdminDashboardModel from "@/models/AdminDashboardModel";
 
 // ** config
-import { EndpointUrls } from "@/config";
+import { ENDPOINT_URLS } from "@/config";
 
 const ReportService = {
   getAdminDashboardReport: async () =>
-    service<AdminDashboardModel>(`${EndpointUrls.report}/dashboard`),
+    service<AdminDashboardModel>(`${ENDPOINT_URLS.report}/dashboard`),
 };
 
 Object.freeze(ReportService);

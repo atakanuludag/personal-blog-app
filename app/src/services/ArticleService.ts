@@ -12,27 +12,27 @@ import ListResponseModel from "@/models/ListResponseModel";
 import { objectToParams } from "@/utils/params";
 
 // ** config
-import { EndpointUrls } from "@/config";
+import { ENDPOINT_URLS } from "@/config";
 
 const ArticleService = {
   getItems: async (params?: ArticleListQueryModel) =>
     service<ListResponseModel<ArticleModel[]> | ArticleModel[]>(
-      `${EndpointUrls.article}${objectToParams(params)}`
+      `${ENDPOINT_URLS.article}${objectToParams(params)}`
     ),
   postItem: async (body: ArticleFormModel) =>
-    service<ArticleModel>(`${EndpointUrls.article}`, {
+    service<ArticleModel>(`${ENDPOINT_URLS.article}`, {
       method: "POST",
       body,
     }),
   patchItem: async (body: ArticleFormModel) =>
-    service<ArticleModel>(`${EndpointUrls.article}/${body._id}`, {
+    service<ArticleModel>(`${ENDPOINT_URLS.article}/${body._id}`, {
       method: "PATCH",
       body,
     }),
   getItemByGuid: async (guid: string) =>
-    service<ArticleModel>(`${EndpointUrls.article}/getByGuid/${guid}`),
+    service<ArticleModel>(`${ENDPOINT_URLS.article}/getByGuid/${guid}`),
   getItemById: async (id: string) =>
-    service<ArticleModel>(`${EndpointUrls.article}/getById/${id}`),
+    service<ArticleModel>(`${ENDPOINT_URLS.article}/getById/${id}`),
   // getLikeIPCheck: async (guid: string, ip: string): Promise<boolean> => {
   //   try {
   //     const res = await axios.get(`/article/likeIpCheck/${guid}`, {
@@ -47,18 +47,18 @@ const ArticleService = {
   //   }
   // },
   likePost: async (id: string) =>
-    service<number>(`${EndpointUrls.article}/like/${id}`, {
+    service<number>(`${ENDPOINT_URLS.article}/like/${id}`, {
       method: "POST",
     }).then((res) => {
       return typeof res !== "undefined" ? res?.data : 0;
     }),
   deleteItem: async (id: string) =>
-    service(`${EndpointUrls.article}/${id}`, {
+    service(`${ENDPOINT_URLS.article}/${id}`, {
       method: "DELETE",
     }),
   guidExists: async (guid: string) =>
     service<{ exists: boolean }>(
-      `${EndpointUrls.article}/guidExists/${guid}`
+      `${ENDPOINT_URLS.article}/guidExists/${guid}`
     ).then((res) => res?.data?.exists),
 };
 

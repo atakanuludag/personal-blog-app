@@ -8,17 +8,17 @@ import FileModel, { FileListQueryModel, FileForm } from "@/models/FileModel";
 import { objectToParams } from "@/utils/params";
 
 // ** config
-import { EndpointUrls } from "@/config";
+import { ENDPOINT_URLS } from "@/config";
 
 const FileService = {
   getItems: async (params?: FileListQueryModel) =>
     service<ListResponseModel<FileModel[]> | FileModel[]>(
-      `${EndpointUrls.file}${objectToParams(params)}`
+      `${ENDPOINT_URLS.file}${objectToParams(params)}`
     ),
   deleteItem: async (id: string) =>
-    service(`${EndpointUrls.file}/${id}`, { method: "DELETE" }),
+    service(`${ENDPOINT_URLS.file}/${id}`, { method: "DELETE" }),
   createFolder: async (title: string, path: string | null) =>
-    service<FileModel>(`${EndpointUrls.file}/folder`, {
+    service<FileModel>(`${ENDPOINT_URLS.file}/folder`, {
       method: "POST",
       body: {
         title,
@@ -32,7 +32,7 @@ const FileService = {
     if (path) formData.append("path", path);
     formData.append("file", file);
 
-    const res = await service<FileModel[]>(`${EndpointUrls.file}`, {
+    const res = await service<FileModel[]>(`${ENDPOINT_URLS.file}`, {
       method: "POST",
       body: formData,
       isFormData: true,
@@ -40,7 +40,7 @@ const FileService = {
     return res?.data ?? [];
   },
   patchItem: async (body: FileForm) =>
-    service<FileModel>(`${EndpointUrls.file}/${body._id}`, {
+    service<FileModel>(`${ENDPOINT_URLS.file}/${body._id}`, {
       method: "PATCH",
       body,
     }),

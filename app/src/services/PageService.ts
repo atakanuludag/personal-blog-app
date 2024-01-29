@@ -10,27 +10,27 @@ import ListResponseModel from "@/models/ListResponseModel";
 import { objectToParams } from "@/utils/params";
 
 // ** config
-import { EndpointUrls } from "@/config";
+import { ENDPOINT_URLS } from "@/config";
 
 const PageService = {
   getItems: async (params?: ListQueryModel) =>
     await service<ListResponseModel<PageModel[]> | PageModel[] | null>(
-      `${EndpointUrls.page}${objectToParams(params)}`
+      `${ENDPOINT_URLS.page}${objectToParams(params)}`
     ),
   postItem: async (body: PageFormModel) =>
-    service<PageModel>(`${EndpointUrls.page}`, {
+    service<PageModel>(`${ENDPOINT_URLS.page}`, {
       method: "POST",
       body,
     }),
   patchItem: async (body: PageFormModel) =>
-    service<PageModel>(`${EndpointUrls.page}/${body._id}`, {
+    service<PageModel>(`${ENDPOINT_URLS.page}/${body._id}`, {
       method: "PATCH",
       body,
     }),
   getItemByGuid: async (guid: string) =>
-    service<PageModel>(`${EndpointUrls.page}/getByGuid/${guid}`),
+    service<PageModel>(`${ENDPOINT_URLS.page}/getByGuid/${guid}`),
   getItemById: async (id: string) =>
-    service<PageModel>(`${EndpointUrls.page}/getById/${id}`),
+    service<PageModel>(`${ENDPOINT_URLS.page}/getById/${id}`),
 };
 
 Object.freeze(PageService);

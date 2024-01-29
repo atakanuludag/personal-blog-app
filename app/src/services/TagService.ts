@@ -10,30 +10,30 @@ import TagModel, { TagFormModel } from "@/models/TagModel";
 import { objectToParams } from "@/utils/params";
 
 // ** config
-import { EndpointUrls } from "@/config";
+import { ENDPOINT_URLS } from "@/config";
 
 const TagService = {
   getItems: async (params?: ListQueryModel) =>
     service<ListResponseModel<TagModel[]> | TagModel[]>(
-      `${EndpointUrls.tag}${objectToParams(params)}`
+      `${ENDPOINT_URLS.tag}${objectToParams(params)}`
     ),
   getItemByGuid: async (guid: string) =>
-    service<TagModel>(`${EndpointUrls.tag}/getByGuid/${guid}`),
+    service<TagModel>(`${ENDPOINT_URLS.tag}/getByGuid/${guid}`),
   deleteItem: async (id: string) =>
-    service(`${EndpointUrls.tag}/${id}`, {
+    service(`${ENDPOINT_URLS.tag}/${id}`, {
       method: "DELETE",
     }),
   guidExists: async (guid: string) =>
-    service<{ exists: boolean }>(`${EndpointUrls.tag}/guidExists/${guid}`, {
+    service<{ exists: boolean }>(`${ENDPOINT_URLS.tag}/guidExists/${guid}`, {
       method: "GET",
     }).then((res) => res?.data?.exists),
   postItem: async (body: TagFormModel) =>
-    service(`${EndpointUrls.tag}`, {
+    service(`${ENDPOINT_URLS.tag}`, {
       method: "POST",
       body,
     }),
   patchItem: async (body: TagFormModel) =>
-    service<TagModel>(`${EndpointUrls.tag}/${body._id}`, {
+    service<TagModel>(`${ENDPOINT_URLS.tag}/${body._id}`, {
       method: "PATCH",
       body,
     }),

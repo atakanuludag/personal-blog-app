@@ -54,7 +54,7 @@ export default function AdminCategories() {
     {
       field: "title",
       headerName: "Başlık",
-      width: 250,
+      flex: 1,
       renderCell: ({ row }: GridRenderCellParams<any, CategoryModel, any>) => (
         <Link onClick={() => handleEditButton(row)} component="button">
           {row.title}
@@ -77,13 +77,6 @@ export default function AdminCategories() {
       field: "order",
       headerName: "Sıra",
       width: 100,
-    },
-    {
-      field: "createdAt",
-      headerName: "Oluşturma Tarihi",
-      width: 200,
-      renderCell: ({ row }: GridRenderCellParams<CategoryModel>) =>
-        format(new Date(row.createdAt), "PP - p"),
     },
     {
       field: "updatedAt",

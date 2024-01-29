@@ -32,6 +32,7 @@ import usePageQuery from "@/hooks/queries/usePageQuery";
 // ** components
 import DataGrid from "@/components/datagrid";
 import SearchInput from "@/components/admin/shared/SearchInput";
+import DataGridCacheClearColumn from "@/components/admin/shared/DatagridCacheClearColumn";
 
 // ** config
 import { PAGE_SIZE, QUERY_NAMES } from "@/config";
@@ -48,6 +49,16 @@ export default function AdminPageIndex() {
   const loading = isLoading || isFetching || customLoading;
 
   const columns: GridColDef[] = [
+    {
+      field: "cache",
+      headerName: "Önbellek",
+      sortable: false,
+      disableColumnMenu: true,
+      width: 80,
+      renderCell: ({ row }: GridRenderCellParams<PageModel>) => (
+        <DataGridCacheClearColumn path={row.guid} title={row.title} />
+      ),
+    },
     {
       field: "title",
       headerName: "Başlık",

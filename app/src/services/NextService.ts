@@ -4,10 +4,7 @@ import service from "@/services";
 // ** models
 import LoginFormModel from "@/models/LoginFormModel";
 import TokenModel from "@/models/TokenModel";
-
-// string
-
-// void
+import CacheBodyModel from "@/models/CacheBodyModel";
 
 const NextService = {
   login: async (body: LoginFormModel) =>
@@ -19,6 +16,12 @@ const NextService = {
   logout: async () =>
     service(`logout`, {
       method: "POST",
+      isLocalApi: true,
+    }),
+  cacheClear: async (body: CacheBodyModel) =>
+    service(`cache`, {
+      method: "POST",
+      body,
       isLocalApi: true,
     }),
 };

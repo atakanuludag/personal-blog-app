@@ -62,7 +62,7 @@ export default function AdminPageIndex() {
     {
       field: "title",
       headerName: "Başlık",
-      width: 450,
+      flex: 1,
       renderCell: ({ row }: GridRenderCellParams<any, PageModel, any>) => (
         <Link component={NextLink} href={`/admin/pages/${row._id}`}>
           {row.title}

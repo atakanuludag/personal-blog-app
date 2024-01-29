@@ -30,6 +30,7 @@ export default function RenderMdx({ content, theme }: RenderMdxProps) {
           showLineNumbers
           language={match[1]}
           style={theme === PaletteMode.DARK ? materialDark : materialLight}
+          wrapLongLines
         >
           {String(children).replace(/\n$/, "")}
         </SyntaxHighlighter>

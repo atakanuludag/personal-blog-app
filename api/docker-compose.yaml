@@ -30,7 +30,6 @@ services:
   # start the mongodb service as container
   database:
     image: mongo:latest
-    container_name: mongodb
     restart: always
     ports:
       - '27017:27017'

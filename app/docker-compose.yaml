@@ -6,7 +6,6 @@ services:
   # app service for your backend
   app:
     image: personal-blog-app
-    container_name: personal-blog-app
     restart: always
     build:
       context: ./

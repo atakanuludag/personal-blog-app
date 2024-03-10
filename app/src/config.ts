@@ -21,8 +21,6 @@ export const PAGE_SIZE = process.env.NEXT_PUBLIC_PAGE_SIZE
   : 25;
 export const NAVBAR_PAGE_IDS = process.env.NEXT_PUBLIC_NAVBAR_PAGE_IDS;
 
-console.log("APP_URL", APP_URL);
-
 export const DEFAULT_ERR_MESSAGE =
   "Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
 

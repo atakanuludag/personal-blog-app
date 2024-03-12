@@ -1,6 +1,6 @@
 {
   "name": "personal-blog-app",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "description": "Personal Blog 📝 | React NextJS App, NestJS API, Mongodb Database",
   "license": "UNLICENSED",

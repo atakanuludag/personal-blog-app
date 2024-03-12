@@ -72,6 +72,7 @@ export default function AdminLogin() {
           });
           router.push(redirectUrl ?? "/admin");
         } catch (err) {
+          console.log("err", err);
           fetchErrorSnackbar(err as FetchError);
         }
         setSubmitting(false);
@@ -84,7 +85,7 @@ export default function AdminLogin() {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      height={"100%"}
+      height="100%"
     >
       <LoginBox elevation={5}>
         <Form method="post" onSubmit={handleSubmit} noValidate>

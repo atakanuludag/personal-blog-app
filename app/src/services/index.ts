@@ -53,7 +53,7 @@ const service = async <T>(
     }
   );
 
-  if (!res.ok || init?.method === "DELETE") return null;
+  if (init?.method === "DELETE") return null;
 
   return res?.json();
 };

@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 // ** third party
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -47,12 +47,14 @@ import { ArticleFormModel } from "@/models/ArticleModel";
 // ** utils
 import generateFileUrl from "@/utils/GenerateFileUrl";
 import slugify from "@/utils/Slugify";
+import FetchError from "@/utils/fetchError";
 
 // ** services
 import ArticleService from "@/services/ArticleService";
 
 // ** hooks
 import useArticleQuery from "@/hooks/queries/useArticleQuery";
+import useFetchErrorSnackbar from "@/hooks/useFetchErrorSnackbar";
 
 // ** components
 import Editor from "@/components/admin/shared/editor";
@@ -94,6 +96,7 @@ type NewEditArticleProps = {
 
 export default function NewEditArticle({ id: editId }: NewEditArticleProps) {
   const router = useRouter();
+  const fetchErrorSnackbar = useFetchErrorSnackbar();
   const { enqueueSnackbar } = useSnackbar();
   const { useArticleItemQuery } = useArticleQuery();
   const queryClient = useQueryClient();
@@ -164,13 +167,12 @@ export default function NewEditArticle({ id: editId }: NewEditArticleProps) {
         enqueueSnackbar("Makale başarıyla kaydedildi.", {
           variant: "success",
         });
-        queryClient.invalidateQueries([QUERY_NAMES.ARTICLE]);
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_NAMES.ARTICLE],
+        });
         router.push("/admin/articles");
       } catch (err) {
-        console.log(err);
-        enqueueSnackbar("Makale kayıt edilirken bir hata oluştu.", {
-          variant: "error",
-        });
+        fetchErrorSnackbar(err as FetchError);
       }
       setSubmitting(false);
       resetForm();
@@ -183,17 +185,20 @@ export default function NewEditArticle({ id: editId }: NewEditArticleProps) {
   }, [editId]);
 
   useEffect(() => {
-    if (!editArticleItem.data) return;
-    const data = editArticleItem.data;
-    const categories = data.categories.map((c) => c._id);
+    const data = editArticleItem?.data?.data;
+
+    if (!data) return;
+
+    const categories = data?.categories.map((c) => c._id) ?? [];
+    const tags = data?.tags.map((t) => t.title) ?? [];
 
     const form: ArticleFormModel = {
       ...data,
       categories,
-      tags: data.tags.map((t) => t.title),
+      tags,
       coverImage: data?.coverImage?._id || null,
     };
-    if (data.coverImage) setSelectCoverImage(data.coverImage);
+    if (data?.coverImage) setSelectCoverImage(data.coverImage);
     setCategoryTreeExpanded(categories);
     setInitialValues(form);
     setValues(form);
@@ -218,7 +223,7 @@ export default function NewEditArticle({ id: editId }: NewEditArticleProps) {
         const response = await ArticleService.guidExists(values.guid);
         setTimeout(() => {
           setGuidExistsLoading(false);
-          setGuidExists(response);
+          setGuidExists(typeof response !== "undefined" ? response : true);
         }, 500);
       }
     }, 1000);

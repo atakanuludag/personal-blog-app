@@ -1,33 +1,38 @@
-"use client";
-
+// ** service
 import service from "@/services";
+
+// ** models
 import ArticleModel, {
   ArticleFormModel,
   ArticleListQueryModel,
 } from "@/models/ArticleModel";
 import ListResponseModel from "@/models/ListResponseModel";
-import { EndpointUrls } from "@/config";
+
+// ** utils
 import { objectToParams } from "@/utils/params";
 
+// ** config
+import { ENDPOINT_URLS } from "@/config";
+
 const ArticleService = {
-  getItems: async (
-    params?: ArticleListQueryModel
-  ): Promise<ListResponseModel<ArticleModel[]> | ArticleModel[]> =>
-    service(`${EndpointUrls.article}${objectToParams(params)}`),
-  postItem: async (body: ArticleFormModel): Promise<void> =>
-    service(`${EndpointUrls.article}`, {
+  getItems: async (params?: ArticleListQueryModel) =>
+    service<ListResponseModel<ArticleModel[]> | ArticleModel[]>(
+      `${ENDPOINT_URLS.article}${objectToParams(params)}`
+    ),
+  postItem: async (body: ArticleFormModel) =>
+    service<ArticleModel>(`${ENDPOINT_URLS.article}`, {
       method: "POST",
       body,
     }),
-  patchItem: async (body: ArticleFormModel): Promise<void> =>
-    service(`${EndpointUrls.article}/${body._id}`, {
+  patchItem: async (body: ArticleFormModel) =>
+    service<ArticleModel>(`${ENDPOINT_URLS.article}/${body._id}`, {
       method: "PATCH",
       body,
     }),
-  getItemByGuid: async (guid: string): Promise<ArticleModel> =>
-    service(`${EndpointUrls.article}/getByGuid/${guid}`),
-  getItemById: async (id: string): Promise<ArticleModel> =>
-    service(`${EndpointUrls.article}/getById/${id}`),
+  getItemByGuid: async (guid: string) =>
+    service<ArticleModel>(`${ENDPOINT_URLS.article}/getByGuid/${guid}`),
+  getItemById: async (id: string) =>
+    service<ArticleModel>(`${ENDPOINT_URLS.article}/getById/${id}`),
   // getLikeIPCheck: async (guid: string, ip: string): Promise<boolean> => {
   //   try {
   //     const res = await axios.get(`/article/likeIpCheck/${guid}`, {
@@ -41,20 +46,20 @@ const ArticleService = {
   //     return true;
   //   }
   // },
-  likePost: async (id: string): Promise<number> =>
-    service(`${EndpointUrls.article}/like/${id}`, {
+  likePost: async (id: string) =>
+    service<number>(`${ENDPOINT_URLS.article}/like/${id}`, {
       method: "POST",
     }).then((res) => {
-      return typeof res.data !== "undefined" ? res.data : 0;
+      return typeof res !== "undefined" ? res?.data : 0;
     }),
-  deleteItem: async (id: string): Promise<void> =>
-    service(`${EndpointUrls.article}/${id}`, {
+  deleteItem: async (id: string) =>
+    service(`${ENDPOINT_URLS.article}/${id}`, {
       method: "DELETE",
     }),
-  guidExists: async (guid: string): Promise<boolean> =>
-    service(`${EndpointUrls.article}/guidExists/${guid}`, {
-      method: "DELETE",
-    }).then((res) => res.data.exists),
+  guidExists: async (guid: string) =>
+    service<{ exists: boolean }>(
+      `${ENDPOINT_URLS.article}/guidExists/${guid}`
+    ).then((res) => res?.data?.exists),
 };
 
 Object.freeze(ArticleService);

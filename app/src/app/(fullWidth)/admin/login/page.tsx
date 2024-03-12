@@ -23,10 +23,17 @@ import LoginFormModel from "@/models/LoginFormModel";
 // ** services
 import NextService from "@/services/NextService";
 
+// ** utils
+import FetchError from "@/utils/fetchError";
+
+// ** hooks
+import useFetchErrorSnackbar from "@/hooks/useFetchErrorSnackbar";
+
 const LoginBox = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(5),
-  width: "20vw",
+  width: "100%",
+  maxWidth: "360px",
   display: "flex",
   justifyContent: "center",
 }));
@@ -38,12 +45,12 @@ const Form = styled("form")(() => ({
 export default function AdminLogin() {
   const searchParams = useSearchParams();
   const router = useRouter();
-
+  const fetchErrorSnackbar = useFetchErrorSnackbar();
   const { enqueueSnackbar } = useSnackbar();
 
   const initialValues: LoginFormModel = {
-    username: "atakanuludag",
-    password: "123456",
+    username: "",
+    password: "",
   };
 
   // form validate
@@ -63,14 +70,13 @@ export default function AdminLogin() {
           enqueueSnackbar("Başarıyla giriş yapıldı.", {
             variant: "success",
           });
-          router.push(redirectUrl || "/admin");
+          router.push(redirectUrl ?? "/admin");
         } catch (err) {
-          enqueueSnackbar("Giriş yapılırken bir sorun oluştu.", {
-            variant: "error",
-          });
-          setSubmitting(false);
-          resetForm();
+          console.log("err", err);
+          fetchErrorSnackbar(err as FetchError);
         }
+        setSubmitting(false);
+        resetForm();
       },
     });
 
@@ -79,7 +85,7 @@ export default function AdminLogin() {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      height={"100%"}
+      height="100%"
     >
       <LoginBox elevation={5}>
         <Form method="post" onSubmit={handleSubmit} noValidate>

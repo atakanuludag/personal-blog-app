@@ -4,7 +4,7 @@ export class PasswordHelper {
   constructor() {}
 
   public async passwordHash(password: string): Promise<string> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const salt = randomBytes(16).toString('hex')
       scrypt(password, salt, 64, (err, derivedKey) => {
         const hash = salt + ':' + derivedKey.toString('hex')

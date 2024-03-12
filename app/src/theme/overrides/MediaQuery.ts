@@ -1,4 +1,4 @@
-// import { Components, Theme } from "@mui/material";
+// import { Components, Theme } from "@mui/material/styles";
 
 // // ** third party
 // import mediaQuery from "css-mediaquery";

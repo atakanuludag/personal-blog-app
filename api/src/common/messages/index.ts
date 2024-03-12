@@ -1,4 +1,3 @@
-export { CoreMessage } from '@/common/messages/core.message'
 export { UserMessage } from '@/common/messages/user.message'
 export { CategoryMessage } from '@/common/messages/category.message'
 export { TagMessage } from '@/common/messages/tag.message'

@@ -1,7 +1,6 @@
 // ** env variables
 export const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 export const APP_VERSION = process.env.NEXT_PUBLIC_VERSION;
-export const APP_BUILD_DIR = process.env.APP_BUILD_DIR;
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const UPLOAD_PATH_URL = process.env.NEXT_PUBLIC_UPLOAD_PATH_URL;
 export const REVALIDATE_SECRET = process.env.NEXT_PUBLIC_REVALIDATE_SECRET;
@@ -9,6 +8,7 @@ export const REVALIDATE_SECONDS =
   Number(process.env.NEXT_PUBLIC_REVALIDATE_HOURS) * 120;
 export const SITE_TITLE = process.env.NEXT_PUBLIC_SITE_TITLE;
 export const SITE_DESCRIPTION = process.env.NEXT_PUBLIC_SITE_DESCRIPTION;
+export const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 export const PERSONAL_DESCRIPTION =
   process.env.NEXT_PUBLIC_PERSONAL_DESCRIPTION;
 export const TWITTER_URL = process.env.NEXT_PUBLIC_PERSONAL_TWITTER_URL;
@@ -21,7 +21,10 @@ export const PAGE_SIZE = process.env.NEXT_PUBLIC_PAGE_SIZE
   : 25;
 export const NAVBAR_PAGE_IDS = process.env.NEXT_PUBLIC_NAVBAR_PAGE_IDS;
 
-export const EndpointUrls = {
+export const DEFAULT_ERR_MESSAGE =
+  "Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.";
+
+export const ENDPOINT_URLS = {
   category: `category`,
   user: `user`,
   tag: `tag`,
@@ -44,6 +47,7 @@ export const QUERY_NAMES = {
   SETTINGS: "settings",
   FILES: "files",
   ADMIN_DASHBOARD_REPORT: "admin_dashboard_report",
+  USER: "USER",
 };
 
 export const COOKIE_NAMES = {

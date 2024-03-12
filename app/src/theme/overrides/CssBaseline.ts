@@ -1,6 +1,6 @@
 "use client";
 
-import { Components, Theme } from "@mui/material";
+import { Components, Theme } from "@mui/material/styles";
 import darkScrollbar from "@mui/material/darkScrollbar";
 
 export default function CssBaseline(

@@ -22,7 +22,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 // ** models
 import { TagFormModel } from "@/models/TagModel";
@@ -32,9 +32,11 @@ import TagService from "@/services/TagService";
 
 // ** hooks
 import useComponentContext from "@/hooks/useComponentContext";
+import useFetchErrorSnackbar from "@/hooks/useFetchErrorSnackbar";
 
 // ** utils
 import slugify from "@/utils/Slugify";
+import FetchError from "@/utils/fetchError";
 
 // ** config
 import { QUERY_NAMES } from "@/config";
@@ -46,8 +48,10 @@ type NewEditTagProps = {
 export default function NewEditTag({ data }: NewEditTagProps) {
   const { formDrawer, handleFormDrawerClose, setFormDrawerData } =
     useComponentContext();
+  const fetchErrorSnackbar = useFetchErrorSnackbar();
+
   const { enqueueSnackbar } = useSnackbar();
-  const queryClientHook = useQueryClient();
+  const queryClient = useQueryClient();
 
   const [initialValues, setInitialValues] = useState<TagFormModel>({
     title: "",
@@ -90,14 +94,11 @@ export default function NewEditTag({ data }: NewEditTagProps) {
         enqueueSnackbar(text, {
           variant: "success",
         });
-        queryClientHook.invalidateQueries(QUERY_NAMES.TAG);
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_NAMES.TAG],
+        });
       } catch (err) {
-        enqueueSnackbar(
-          "Kayıt eklenirken veya güncellenirken bir hata oluştu.",
-          {
-            variant: "error",
-          }
-        );
+        fetchErrorSnackbar(err as FetchError);
       }
       handleFormDrawerClose();
       setSubmitting(false);
@@ -141,7 +142,7 @@ export default function NewEditTag({ data }: NewEditTagProps) {
         const response = await TagService.guidExists(values.guid);
         setTimeout(() => {
           setGuidExistsLoading(false);
-          setGuidExists(response);
+          setGuidExists(typeof response !== "undefined" ? response : true);
         }, 500);
       }
     }, 1000);

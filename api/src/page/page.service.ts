@@ -1,4 +1,8 @@
-import { HttpStatus, Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, ObjectId } from 'mongoose'
 import { IPage } from '@/page/interfaces/page.interface'
@@ -6,15 +10,12 @@ import { IListQueryResponse, IQuery } from '@/common/interfaces/query.interface'
 import { Page, PageDocument } from '@/page/schemas/page.schema'
 import { PageDto } from '@/page/dto/page.dto'
 import { UpdatePageDto } from '@/page/dto/update-page.dto'
-import { ExceptionHelper } from '@/common/helpers/exception.helper'
-import { CoreMessage } from '@/common/messages'
 
 @Injectable()
 export class PageService {
   constructor(
     @InjectModel(Page.name)
     private readonly serviceModel: Model<PageDocument>,
-    private readonly coreMessage: CoreMessage,
   ) {}
 
   async create(data: PageDto): Promise<IPage> {
@@ -22,16 +23,13 @@ export class PageService {
       const create = new this.serviceModel(data)
       return create.save()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      throw new InternalServerErrorException(err)
     }
   }
 
   async update(body: UpdatePageDto, id: ObjectId): Promise<IPage> {
     try {
-      return await this.serviceModel.findByIdAndUpdate(
+      return this.serviceModel.findByIdAndUpdate(
         id,
         {
           $set: body,
@@ -41,10 +39,7 @@ export class PageService {
         },
       )
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -80,34 +75,25 @@ export class PageService {
         return data
       }
 
-      return await this.serviceModel.find(searchQuery).sort(order).exec()
+      return this.serviceModel.find(searchQuery).sort(order).exec()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
   async getItemById(_id: ObjectId): Promise<IPage> {
     try {
-      return await this.serviceModel.findOne({ _id }).exec()
+      return this.serviceModel.findOne({ _id }).exec()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
   async getItemByGuid(guid: string): Promise<IPage> {
     try {
-      return await this.serviceModel.findOne({ guid }).exec()
+      return this.serviceModel.findOne({ guid }).exec()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -116,10 +102,7 @@ export class PageService {
       const exists = await this.serviceModel.exists({ guid })
       return exists?._id ? true : false
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -127,10 +110,7 @@ export class PageService {
     try {
       await this.serviceModel.findByIdAndDelete(id)
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -143,10 +123,7 @@ export class PageService {
         },
       )
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -157,10 +134,7 @@ export class PageService {
       })
       return exists?._id ? true : false
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 }

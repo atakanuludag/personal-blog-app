@@ -10,8 +10,7 @@ import { Page, PageSchema } from '@/page/schemas/page.schema'
 import { Article, ArticleSchema } from '@/article/schemas/article.schema'
 import { Tag, TagSchema } from '@/tag/schemas/tag.schema'
 
-import { CoreMessage, PageMessage } from '@/common/messages'
-import { ExceptionHelper } from '@/common/helpers/exception.helper'
+import { PageMessage } from '@/common/messages'
 
 @Module({
   imports: [
@@ -20,13 +19,6 @@ import { ExceptionHelper } from '@/common/helpers/exception.helper'
     MongooseModule.forFeature([{ name: Tag.name, schema: TagSchema }]),
   ],
   controllers: [PageController],
-  providers: [
-    CoreMessage,
-    PageMessage,
-    ExceptionHelper,
-    PageService,
-    ArticleService,
-    TagService,
-  ],
+  providers: [PageMessage, PageService, ArticleService, TagService],
 })
 export class PageModule {}

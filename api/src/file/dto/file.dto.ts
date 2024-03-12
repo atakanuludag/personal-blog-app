@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-//todo: düzenlenecek.
-
 export class FileDto {
   @ApiProperty({
     description: 'Title',

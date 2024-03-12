@@ -1,4 +1,8 @@
-import { HttpStatus, Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, ObjectId } from 'mongoose'
 import { ICategory } from '@/category/interfaces/category.interface'
@@ -6,15 +10,12 @@ import { IListQueryResponse, IQuery } from '@/common/interfaces/query.interface'
 import { Category, CategoryDocument } from '@/category/schemas/category.schema'
 import { CategoryDto } from '@/category/dto/category.dto'
 import { UpdateCategoryDto } from '@/category/dto/update-category.dto'
-import { ExceptionHelper } from '@/common/helpers/exception.helper'
-import { CoreMessage } from '@/common/messages'
 
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectModel(Category.name)
     private readonly serviceModel: Model<CategoryDocument>,
-    private readonly coreMessage: CoreMessage,
   ) {}
 
   async create(data: CategoryDto): Promise<ICategory> {
@@ -22,16 +23,13 @@ export class CategoryService {
       const create = new this.serviceModel(data)
       return create.save()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      throw new InternalServerErrorException(err)
     }
   }
 
   async update(body: UpdateCategoryDto, id: ObjectId): Promise<ICategory> {
     try {
-      return await this.serviceModel.findByIdAndUpdate(
+      return this.serviceModel.findByIdAndUpdate(
         id,
         {
           $set: body,
@@ -41,10 +39,7 @@ export class CategoryService {
         },
       )
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -79,38 +74,29 @@ export class CategoryService {
         return data
       }
 
-      return await this.serviceModel
+      return this.serviceModel
         .find(searchQuery)
         .sort(order)
         .populate('parent')
         .exec()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
   async getItemById(id: ObjectId): Promise<ICategory> {
     try {
-      return await this.serviceModel.findOne({ id }).populate('parent').exec()
+      return this.serviceModel.findOne({ id }).populate('parent').exec()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
   async getItemByGuid(guid: string): Promise<ICategory> {
     try {
-      return await this.serviceModel.findOne({ guid }).populate('parent').exec()
+      return this.serviceModel.findOne({ guid }).populate('parent').exec()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -119,10 +105,7 @@ export class CategoryService {
       const exists = await this.serviceModel.exists({ guid })
       return exists?._id ? true : false
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -130,10 +113,7 @@ export class CategoryService {
     try {
       await this.serviceModel.findByIdAndDelete(id)
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      throw new InternalServerErrorException(err)
     }
   }
 
@@ -142,10 +122,7 @@ export class CategoryService {
       const exists = await this.serviceModel.exists({ parent })
       return exists?._id ? true : false
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 }

@@ -10,7 +10,7 @@ import { styled } from "@mui/material/styles";
 
 // ** third party
 import { useSnackbar } from "notistack";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 // ** icons
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -34,7 +34,7 @@ export type MuiToolbarProps = {
   loading: boolean;
   setLoading: Dispatch<SetStateAction<boolean>>;
   selected: string[];
-  deleteService: (id: string) => Promise<void>;
+  deleteService: (id: string) => Promise<unknown>;
   deleteDialogMessage?: string;
 };
 
@@ -58,7 +58,9 @@ export default function MuiToolbar({
     for await (const id of selected) {
       await deleteService(id);
     }
-    queryClient.invalidateQueries(queryName);
+    queryClient.invalidateQueries({
+      queryKey: [queryName],
+    });
     enqueueSnackbar("Seçtiğiniz kayıtlar başarıyla silindi.", {
       variant: "success",
     });

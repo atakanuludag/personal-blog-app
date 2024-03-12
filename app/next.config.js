@@ -1,5 +1,3 @@
-// const createMDX = require("@next/mdx")();
-// const remarkGfm = require("remark-gfm")();
 const path = require("path");
 
 /** @type {import('next').NextConfig} */
@@ -7,6 +5,7 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  output: "standalone",
   reactStrictMode: true,
   sassOptions: {
     includePaths: [path.join(__dirname, "styles")],
@@ -17,7 +16,6 @@ const nextConfig = {
       transform: "@mui/icons-material/{{member}}",
     },
   },
-  //pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   images: {
     remotePatterns: [
       {
@@ -32,16 +30,20 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "atakanuludag.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "api.atakanuludag.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };
-
-// const withMDX = createMDX({
-//   // Add markdown plugins here, as desired
-//   options: {
-//     remarkPlugins: [remarkGfm],
-//     rehypePlugins: [],
-//   },
-// });
 
 module.exports = nextConfig;

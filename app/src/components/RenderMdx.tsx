@@ -11,6 +11,9 @@ import {
 // ** models
 import { PaletteMode } from "@/models/enums";
 
+// ** mui
+import Link from "@mui/material/Link";
+
 type RenderMdxProps = {
   content: string;
   theme: PaletteMode;
@@ -23,14 +26,30 @@ export default function RenderMdx({ content, theme }: RenderMdxProps) {
   };
 
   const components: MDXComponents = {
-    code({ node, inline, className, children, ...props }: any) {
+    a({ className, children, ...props }) {
+      return (
+        <Link
+          href={props.href}
+          target={props.target}
+          className={className}
+          color="GrayText"
+          underline="hover"
+        >
+          {children}
+        </Link>
+      );
+    },
+    code({ className, children, ...props }) {
       const match = /language-(\w+)/.exec(className || "");
-      return !inline && match ? (
+      return match ? (
         <SyntaxHighlighter
+          wrapLines
+          showLineNumbers
+          lineProps={{
+            style: { wordBreak: "break-all", whiteSpace: "pre-wrap" },
+          }}
           language={match[1]}
           style={theme === PaletteMode.DARK ? materialDark : materialLight}
-          showLineNumbers
-          {...props}
         >
           {String(children).replace(/\n$/, "")}
         </SyntaxHighlighter>

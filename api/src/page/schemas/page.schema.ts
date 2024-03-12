@@ -42,8 +42,8 @@ export const PageSchema = SchemaFactory.createForClass(Page)
 // })
 
 PageSchema.set('toJSON', {
-  transform: function (doc, ret: PageDocument, options) {
-    let data = {
+  transform: function (doc, ret: PageDocument) {
+    const data = {
       ...ret,
       viewCount: ret.viewIPs ? ret.viewIPs.length : 0,
     }

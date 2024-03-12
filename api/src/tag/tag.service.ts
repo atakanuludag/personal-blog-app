@@ -1,19 +1,20 @@
-import { HttpStatus, Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, ObjectId } from 'mongoose'
 import { ITag } from '@/tag//interfaces/tag.interface'
 import { Tag, TagDocument } from '@/tag//schemas/tag.schema'
 import { TagDto } from '@/tag/dto/tag.dto'
 import { UpdateTagDto } from '@/tag/dto/update-tag.dto'
-import { ExceptionHelper } from '@/common/helpers/exception.helper'
-import { CoreMessage } from '@/common/messages'
 import { IListQueryResponse, IQuery } from '@/common/interfaces/query.interface'
 
 @Injectable()
 export class TagService {
   constructor(
     @InjectModel(Tag.name) private readonly serviceModel: Model<TagDocument>,
-    private readonly coreMessage: CoreMessage,
   ) {}
 
   async create(data: TagDto): Promise<ITag> {
@@ -21,16 +22,13 @@ export class TagService {
       const create = new this.serviceModel(data)
       return create.save()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      throw new InternalServerErrorException(err)
     }
   }
 
   async update(body: UpdateTagDto, id: ObjectId): Promise<ITag> {
     try {
-      return await this.serviceModel.findByIdAndUpdate(
+      return this.serviceModel.findByIdAndUpdate(
         id,
         {
           $set: body,
@@ -40,10 +38,7 @@ export class TagService {
         },
       )
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -75,45 +70,33 @@ export class TagService {
         return data
       }
 
-      return await this.serviceModel.find(searchQuery).sort(order).exec()
+      return this.serviceModel.find(searchQuery).sort(order).exec()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
   async getItemById(id: ObjectId): Promise<ITag> {
     try {
-      return await this.serviceModel.findOne({ id }).exec()
+      return this.serviceModel.findOne({ id }).exec()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
   async getItemByGuid(guid: string): Promise<ITag> {
     try {
-      return await this.serviceModel.findOne({ guid }).exec()
+      return this.serviceModel.findOne({ guid }).exec()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
   async getItemByTitle(title: string): Promise<ITag> {
     try {
-      return await this.serviceModel.findOne({ title }).exec()
+      return this.serviceModel.findOne({ title }).exec()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -122,10 +105,7 @@ export class TagService {
       const exists = await this.serviceModel.exists({ guid })
       return exists?._id ? true : false
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -133,10 +113,7 @@ export class TagService {
     try {
       await this.serviceModel.findByIdAndDelete(id)
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      throw new InternalServerErrorException(err)
     }
   }
 }

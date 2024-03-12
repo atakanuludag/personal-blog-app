@@ -1,10 +1,15 @@
+// ** service
 import service from "@/services";
+
+// ** models
 import AdminDashboardModel from "@/models/AdminDashboardModel";
-import { EndpointUrls } from "@/config";
+
+// ** config
+import { ENDPOINT_URLS } from "@/config";
 
 const ReportService = {
-  getAdminDashboardReport: async (): Promise<AdminDashboardModel> =>
-    service(`${EndpointUrls.report}/dashboard`),
+  getAdminDashboardReport: async () =>
+    service<AdminDashboardModel>(`${ENDPOINT_URLS.report}/dashboard`),
 };
 
 Object.freeze(ReportService);

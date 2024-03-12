@@ -35,18 +35,18 @@ const getData = async (guid: string) => {
     item: null,
   };
   const article = await ArticleService.getItemByGuid(guid);
-  if (!article || !article?.guid) {
+  if (!article || !article?.data?.guid) {
     const page = await PageService.getItemByGuid(guid);
-    if (page && page?.guid) {
+    if (page && page?.data?.guid) {
       data = {
         type: "page",
-        item: page,
+        item: page.data,
       };
     }
   } else {
     data = {
       type: "article",
-      item: article,
+      item: article.data,
     };
   }
 
@@ -94,10 +94,10 @@ export async function generateStaticParams() {
   const articles = await ArticleService.getItems();
   const pages = await PageService.getItems();
 
-  const articlePaths = (articles as ArticleModel[]).map((article) => ({
+  const articlePaths = (articles?.data as ArticleModel[]).map((article) => ({
     guid: article.guid,
   }));
-  const pagePaths = (pages as PageModel[]).map((page) => ({
+  const pagePaths = (pages?.data as PageModel[]).map((page) => ({
     guid: page.guid,
   }));
   const paths = [...articlePaths, ...pagePaths];

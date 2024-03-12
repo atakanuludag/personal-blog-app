@@ -32,7 +32,7 @@ export class ReportController {
   @UseGuards(JwtAuthGuard)
   @Get('/dashboard')
   async list() {
-    let response: IDashboardReport = {
+    const response: IDashboardReport = {
       articleCount: 0,
       pageCount: 0,
       fileCount: 0,

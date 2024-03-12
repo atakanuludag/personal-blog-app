@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { Noto_Sans } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 // ** third party
 import setDefaultOptions from "date-fns/setDefaultOptions";
@@ -19,12 +20,18 @@ import Registry from "@/theme/Registry";
 // ** models
 import { PaletteMode } from "@/models/enums";
 
+// ** utils
+import fetchServerInterceptor from "@/utils/fetchServerInterceptor";
+fetchServerInterceptor();
+
 // ** config
 import {
   REVALIDATE_SECONDS,
+  APP_URL,
   SITE_TITLE,
   SITE_DESCRIPTION,
   COOKIE_NAMES,
+  GA_ID,
 } from "@/config";
 
 // ** global styles
@@ -43,12 +50,55 @@ export const metadata: Metadata = {
     default: SITE_TITLE as string,
   },
   description: SITE_DESCRIPTION,
+  robots: {
+    index: true,
+    follow: true,
+    nocache: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+  authors: {
+    name: SITE_TITLE,
+    url: APP_URL,
+  },
+  metadataBase: new URL(APP_URL as string),
+  alternates: {
+    canonical: new URL(APP_URL as string),
+    languages: {
+      tr: "/",
+    },
+  },
+  icons: {
+    shortcut: ["/favicon-16x16.png"],
+    icon: [
+      {
+        url: "/favicon-32x32.png",
+        sizes: "32x32",
+        type: "image/png",
+      },
+      {
+        url: "/favicon-16x16.png",
+        sizes: "16x16",
+        type: "image/png",
+      },
+    ],
+    apple: {
+      url: "/apple-touch-icon.png",
+      sizes: "180x180",
+      type: "image/png",
+    },
+  },
+  openGraph: {
+    images: "/avatar.jpg",
+  },
 };
 
 export default async function BlogLayout({
   children,
 }: {
-  children: ReactNode;
+  readonly children: ReactNode;
 }) {
   const cookieStore = cookies();
   const cookieGetTheme = cookieStore.get(COOKIE_NAMES.THEME);
@@ -101,6 +151,7 @@ export default async function BlogLayout({
           </Box>
         </Registry>
       </body>
+      <GoogleAnalytics gaId={GA_ID as string} />
     </html>
   );
 }

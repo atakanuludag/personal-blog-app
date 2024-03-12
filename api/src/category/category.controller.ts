@@ -3,12 +3,12 @@ import {
   Controller,
   Get,
   Param,
-  HttpStatus,
   Post,
   UseGuards,
   Patch,
   Delete,
   Query,
+  BadRequestException,
 } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -25,8 +25,7 @@ import { GuidParamsDto, IdParamsDto } from '@/common/dto/params.dto'
 import { DefaultException } from '@/common/dto/default-exception.dto'
 import { CategoryService } from '@/category/category.service'
 import { ArticleService } from '@/article/article.service'
-import { ExceptionHelper } from '@/common/helpers/exception.helper'
-import { CoreMessage, CategoryMessage } from '@/common/messages'
+import { CategoryMessage } from '@/common/messages'
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard'
 import { ListQueryDto } from '@/common/dto/list-query.dto'
 import { QueryHelper } from '@/common/helpers/query.helper'
@@ -37,7 +36,6 @@ export class CategoryController {
   constructor(
     private readonly service: CategoryService,
     private readonly articleService: ArticleService,
-    private readonly coreMessage: CoreMessage,
     private readonly categoryMessage: CategoryMessage,
     private readonly queryHelper: QueryHelper,
   ) {}
@@ -56,7 +54,7 @@ export class CategoryController {
   @Get()
   async list(@Query() query: ListQueryDto) {
     const q = this.queryHelper.instance(query)
-    return await this.service.getItems(q)
+    return this.service.getItems(q)
   }
 
   @ApiOperation({
@@ -73,13 +71,7 @@ export class CategoryController {
   @ApiParam({ name: 'id', type: String })
   @Get('getById/:id')
   async getItemById(@Param() params: IdParamsDto) {
-    const data = await this.service.getItemById(params.id)
-    if (!data)
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
-    return data
+    return this.service.getItemById(params.id)
   }
 
   @ApiOperation({
@@ -96,13 +88,7 @@ export class CategoryController {
   @ApiParam({ name: 'guid', type: String })
   @Get('getByGuid/:guid')
   async getItemByGuid(@Param() params: GuidParamsDto) {
-    const data = await this.service.getItemByGuid(params.guid)
-    if (!data)
-      throw new ExceptionHelper(
-        this.coreMessage.BAD_REQUEST,
-        HttpStatus.BAD_REQUEST,
-      )
-    return data
+    return this.service.getItemByGuid(params.guid)
   }
 
   @ApiOperation({
@@ -122,11 +108,8 @@ export class CategoryController {
   async create(@Body() body: CategoryDto) {
     const exists = await this.service.guidExists(body.guid)
     if (exists)
-      throw new ExceptionHelper(
-        this.categoryMessage.EXISTING_GUID,
-        HttpStatus.BAD_REQUEST,
-      )
-    await this.service.create(body)
+      throw new BadRequestException(this.categoryMessage.EXISTING_GUID)
+    return this.service.create(body)
   }
 
   @ApiOperation({
@@ -145,7 +128,7 @@ export class CategoryController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Body() body: UpdateCategoryDto, @Param() params: IdParamsDto) {
-    return await this.service.update(body, params.id)
+    return this.service.update(body, params.id)
   }
 
   @ApiOperation({
@@ -164,11 +147,7 @@ export class CategoryController {
   @Delete(':id')
   async delete(@Param() params: IdParamsDto) {
     const exists = await this.service.parentExists(params.id)
-    if (exists)
-      throw new ExceptionHelper(
-        this.categoryMessage.USE,
-        HttpStatus.BAD_REQUEST,
-      )
+    if (exists) throw new BadRequestException(this.categoryMessage.USE)
     await this.service.delete(params.id)
     await this.articleService.categoryRemoveByObjectId(params.id)
   }

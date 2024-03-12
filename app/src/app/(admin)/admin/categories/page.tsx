@@ -47,14 +47,14 @@ export default function AdminCategories() {
   const { setFormDrawerData } = useComponentContext();
 
   const { data, isLoading, isFetching } = useCategoriesQuery();
-  const items = data as ListResponseModel<CategoryModel[]>;
+  const items = data?.data as ListResponseModel<CategoryModel[]>;
   const loading = isLoading || isFetching || customLoading;
 
   const columns: GridColDef[] = [
     {
       field: "title",
       headerName: "Başlık",
-      width: 250,
+      flex: 1,
       renderCell: ({ row }: GridRenderCellParams<any, CategoryModel, any>) => (
         <Link onClick={() => handleEditButton(row)} component="button">
           {row.title}
@@ -79,13 +79,6 @@ export default function AdminCategories() {
       width: 100,
     },
     {
-      field: "createdAt",
-      headerName: "Oluşturma Tarihi",
-      width: 200,
-      renderCell: ({ row }: GridRenderCellParams<CategoryModel>) =>
-        format(new Date(row.createdAt), "PP - p"),
-    },
-    {
       field: "updatedAt",
       headerName: "Güncelleme Tarihi",
       width: 200,
@@ -104,6 +97,7 @@ export default function AdminCategories() {
       content: <NewEditCategory data={data} />,
       submitButtonText: "Kaydet",
       submit: false,
+      submitDisabled: true,
     });
 
   return (

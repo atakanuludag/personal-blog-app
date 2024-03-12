@@ -1,4 +1,8 @@
-import { HttpStatus, Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, ObjectId } from 'mongoose'
 import { JwtService } from '@nestjs/jwt'
@@ -6,9 +10,8 @@ import { IUser } from '@/user/interfaces/user.interface'
 import { IUserEntity } from '@/user/interfaces/user.entity.interface'
 import { User, UserDocument } from '@/user/schemas/user.schema'
 import { PasswordHelper } from '@/common/helpers/password.helper'
-import { ExceptionHelper } from '@/common/helpers/exception.helper'
-import { CoreMessage } from '@/common/messages'
 import { UserDto } from '@/user/dto/user.dto'
+import { UpdateProfileDto } from '@/user/dto/update-profile.dto'
 
 @Injectable()
 export class UserService {
@@ -16,7 +19,6 @@ export class UserService {
     @InjectModel(User.name) private readonly serviceModel: Model<UserDocument>,
     private jwtService: JwtService,
     private passwordHelper: PasswordHelper,
-    private readonly coreMessage: CoreMessage,
   ) {}
 
   async login(user: IUser) {
@@ -27,10 +29,7 @@ export class UserService {
         userId: user.id,
       }
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      throw new InternalServerErrorException(err)
     }
   }
 
@@ -53,21 +52,15 @@ export class UserService {
       }
       return null
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      throw new InternalServerErrorException(err)
     }
   }
 
   async findUserById(id: ObjectId): Promise<IUser> {
     try {
-      return await this.serviceModel.findById(id).exec()
+      return this.serviceModel.findById(id).exec()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -81,10 +74,7 @@ export class UserService {
       })
       return exists?._id ? true : false
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      throw new BadRequestException(err)
     }
   }
 
@@ -93,10 +83,17 @@ export class UserService {
       const create = new this.serviceModel(registerUserDto)
       return create.save()
     } catch (err) {
-      throw new ExceptionHelper(
-        this.coreMessage.INTERNAL_SERVER_ERROR,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      )
+      throw new InternalServerErrorException(err)
+    }
+  }
+
+  async update(updateDto: UpdateProfileDto, id: string): Promise<IUser> {
+    try {
+      return this.serviceModel.findByIdAndUpdate(id, updateDto, {
+        new: true,
+      })
+    } catch (err) {
+      throw new BadRequestException(err)
     }
   }
 }

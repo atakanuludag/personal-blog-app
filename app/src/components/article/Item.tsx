@@ -12,6 +12,7 @@ import Grid from "@mui/material/Grid";
 import { default as MaterialLink } from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
+import Paper from "@mui/material/Paper";
 
 // ** models
 import ArticleModel from "@/models/ArticleModel";
@@ -33,7 +34,7 @@ function ArticleItem({ data }: ArticleItemProps) {
   }
 
   return (
-    <Box marginBottom={4}>
+    <Box padding={1} marginBottom={3}>
       <Grid
         container
         direction="row"

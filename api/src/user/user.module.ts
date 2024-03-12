@@ -9,11 +9,10 @@ import { UserController } from '@/user/user.controller'
 import { User, UserSchema } from '@/user/schemas/user.schema'
 import { UserService } from '@/user/user.service'
 
-import { CoreMessage, UserMessage } from '@/common/messages'
+import { UserMessage } from '@/common/messages'
 import { JwtStrategy } from '@/user/strategies/jwt.strategy'
 import { LocalStrategy } from '@/user/strategies/local.strategy'
 import { PasswordHelper } from '@/common/helpers/password.helper'
-import { ExceptionHelper } from '@/common/helpers/exception.helper'
 
 @Module({
   imports: [
@@ -33,9 +32,7 @@ import { ExceptionHelper } from '@/common/helpers/exception.helper'
   controllers: [UserController],
   providers: [
     UserService,
-    CoreMessage,
     UserMessage,
-    ExceptionHelper,
     LocalStrategy,
     JwtStrategy,
     PasswordHelper,

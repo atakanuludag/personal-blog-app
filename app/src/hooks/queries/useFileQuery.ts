@@ -1,32 +1,24 @@
-import { useInfiniteQuery, useQuery } from "react-query";
-import FileService from "@/services/FileService";
-import FileModel, { FileListQueryModel } from "@/models/FileModel";
-import ListResponseModel from "@/models/ListResponseModel";
-import { QUERY_NAMES } from "@/config";
+// ** third party
+import { useQuery } from "@tanstack/react-query";
 
-//todo: tüm query hooksları kontrol edilecek. importlamalara bakılacak
+// ** services
+import FileService from "@/services/FileService";
+
+// ** models
+import { FileListQueryModel } from "@/models/FileModel";
+
+// ** config
+import { QUERY_NAMES } from "@/config";
 
 export default function useFileQuery(params?: FileListQueryModel) {
   const service = FileService;
   const queryName = QUERY_NAMES.FILES;
 
   const useFilesQuery = () =>
-    useQuery([queryName, params], () => service.getItems(params));
-
-  // const useFilesInfiniteQuery = () =>
-  //   useInfiniteQuery(
-  //     [queryName],
-  //     ({ pageParam }) =>
-  //       service.getItems({
-  //         ...params,
-  //         page: pageParam,
-  //       }) as any,
-  //     {
-  //       getNextPageParam: (lastPage: ListResponseModel<FileModel[]>) => {
-  //         return lastPage.hasNextPage;
-  //       },
-  //     }
-  //   );
+    useQuery({
+      queryKey: [queryName, params],
+      queryFn: () => service.getItems(params),
+    });
 
   return {
     useFilesQuery,

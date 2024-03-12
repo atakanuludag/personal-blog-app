@@ -15,9 +15,6 @@ import Box from "@mui/material/Box";
 // ** icons
 import MenuIcon from "@mui/icons-material/Menu";
 
-// ** components
-import { css } from "@emotion/react";
-
 import DarkModeToggle from "@/components/DarkModeToggle";
 
 const StyledTitle = styled("h1")(({ theme }) => ({

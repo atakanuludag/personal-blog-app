@@ -56,8 +56,7 @@ export default function ImageCommandComponent({
       keyCommand: "customImage",
       execute: (state, api) => {
         const html = selectImages.map(
-          (item) =>
-            `<img src="${generateFileUrl(item)}" alt="image" width="100%" />`
+          (item) => `<img src="${generateFileUrl(item)}" alt="image" />`
         );
         api.replaceSelection(html.join("<br/>"));
       },
@@ -91,6 +90,7 @@ export default function ImageCommandComponent({
         onClick={handlePopoverOpenClick}
         key={index}
         tabIndex={index}
+        sx={{ zIndex: 99999 }}
       >
         <ImageIcon fontSize="small" />
       </IconButton>

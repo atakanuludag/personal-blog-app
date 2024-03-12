@@ -23,7 +23,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useQueryClient } from "react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 // ** models
 import CategoryModel, { CategoryFormModel } from "@/models/CategoryModel";
@@ -35,6 +35,7 @@ import CategoryService from "@/services/CategoryService";
 // ** hooks
 import useComponentContext from "@/hooks/useComponentContext";
 import useCategoryQuery from "@/hooks/queries/useCategoryQuery";
+import useFetchErrorSnackbar from "@/hooks/useFetchErrorSnackbar";
 
 // ** components
 // import AsyncAutocomplete from "@/components/AsyncAutocomplete";
@@ -42,6 +43,7 @@ import CategoryTree from "@/components/admin/shared/CategoryTree";
 
 // ** utils
 import slugify from "@/utils/Slugify";
+import FetchError from "@/utils/fetchError";
 
 // ** config
 import { QUERY_NAMES } from "@/config";
@@ -53,8 +55,9 @@ type NewEditCategoryProps = {
 export default function NewEditCategory({ data }: NewEditCategoryProps) {
   const { formDrawer, handleFormDrawerClose, setFormDrawerData } =
     useComponentContext();
+  const fetchErrorSnackbar = useFetchErrorSnackbar();
   const { enqueueSnackbar } = useSnackbar();
-  const queryClientHook = useQueryClient();
+  const queryClient = useQueryClient();
 
   const [parentSearchText, setParentSearchText] = useState("");
   const [parentValue, setParentValue] = useState<CategoryModel | null>(null);
@@ -75,6 +78,7 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
     });
 
   const { useCategoriesQuery } = useCategoryQuery(parentAutocompleteParams);
+  //const { useCategoriesQuery } = useCategoryQuery(parentAutocompleteParams);
   const categories = useCategoriesQuery(parentSearchText === "" ? false : true);
 
   // form validate
@@ -117,14 +121,14 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
         enqueueSnackbar(text, {
           variant: "success",
         });
-        queryClientHook.invalidateQueries(QUERY_NAMES.CATEGORY);
+        // queryClient.removeQueries({
+        //   queryKey: [QUERY_NAMES.CATEGORY],
+        // });
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_NAMES.CATEGORY],
+        });
       } catch (err) {
-        enqueueSnackbar(
-          "Kayıt eklenirken veya güncellenirken bir hata oluştu.",
-          {
-            variant: "error",
-          }
-        );
+        fetchErrorSnackbar(err as FetchError);
       }
       handleFormDrawerClose();
       setSubmitting(false);
@@ -172,7 +176,7 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
         const response = await CategoryService.guidExists(values.guid);
         setTimeout(() => {
           setGuidExistsLoading(false);
-          setGuidExists(response);
+          setGuidExists(typeof response !== "undefined" ? response : true);
         }, 500);
       }
     }, 1000);
@@ -213,10 +217,10 @@ export default function NewEditCategory({ data }: NewEditCategoryProps) {
     return [values.parent as string];
   };
 
-  console.log("values.parent ", handleCategoryParentSelected());
+  //console.log("values.parent ", handleCategoryParentSelected());
 
   const handleCategoryParentSetSelected = (a: any) => {
-    console.log("a", a);
+    // console.log("a", a);
   };
 
   return (

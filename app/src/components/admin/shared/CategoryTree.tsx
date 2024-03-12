@@ -98,7 +98,7 @@ export default function CategoryTree({
   }, [selected]);
 
   useEffect(() => {
-    const categoriesData = categories.data as CategoryModel[];
+    const categoriesData = categories.data?.data as CategoryModel[];
     if (!categoriesData) return;
     setItems(convertTreeData(categoriesData, null));
     //setStateSelected(selected)

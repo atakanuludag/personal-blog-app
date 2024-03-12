@@ -1,6 +1,6 @@
 "use client";
 
-import { Components, Theme } from "@mui/material";
+import { Components, Theme } from "@mui/material/styles";
 
 export default function CircularProgress(
   theme: Theme
@@ -9,10 +9,11 @@ export default function CircularProgress(
     MuiCircularProgress: {
       styleOverrides: {
         root: {
-          color:
+          color: `${
             theme.palette.mode === "dark"
               ? theme.palette.common.white
-              : theme.palette.common.black,
+              : theme.palette.common.black
+          } !important`,
         },
       },
     },

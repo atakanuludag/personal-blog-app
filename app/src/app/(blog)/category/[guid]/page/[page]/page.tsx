@@ -47,12 +47,14 @@ export default async function BlogCategoryPaging({
 
   const categoryData = await CategoryService.getItemByGuid(guid);
 
-  const data = (await ArticleService.getItems({
-    category: categoryData._id,
-    page: Number(page),
-    pageSize: PAGE_SIZE,
-    paging: 1,
-  })) as ListResponseModel<ArticleModel[]>;
+  const data = (
+    await ArticleService.getItems({
+      category: categoryData?.data?._id,
+      page: Number(page),
+      pageSize: PAGE_SIZE,
+      paging: 1,
+    })
+  )?.data as ListResponseModel<ArticleModel[]>;
 
   if (!data) return notFound();
 
@@ -67,7 +69,7 @@ export default async function BlogCategoryPaging({
           component="h1"
           variant="subtitle1"
           fontWeight="bold"
-        >{`Kategori: ${categoryData.title}`}</Typography>
+        >{`Kategori: ${categoryData?.data?.title}`}</Typography>
       </Paper>
       <Box component="section">
         {data?.results?.map((item) => (
@@ -87,19 +89,23 @@ export default async function BlogCategoryPaging({
 }
 
 export async function generateStaticParams() {
-  const categories = (await CategoryService.getItems({
-    paging: 0,
-  })) as CategoryModel[];
+  const categories = (
+    await CategoryService.getItems({
+      paging: 0,
+    })
+  )?.data as CategoryModel[];
 
   let categoryGuidTotalPages = [];
 
   for await (const category of categories) {
-    const articlePaging = (await ArticleService.getItems({
-      category: category._id,
-      paging: 1,
-      page: 1,
-      pageSize: PAGE_SIZE,
-    })) as ListResponseModel<ArticleModel[]>;
+    const articlePaging = (
+      await ArticleService.getItems({
+        category: category._id,
+        paging: 1,
+        page: 1,
+        pageSize: PAGE_SIZE,
+      })
+    )?.data as ListResponseModel<ArticleModel[]>;
 
     categoryGuidTotalPages.push({
       guid: category.guid,
@@ -128,9 +134,9 @@ export async function generateMetadata({
   const guid = params.guid;
   const page = params.page;
 
-  const item = await CategoryService.getItemByGuid(guid);
+  const data = await CategoryService.getItemByGuid(guid);
 
   return {
-    title: `Kategori: ${item?.title} - Sayfa: ${page}`,
+    title: `Kategori: ${data?.data?.title} - Sayfa: ${page}`,
   };
 }

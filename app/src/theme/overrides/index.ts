@@ -4,7 +4,7 @@
 import { merge } from "lodash";
 
 // ** mui
-import { Theme } from "@mui/material";
+import { Theme } from "@mui/material/styles";
 
 // ** mui overrides
 import CssBaseline from "@/theme/overrides/CssBaseline";

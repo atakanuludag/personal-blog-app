@@ -47,14 +47,14 @@ export default function AdminTags() {
   const { setFormDrawerData } = useComponentContext();
 
   const { data, isLoading, isFetching } = useTagItemsQuery();
-  const items = data as ListResponseModel<TagModel[]>;
+  const items = data?.data as ListResponseModel<TagModel[]>;
   const loading = isLoading || isFetching || customLoading;
 
   const columns: GridColDef[] = [
     {
       field: "title",
       headerName: "Başlık",
-      width: 250,
+      flex: 1,
       renderCell: ({ row }: GridRenderCellParams<any, TagModel, any>) => (
         <Link onClick={() => handleEditButton(row)} component="button">
           {row.title}
@@ -65,13 +65,6 @@ export default function AdminTags() {
       field: "guid",
       headerName: "Link",
       width: 200,
-    },
-    {
-      field: "createdAt",
-      headerName: "Oluşturma Tarihi",
-      width: 200,
-      renderCell: ({ row }: GridRenderCellParams<TagModel>) =>
-        format(new Date(row.createdAt), "PP - p"),
     },
     {
       field: "updatedAt",

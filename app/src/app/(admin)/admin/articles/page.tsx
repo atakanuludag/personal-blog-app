@@ -25,6 +25,7 @@ import ArticleService from "@/services/ArticleService";
 import ArticleModel from "@/models/ArticleModel";
 import ListQueryModel from "@/models/ListQueryModel";
 import ListResponseModel from "@/models/ListResponseModel";
+import { OrderType } from "@/models/enums";
 
 // ** hooks
 import useArticleQuery from "@/hooks/queries/useArticleQuery";
@@ -32,6 +33,7 @@ import useArticleQuery from "@/hooks/queries/useArticleQuery";
 // ** components
 import DataGrid from "@/components/datagrid";
 import SearchInput from "@/components/admin/shared/SearchInput";
+import DataGridCacheClearColumn from "@/components/admin/shared/DatagridCacheClearColumn";
 
 // ** config
 import { PAGE_SIZE, QUERY_NAMES } from "@/config";
@@ -40,14 +42,27 @@ export default function AdminArticleIndex() {
   const [params, setParams] = useState<ListQueryModel>({
     page: 1,
     pageSize: PAGE_SIZE,
+    order: "publishingDate",
+    orderBy: OrderType.ASC,
   });
   const [customLoading, setCustomLoading] = useState(false);
+
   const { useArticleItemsQuery } = useArticleQuery();
   const { data, isLoading, isFetching } = useArticleItemsQuery(params);
-  const items = data as ListResponseModel<ArticleModel[]>;
+  const items = data?.data as ListResponseModel<ArticleModel[]>;
   const loading = isLoading || isFetching || customLoading;
 
   const columns: GridColDef[] = [
+    {
+      field: "cache",
+      headerName: "Önbellek",
+      sortable: false,
+      disableColumnMenu: true,
+      width: 80,
+      renderCell: ({ row }: GridRenderCellParams<ArticleModel>) => (
+        <DataGridCacheClearColumn path={row.guid} title={row.title} />
+      ),
+    },
     {
       field: "title",
       headerName: "Başlık",
@@ -68,7 +83,7 @@ export default function AdminArticleIndex() {
     {
       field: "categories",
       headerName: "Kategoriler",
-      width: 410,
+      flex: 1,
       renderCell: ({ row }: GridRenderCellParams<ArticleModel>) =>
         row.categories.map((v) => v.title).join(", "),
     },

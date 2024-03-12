@@ -1,25 +1,47 @@
 "use client";
 
-import { UseQueryOptions, useQuery } from "react-query";
-import { QUERY_NAMES } from "@/config";
+// ** third party
+import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+
+// ** services
 import PageService from "@/services/PageService";
+
+// ** models
 import ListQueryModel from "@/models/ListQueryModel";
 import PageModel from "@/models/PageModel";
+import { BaseErrorModel, BaseModel } from "@/models/BaseModel";
+
+// ** config
+import { QUERY_NAMES } from "@/config";
 
 export default function usePageQuery() {
   const service = PageService;
   const queryName = QUERY_NAMES.PAGE;
 
   const usePageItemsQuery = (params?: ListQueryModel) =>
-    useQuery([queryName, params], () => service.getItems(params));
+    useQuery({
+      queryKey: [queryName, params],
+      queryFn: () => service.getItems(params),
+    });
 
   const usePageItemQuery = (
     id: string,
-    options?: Omit<UseQueryOptions<PageModel>, "queryKey" | "queryFn">
-  ) => useQuery([queryName, id], () => service.getItemById(id), options);
+    options?: Omit<
+      UseQueryOptions<BaseErrorModel | BaseModel<PageModel> | null>,
+      "queryKey" | "queryFn"
+    >
+  ) =>
+    useQuery({
+      queryKey: [queryName, id],
+      queryFn: () => service.getItemById(id),
+      ...options,
+    });
 
   const usePageGetByGuidQuery = (guid: string) =>
-    useQuery([queryName], () => service.getItemByGuid(guid));
+    useQuery({
+      queryKey: [queryName],
+      queryFn: () => service.getItemByGuid(guid),
+    });
 
   return {
     usePageItemsQuery,

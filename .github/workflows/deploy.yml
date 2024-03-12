@@ -19,8 +19,12 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             pm2 stop personal-blog
+            pm2 delete personal-blog
             cd /var/www/personal-blog-app
             git pull origin main
             npm install --prefix /var/www/personal-blog-app/api
             npm install --prefix /var/www/personal-blog-app/app
-            pm2 restart personal-blog
+            cd /var/www/personal-blog-app/api
+            pm2 start npm --name "personal-blog-api" --namespace "personal-blog" -- run "start"
+            cd /var/www/personal-blog-app/app
+            pm2 start npm --name "personal-blog-app" --namespace "personal-blog" -- run "start"

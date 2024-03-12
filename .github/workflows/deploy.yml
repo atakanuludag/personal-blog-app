@@ -25,6 +25,8 @@ jobs:
             npm install --prefix /var/www/personal-blog-app/api
             npm install --prefix /var/www/personal-blog-app/app
             cd /var/www/personal-blog-app/api
+            npm run build
             pm2 start npm --name "personal-blog-api" --namespace "personal-blog" -- run "start"
             cd /var/www/personal-blog-app/app
+            npm run build
             pm2 start npm --name "personal-blog-app" --namespace "personal-blog" -- run "start"

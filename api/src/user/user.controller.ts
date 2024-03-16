@@ -7,6 +7,7 @@ import {
   HttpCode,
   Get,
   Patch,
+  BadRequestException,
 } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
@@ -63,15 +64,13 @@ export class UserController {
   })
   @Post('register')
   async create(@Body() body: UserDto) {
-    return this.passwordHelper.passwordHash(body.password)
-    // const userCheck = await this.service.findUser(body.userName, body.email)
-    // if (userCheck)
-    //   throw new ExceptionHelper(
-    //     this.userMessage.EXISTING_USER,
-    //     HttpStatus.BAD_REQUEST,
-    //   )
-    // body.password = await this.passwordHelper.passwordHash(body.password)
-    // await this.service.register(body)
+    // #######################################
+    // Disable here after initial installation;
+    const userCheck = await this.service.findUser(body.userName, body.email)
+    if (userCheck) throw new BadRequestException(this.userMessage.EXISTING_USER)
+    body.password = await this.passwordHelper.passwordHash(body.password)
+    await this.service.register(body)
+    // #######################################
   }
 
   @ApiOperation({

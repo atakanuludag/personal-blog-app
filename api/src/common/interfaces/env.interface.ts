@@ -5,7 +5,9 @@ export interface IEnv {
   MONGODB_DB_PASS: string
   UPLOAD_FOLDER_PATH: string
   API_PREFIX: string
-  API_SWAGGER_URL: string
+  SWAGGER_URL: string
+  SWAGGER_USERNAME: string
+  SWAGGER_PASSWORD: string
   API_PORT: string
   JWT_SECRET_KEY: string
   JWT_EXPIRES_IN: string

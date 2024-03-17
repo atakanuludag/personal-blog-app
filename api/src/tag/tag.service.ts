@@ -94,7 +94,9 @@ export class TagService {
 
   async getItemByTitle(title: string): Promise<ITag> {
     try {
-      return this.serviceModel.findOne({ title }).exec()
+      return this.serviceModel
+        .findOne({ title: { $regex: new RegExp(`^${title}$`), $options: 'i' } })
+        .exec()
     } catch (err) {
       throw new BadRequestException(err)
     }

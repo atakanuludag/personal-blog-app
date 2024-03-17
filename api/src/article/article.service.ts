@@ -24,7 +24,8 @@ export class ArticleService {
     const tags = new Array<ObjectId>()
     for await (const title of tagItems) {
       const tagTitleSearch = await this.tagService.getItemByTitle(title)
-      if (tagTitleSearch) {
+
+      if (tagTitleSearch?._id) {
         tags.push(tagTitleSearch._id)
       } else {
         const tagCreate = await this.tagService.create({
@@ -41,7 +42,6 @@ export class ArticleService {
   async create(data: ArticleDto): Promise<IArticle> {
     try {
       const tags = await this.getTags(data.tags)
-
       const create = new this.serviceModel({
         ...data,
         tags,

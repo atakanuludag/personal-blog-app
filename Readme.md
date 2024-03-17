@@ -24,22 +24,24 @@ Projeyi çalıştırmadan önce, sisteminizde aşağıdaki yazılımların kurul
 git clone https://github.com/atakanuludag/personal-blog-app
 ```
 
-2. Api için api klasörü içerisine .env dosyası oluşturun:
+2. Api için api klasörü içerisine .env dosyası oluşturun (veya env.example dosyasını kullanabilirsiniz):
 
 ```env
-MONGODB_URI="mongodb://localhost:27017"
+MONGODB_URI="mongodb://database:27017"
 MONGODB_DB_NAME="personal-blog"
-MONGODB_DB_USER=""
-MONGODB_DB_PASS=""
+MONGODB_DB_USER="example_user"
+MONGODB_DB_PASS="example_password"
 UPLOAD_FOLDER_PATH="./uploads"
 API_PREFIX=/
-API_SWAGGER_URL=swagger
+SWAGGER_URL=swagger
+SWAGGER_USERNAME=admin
+SWAGGER_PASSWORD=123456
 API_PORT="4000"
 JWT_SECRET_KEY="123456"
 JWT_EXPIRES_IN="365 days"
 ```
 
-3. NextJS tarafı için app klasörü içerisine .env dosyası oluşturun:
+3. NextJS tarafı için app klasörü içerisine .env dosyası oluşturun (veya env.example dosyasını kullanabilirsiniz):
 
 ```env
 NEXT_PUBLIC_APP_URL=http://localhost:4001
@@ -52,7 +54,7 @@ NEXT_PUBLIC_UPLOAD_PATH_URL=http://localhost:4001/uploads
 NEXT_PUBLIC_GA_ID="G-XYZ"
 NEXT_PUBLIC_SITE_TITLE="Atakan Uludağ"
 NEXT_PUBLIC_SITE_DESCRIPTION="Atakan Uludağ"
-NEXT_PUBLIC_PERSONAL_DESCRIPTION="Test test test"
+NEXT_PUBLIC_PERSONAL_DESCRIPTION="Description"
 NEXT_PUBLIC_PERSONAL_TWITTER_URL="https://twitter.com/atknuludag"
 NEXT_PUBLIC_PERSONAL_INSTAGRAM_URL="https://www.instagram.com/atknuludag"
 NEXT_PUBLIC_PERSONAL_GITHUB_URL="https://github.com/atakanuludag"

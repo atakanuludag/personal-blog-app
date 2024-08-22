@@ -9,19 +9,23 @@ import { useServerInsertedHTML } from "next/navigation";
 // ** third party
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
+import NextTopLoader from "nextjs-toploader";
+import tr from "date-fns/locale/tr";
 
 // ** mui
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import tr from "date-fns/locale/tr";
 
 // ** theme
 import MuiTheme from "@/theme";
 
 // ** hooks
 import useSettingsContext from "@/hooks/useSettingsContext";
+
+// ** models
+import { PaletteMode } from "@/models/enums";
 
 type ThemeRegistryProps = {
   children: ReactNode;
@@ -74,6 +78,10 @@ export default function ThemeRegistry({ children }: ThemeRegistryProps) {
 
   return (
     <CacheProvider value={cache}>
+      <NextTopLoader
+        color={themeMode === PaletteMode.DARK ? "#fff" : "#000"}
+        showSpinner={false}
+      />
       <ThemeProvider theme={MuiTheme("desktop", themeMode)}>
         <CssBaseline />
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={tr}>

@@ -127,7 +127,7 @@ export default function NavigationContent({
           </Link>
         </Title>
 
-        <Avatar src="/avatar.jpg" alt={SITE_TITLE} />
+        <Avatar src="/avatar.jpeg" alt={SITE_TITLE} />
         <Typography variant="caption" component="p">
           {PERSONAL_DESCRIPTION}
         </Typography>

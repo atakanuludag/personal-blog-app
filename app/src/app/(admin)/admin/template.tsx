@@ -12,8 +12,8 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 // ** third party
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import setDefaultOptions from "date-fns/setDefaultOptions";
-import dateFnsLocaleTR from "date-fns/locale/tr";
+import { setDefaultOptions } from "date-fns/setDefaultOptions";
+import { tr as dateFnsLocaleTR } from "date-fns/locale";
 
 // ** layouts
 import Navigation from "@/layouts/navigation/admin";

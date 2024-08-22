@@ -433,7 +433,7 @@ export default function FileBrowser({
                 direction="row"
                 justifyContent="flex-start"
                 spacing={1}
-                ref={drop}
+                ref={drop as any}
                 sx={{ position: "relative", height: "100%" }}
               >
                 {dragAndDropActive && (

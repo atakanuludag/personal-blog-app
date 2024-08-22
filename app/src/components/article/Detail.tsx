@@ -22,7 +22,6 @@ import RenderMdx from "@/components/RenderMdx";
 
 // ** utils
 import generateFileUrl from "@/utils/GenerateFileUrl";
-import { PaletteMode } from "@/models/enums";
 
 type ArticleDetailProps = {
   data: ArticleModel;
@@ -97,7 +96,7 @@ export default function ArticleDetail({ data }: ArticleDetailProps) {
         </Grid>
 
         <Grid item xs={12} width="100%">
-          <RenderMdx content={data.content} theme={PaletteMode.DARK} />
+          <RenderMdx content={data.content} />
         </Grid>
 
         <Grid item xs={12}>

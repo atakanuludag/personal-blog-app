@@ -8,8 +8,8 @@ import { Noto_Sans } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
 // ** third party
-import setDefaultOptions from "date-fns/setDefaultOptions";
-import dateFnsLocaleTR from "date-fns/locale/tr";
+import { setDefaultOptions } from "date-fns/setDefaultOptions";
+import { tr as dateFnsLocaleTR } from "date-fns/locale";
 
 // ** mui
 import Box from "@mui/material/Box";
@@ -91,7 +91,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    images: "/avatar.jpg",
+    images: "/avatar.jpeg",
   },
 };
 

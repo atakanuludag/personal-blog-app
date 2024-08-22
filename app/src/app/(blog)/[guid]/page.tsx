@@ -20,6 +20,9 @@ import PageDetail from "@/components/page/Detail";
 import ArticleModel from "@/models/ArticleModel";
 import PageModel from "@/models/PageModel";
 
+// ** config
+import { SITE_TITLE } from "@/config";
+
 type BlogGuidProps = {
   params: { guid: string };
 };
@@ -115,5 +118,11 @@ export async function generateMetadata({
   return {
     title: item?.title,
     description: item?.shortDescription,
+    openGraph: {
+      type: "article",
+      authors: SITE_TITLE,
+      title: item?.title,
+      description: item?.shortDescription,
+    },
   };
 }

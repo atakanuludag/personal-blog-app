@@ -1,30 +1,25 @@
 // ** third party
 import { MDXRemote } from "next-mdx-remote/rsc";
+
 import { MDXComponents } from "mdx/types";
 import remarkGfm from "remark-gfm";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-  materialDark,
-  materialLight,
-} from "react-syntax-highlighter/dist/cjs/styles/prism";
-
-// ** models
-import { PaletteMode } from "@/models/enums";
 
 // ** mui
 import Link from "@mui/material/Link";
+import TableContainer from "@mui/material/TableContainer";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import StyledTableCell from "./markdown/styled/StyledTableCell";
+import StyledTableRow from "./markdown/styled/StyledTableRow";
+import Image, { ImageProps } from "next/image";
+import MarkdownSyntaxHighlighter from "./markdown/SyntaxHighlighter";
 
 type RenderMdxProps = {
   content: string;
-  theme: PaletteMode;
 };
-export default function RenderMdx({ content, theme }: RenderMdxProps) {
-  const options = {
-    mdxOptions: {
-      remarkPlugins: [remarkGfm],
-    },
-  };
 
+export default function RenderMdx({ content }: RenderMdxProps) {
   const components: MDXComponents = {
     a({ className, children, ...props }) {
       return (
@@ -39,20 +34,45 @@ export default function RenderMdx({ content, theme }: RenderMdxProps) {
         </Link>
       );
     },
+    table({ className, children }) {
+      return (
+        <TableContainer component={Paper}>
+          <Table size="small">{children}</Table>
+        </TableContainer>
+      );
+    },
+    thead({ className, children }) {
+      return <TableHead>{children}</TableHead>;
+    },
+    tr({ className, children }) {
+      return <StyledTableRow>{children}</StyledTableRow>;
+    },
+    th({ className, children }) {
+      return <StyledTableCell>{children}</StyledTableCell>;
+    },
+    td({ className, children }) {
+      return <StyledTableCell>{children}</StyledTableCell>;
+    },
+    //https://yet-another-react-lightbox.com/examples/nextjs
+    // img({ className, children, alt, src, ...props }) {
+    //   console.log("props", props);
+    //   if (!src) return <></>;
+    //   return (
+    //     <Image
+    //       alt={alt ?? ""}
+    //       src={src}
+    //       width={500}
+    //       height={500}
+    //       style={{ height: "auto" }}
+    //     />
+    //   );
+    // },
     code({ className, children, ...props }) {
       const match = /language-(\w+)/.exec(className || "");
       return match ? (
-        <SyntaxHighlighter
-          wrapLines
-          showLineNumbers
-          lineProps={{
-            style: { wordBreak: "break-all", whiteSpace: "pre-wrap" },
-          }}
-          language={match[1]}
-          style={theme === PaletteMode.DARK ? materialDark : materialLight}
-        >
-          {String(children).replace(/\n$/, "")}
-        </SyntaxHighlighter>
+        <MarkdownSyntaxHighlighter codeLanguage={match[1]}>
+          {children}
+        </MarkdownSyntaxHighlighter>
       ) : (
         <code className={className} {...props}>
           {children}
@@ -63,7 +83,16 @@ export default function RenderMdx({ content, theme }: RenderMdxProps) {
 
   return (
     <div>
-      <MDXRemote source={content} options={options} components={components} />
+      <MDXRemote
+        source={content}
+        options={{
+          mdxOptions: {
+            remarkPlugins: [remarkGfm],
+          },
+          scope: {},
+        }}
+        components={components}
+      />
     </div>
   );
 }

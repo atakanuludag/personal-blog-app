@@ -10,7 +10,6 @@ import Divider from "@mui/material/Divider";
 
 // ** models
 import PageModel from "@/models/PageModel";
-import { PaletteMode } from "@/models/enums";
 
 // ** components
 import RenderMdx from "@/components/RenderMdx";
@@ -62,7 +61,7 @@ export default function PageDetail({ data }: PageDetailProps) {
         </Grid>
 
         <Grid item xs={12} width="100%">
-          <RenderMdx content={data.content} theme={PaletteMode.DARK} />
+          <RenderMdx content={data.content} />
         </Grid>
       </Grid>
     </Box>

@@ -9,12 +9,16 @@ import {
   DataGrid,
   DataGridProps,
   GridColDef,
-  trTR,
   GridSortModel,
   GridRowSelectionModel,
   GridSlotsComponentsProps,
 } from "@mui/x-data-grid";
-import type { GridPaginationModel, GridSortDirection } from "@mui/x-data-grid";
+import { trTR } from "@mui/x-data-grid/locales";
+import type {
+  GridPaginationModel,
+  GridSlots,
+  GridSortDirection,
+} from "@mui/x-data-grid";
 
 // ** components
 import Toolbar, { MuiToolbarProps } from "@/components/datagrid/Toolbar";
@@ -100,7 +104,7 @@ export default function MuiDataGrid({
   };
 
   const onRowSelectionModelChange = (ids: GridRowSelectionModel) =>
-    setSelected(ids as any);
+    setSelected(ids as string[]);
 
   const tableComponentsProps: MuiGridComponentsProps = {
     toolbar: {
@@ -140,7 +144,7 @@ export default function MuiDataGrid({
         localeText={trTR.components.MuiDataGrid.defaultProps.localeText}
         slotProps={tableComponentsProps}
         slots={{
-          toolbar: Toolbar,
+          toolbar: Toolbar as GridSlots["toolbar"],
         }}
         // componentsProps={tableComponentsProps}
         // components={{
